@@ -1,7 +1,6 @@
-<div align="center">
-  <h1>ISP Media Project</h1>
-  <img src="/logo.png" alt="Branches"/>
-</div>
+![ISP Media Project Logo](logo.png)
+
+# ISP Media Project
 
 ---
 
@@ -34,18 +33,17 @@ We recommend **cloning this repository twice**:
 
 This allows you to work on both parts independently and run them simultaneously if needed.
 
-Example:
+**Example:**
 
 ```sh
- git clone <repo-url> ispmedia-frontend
- cd ispmedia-frontend
- git checkout frontend
+git clone <repo-url> ispmedia-frontend
+cd ispmedia-frontend
+git checkout frontend
 
- # In a separate folder
-
- git clone <repo-url> ispmedia-backend
- cd ispmedia-backend
- git checkout backend
+# In a separate folder
+git clone <repo-url> ispmedia-backend
+cd ispmedia-backend
+git checkout backend
 ```
 
 ---
@@ -56,6 +54,4 @@ You will find **detailed explanations, setup instructions, and usage guides** in
 
 ---
 
-<div align="center">
-  <b>Happy coding! 🚀</b>
-</div>
+**Happy coding! 🚀**
