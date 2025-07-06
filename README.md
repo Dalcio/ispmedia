@@ -51,7 +51,3 @@ git checkout backend
 ## 📚 In-Depth Documentation
 
 You will find **detailed explanations, setup instructions, and usage guides** inside each branch's README file. Please refer to them for more information about running and developing each part of the project.
-
----
-
-**Happy coding! 🚀**
