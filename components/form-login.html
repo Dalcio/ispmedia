@@ -1,0 +1,721 @@
+<form id="loginForm" class="login-form glass-card" novalidate>
+  <div class="form-header text-center mb-4">
+    <div class="logo mb-3">
+      <i class="fas fa-play-circle display-4 text-primary"></i>
+    </div>
+    <h2 class="form-title">Bem-vindo ao ISPMedia</h2>
+    <p class="form-subtitle text-muted">Faça login para continuar</p>
+  </div>
+
+  <div class="form-body">
+    <!-- Email -->
+    <div class="form-floating mb-3">
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        placeholder="seu@email.com"
+        required
+      />
+      <label for="email">
+        <i class="fas fa-envelope me-2"></i>
+        Email
+      </label>
+      <div class="invalid-feedback">Por favor, insira um email válido.</div>
+    </div>
+
+    <!-- Senha -->
+    <div class="form-floating mb-3">
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        placeholder="Senha"
+        required
+        minlength="6"
+      />
+      <label for="password">
+        <i class="fas fa-lock me-2"></i>
+        Senha
+      </label>
+      <div class="password-toggle" onclick="togglePassword()">
+        <i class="fas fa-eye" id="passwordToggleIcon"></i>
+      </div>
+      <div class="invalid-feedback">
+        A senha deve ter pelo menos 6 caracteres.
+      </div>
+    </div>
+
+    <!-- Lembrar-me -->
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="rememberMe" />
+      <label class="form-check-label" for="rememberMe"> Lembrar-me </label>
+    </div>
+
+    <!-- Botão de Login -->
+    <button type="submit" class="btn btn-primary w-100 mb-3" id="loginButton">
+      <span class="button-text">
+        <i class="fas fa-sign-in-alt me-2"></i>
+        Entrar
+      </span>
+      <span class="button-loading d-none">
+        <i class="fas fa-spinner fa-spin me-2"></i>
+        Entrando...
+      </span>
+    </button>
+
+    <!-- Links de ação -->
+    <div class="form-actions text-center">
+      <a href="#" class="text-decoration-none" onclick="showForgotPassword()">
+        Esqueceu sua senha?
+      </a>
+    </div>
+  </div>
+
+  <div class="form-footer text-center mt-4">
+    <p class="text-muted">
+      Não tem uma conta?
+      <a href="#" class="text-decoration-none" onclick="showRegister()">
+        Registre-se
+      </a>
+    </p>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider my-4">
+    <span class="divider-text">ou</span>
+  </div>
+
+  <!-- Contas Demo -->
+  <div class="demo-accounts">
+    <h6 class="text-center mb-3 text-muted">Contas Demo</h6>
+    <div class="row g-2">
+      <div class="col-6">
+        <button
+          type="button"
+          class="btn btn-outline-primary w-100"
+          onclick="loginDemo('user')"
+        >
+          <i class="fas fa-user me-2"></i>
+          Usuário
+        </button>
+      </div>
+      <div class="col-6">
+        <button
+          type="button"
+          class="btn btn-outline-success w-100"
+          onclick="loginDemo('admin')"
+        >
+          <i class="fas fa-user-shield me-2"></i>
+          Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Login (Opcional) -->
+  <div class="social-login mt-4">
+    <div class="row g-2">
+      <div class="col-6">
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100"
+          onclick="socialLogin('google')"
+        >
+          <i class="fab fa-google me-2"></i>
+          Google
+        </button>
+      </div>
+      <div class="col-6">
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100"
+          onclick="socialLogin('microsoft')"
+        >
+          <i class="fab fa-microsoft me-2"></i>
+          Microsoft
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<style>
+  .login-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-header .logo {
+    opacity: 0.9;
+  }
+
+  .form-title {
+    font-weight: 600;
+    color: var(--bs-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+
+  .form-floating {
+    position: relative;
+  }
+
+  .form-floating > .form-control {
+    border-radius: 0.75rem;
+    border: 2px solid rgba(var(--bs-primary-rgb), 0.1);
+    transition: all 0.3s ease;
+    padding-left: 3rem;
+  }
+
+  .form-floating > .form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+  }
+
+  .form-floating > label {
+    padding-left: 3rem;
+    color: var(--bs-secondary);
+    font-weight: 500;
+  }
+
+  .form-floating > .form-control:focus ~ label,
+  .form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--bs-primary);
+    font-weight: 600;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--bs-secondary);
+    transition: color 0.3s ease;
+    z-index: 10;
+  }
+
+  .password-toggle:hover {
+    color: var(--bs-primary);
+  }
+
+  .form-check {
+    margin-left: 0.5rem;
+  }
+
+  .form-check-input {
+    border-radius: 0.25rem;
+    border: 2px solid rgba(var(--bs-primary-rgb), 0.2);
+  }
+
+  .form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+
+  .form-check-label {
+    font-weight: 500;
+    color: var(--bs-secondary);
+  }
+
+  .btn-primary {
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--bs-primary-rgb), 0.3);
+  }
+
+  .form-actions a {
+    color: var(--bs-primary);
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .form-actions a:hover {
+    color: var(--bs-secondary);
+  }
+
+  .form-footer a {
+    color: var(--bs-primary);
+    font-weight: 600;
+  }
+
+  .divider {
+    position: relative;
+    text-align: center;
+  }
+
+  .divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+  }
+
+  .divider-text {
+    background: white;
+    padding: 0 1rem;
+    color: var(--bs-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .demo-accounts h6 {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+  }
+
+  .demo-accounts .btn,
+  .social-login .btn {
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .demo-accounts .btn:hover,
+  .social-login .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+
+  .btn-outline-success:hover {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+  }
+
+  /* Estados do formulário */
+  .form-loading {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .form-error .form-control {
+    border-color: var(--bs-danger);
+  }
+
+  .form-error .form-control:focus {
+    border-color: var(--bs-danger);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-danger-rgb), 0.25);
+  }
+
+  .form-success .form-control {
+    border-color: var(--bs-success);
+  }
+
+  .form-success .form-control:focus {
+    border-color: var(--bs-success);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-success-rgb), 0.25);
+  }
+
+  /* Animações */
+  @keyframes slideInUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .login-form {
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  .form-floating {
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  .form-floating:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .form-floating:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .form-check {
+    animation-delay: 0.3s;
+  }
+  .btn-primary {
+    animation-delay: 0.4s;
+  }
+
+  /* Responsividade */
+  @media (max-width: 576px) {
+    .login-form {
+      padding: 1.5rem;
+      margin: 1rem;
+    }
+
+    .form-header .logo {
+      margin-bottom: 1rem;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+    }
+
+    .demo-accounts .row {
+      flex-direction: column;
+    }
+
+    .demo-accounts .col-6 {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .social-login .row {
+      flex-direction: column;
+    }
+
+    .social-login .col-6 {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  /* Tema escuro */
+  @media (prefers-color-scheme: dark) {
+    .login-form {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-title {
+      color: #ffffff;
+    }
+
+    .form-subtitle {
+      color: #b0b0b0;
+    }
+
+    .form-floating > .form-control {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    .form-floating > label {
+      color: #b0b0b0;
+    }
+
+    .divider-text {
+      background: rgba(0, 0, 0, 0.8);
+      color: #b0b0b0;
+    }
+  }
+</style>
+
+<script>
+  // Inicialização do formulário
+  document.addEventListener("DOMContentLoaded", function () {
+    initLoginForm();
+  });
+
+  function initLoginForm() {
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    // Adicionar eventos de validação em tempo real
+    emailInput.addEventListener("input", validateEmail);
+    passwordInput.addEventListener("input", validatePassword);
+
+    // Adicionar evento de submit
+    form.addEventListener("submit", handleLogin);
+
+    // Auto-focus no campo de email
+    emailInput.focus();
+
+    // Pré-preencher com dados salvos se existirem
+    const savedEmail = localStorage.getItem("ispmedia_saved_email");
+    if (savedEmail) {
+      emailInput.value = savedEmail;
+      document.getElementById("rememberMe").checked = true;
+    }
+  }
+
+  function validateEmail() {
+    const emailInput = document.getElementById("email");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailInput.value && !emailRegex.test(emailInput.value)) {
+      emailInput.setCustomValidity("Email inválido");
+      emailInput.classList.add("is-invalid");
+    } else {
+      emailInput.setCustomValidity("");
+      emailInput.classList.remove("is-invalid");
+      if (emailInput.value) {
+        emailInput.classList.add("is-valid");
+      }
+    }
+  }
+
+  function validatePassword() {
+    const passwordInput = document.getElementById("password");
+
+    if (passwordInput.value && passwordInput.value.length < 6) {
+      passwordInput.setCustomValidity("Senha muito curta");
+      passwordInput.classList.add("is-invalid");
+    } else {
+      passwordInput.setCustomValidity("");
+      passwordInput.classList.remove("is-invalid");
+      if (passwordInput.value) {
+        passwordInput.classList.add("is-valid");
+      }
+    }
+  }
+
+  function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const toggleIcon = document.getElementById("passwordToggleIcon");
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      toggleIcon.classList.remove("fa-eye");
+      toggleIcon.classList.add("fa-eye-slash");
+    } else {
+      passwordInput.type = "password";
+      toggleIcon.classList.remove("fa-eye-slash");
+      toggleIcon.classList.add("fa-eye");
+    }
+  }
+
+  function handleLogin(event) {
+    event.preventDefault();
+
+    const form = document.getElementById("loginForm");
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const rememberMe = document.getElementById("rememberMe").checked;
+
+    // Validar formulário
+    if (!form.checkValidity()) {
+      event.stopPropagation();
+      form.classList.add("was-validated");
+      return;
+    }
+
+    // Mostrar loading
+    showLoading();
+
+    // Simular login (em produção, fazer requisição para API)
+    setTimeout(() => {
+      // Verificar credenciais mock
+      const isValidLogin = validateCredentials(email, password);
+
+      if (isValidLogin) {
+        // Salvar email se "lembrar-me" estiver marcado
+        if (rememberMe) {
+          localStorage.setItem("ispmedia_saved_email", email);
+        } else {
+          localStorage.removeItem("ispmedia_saved_email");
+        }
+
+        // Fazer login via Session
+        const userData = getUserData(email);
+        if (window.Session && window.Session.login) {
+          window.Session.login(userData);
+        }
+
+        // Mostrar sucesso
+        showSuccess();
+
+        // Redirecionar após delay
+        setTimeout(() => {
+          if (window.router && window.router.navigate) {
+            window.router.navigate("/home");
+          } else {
+            window.location.hash = "#home";
+          }
+        }, 1500);
+      } else {
+        showError("Email ou senha incorretos");
+      }
+    }, 2000);
+  }
+
+  function validateCredentials(email, password) {
+    // Credenciais demo
+    const demoCredentials = [
+      { email: "user@demo.com", password: "demo123" },
+      { email: "admin@demo.com", password: "admin123" },
+      { email: "test@test.com", password: "test123" },
+    ];
+
+    return demoCredentials.some(
+      (cred) => cred.email === email && cred.password === password
+    );
+  }
+
+  function getUserData(email) {
+    // Dados mock baseados no email
+    const userData = {
+      "user@demo.com": {
+        id: 1,
+        name: "Usuário Demo",
+        email: "user@demo.com",
+        role: "user",
+        avatar: null,
+      },
+      "admin@demo.com": {
+        id: 2,
+        name: "Admin Demo",
+        email: "admin@demo.com",
+        role: "admin",
+        avatar: null,
+      },
+      "test@test.com": {
+        id: 3,
+        name: "Teste User",
+        email: "test@test.com",
+        role: "user",
+        avatar: null,
+      },
+    };
+
+    return (
+      userData[email] || {
+        id: Date.now(),
+        name: email.split("@")[0],
+        email: email,
+        role: "user",
+        avatar: null,
+      }
+    );
+  }
+
+  function loginDemo(role) {
+    const demoCredentials = {
+      user: { email: "user@demo.com", password: "demo123" },
+      admin: { email: "admin@demo.com", password: "admin123" },
+    };
+
+    const cred = demoCredentials[role];
+    if (cred) {
+      document.getElementById("email").value = cred.email;
+      document.getElementById("password").value = cred.password;
+      document.getElementById("rememberMe").checked = true;
+
+      // Disparar evento de submit
+      document.getElementById("loginForm").dispatchEvent(new Event("submit"));
+    }
+  }
+
+  function socialLogin(provider) {
+    // Implementar login social
+    showAlert(`Login com ${provider} em desenvolvimento`, "info");
+  }
+
+  function showForgotPassword() {
+    // Implementar modal de esqueci senha
+    showAlert(
+      "Funcionalidade de recuperação de senha em desenvolvimento",
+      "info"
+    );
+  }
+
+  function showRegister() {
+    // Implementar modal de registro
+    showAlert("Funcionalidade de registro em desenvolvimento", "info");
+  }
+
+  function showLoading() {
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const buttonText = button.querySelector(".button-text");
+    const buttonLoading = button.querySelector(".button-loading");
+
+    form.classList.add("form-loading");
+    button.disabled = true;
+    buttonText.classList.add("d-none");
+    buttonLoading.classList.remove("d-none");
+  }
+
+  function hideLoading() {
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const buttonText = button.querySelector(".button-text");
+    const buttonLoading = button.querySelector(".button-loading");
+
+    form.classList.remove("form-loading");
+    button.disabled = false;
+    buttonText.classList.remove("d-none");
+    buttonLoading.classList.add("d-none");
+  }
+
+  function showSuccess() {
+    const form = document.getElementById("loginForm");
+    form.classList.add("form-success");
+
+    // Mostrar feedback visual
+    if (window.renderAlert) {
+      window.renderAlert("Login realizado com sucesso!", "success");
+    }
+  }
+
+  function showError(message) {
+    const form = document.getElementById("loginForm");
+    form.classList.add("form-error");
+
+    hideLoading();
+
+    // Mostrar erro
+    if (window.renderAlert) {
+      window.renderAlert(message, "danger");
+    }
+
+    // Remover classe de erro após delay
+    setTimeout(() => {
+      form.classList.remove("form-error");
+    }, 3000);
+  }
+
+  function showAlert(message, type) {
+    if (window.renderAlert) {
+      window.renderAlert(message, type);
+    } else {
+      alert(message);
+    }
+  }
+
+  // Exportar funções para uso global
+  window.LoginForm = {
+    init: initLoginForm,
+    login: handleLogin,
+    loginDemo: loginDemo,
+    socialLogin: socialLogin,
+    showForgotPassword: showForgotPassword,
+    showRegister: showRegister,
+  };
+</script>

@@ -1,0 +1,870 @@
+<div class="playlist-page fade-in">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <h1 class="page-title text-gradient">
+          <i class="bi bi-collection-play-fill me-3"></i>
+          Minhas Playlists
+        </h1>
+        <p class="page-subtitle text-muted">
+          Organize e gerencie suas coleções de mídia
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#createPlaylistModal"
+        >
+          <i class="bi bi-plus-circle me-2"></i>
+          Nova Playlist
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <div class="filters d-flex gap-2">
+          <button
+            type="button"
+            class="btn btn-outline-primary active"
+            data-filter="all"
+          >
+            <i class="bi bi-collection me-1"></i>
+            Todas
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-filter="public"
+          >
+            <i class="bi bi-globe me-1"></i>
+            Públicas
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-filter="private"
+          >
+            <i class="bi bi-lock me-1"></i>
+            Privadas
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-filter="shared"
+          >
+            <i class="bi bi-share me-1"></i>
+            Compartilhadas
+          </button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="search-box">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar playlists..."
+              id="searchPlaylists"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Playlists Grid -->
+    <div class="playlists-grid" id="playlistsGrid">
+      <!-- Playlists will be loaded here -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state text-center py-5 d-none" id="emptyState">
+      <i class="bi bi-collection-play text-muted" style="font-size: 4rem"></i>
+      <h4 class="mt-3 text-muted">Nenhuma playlist encontrada</h4>
+      <p class="text-muted">
+        Crie sua primeira playlist para começar a organizar suas mídias
+      </p>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#createPlaylistModal"
+      >
+        <i class="bi bi-plus-circle me-2"></i>
+        Criar Playlist
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Playlist Modal -->
+<div
+  class="modal fade"
+  id="createPlaylistModal"
+  tabindex="-1"
+  aria-labelledby="createPlaylistModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="createPlaylistModalLabel">
+          <i class="bi bi-plus-circle me-2"></i>
+          Nova Playlist
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="createPlaylistForm">
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="playlistName"
+                placeholder="Nome da playlist"
+                required
+              />
+              <label for="playlistName">
+                <i class="bi bi-collection me-2"></i>
+                Nome da Playlist
+              </label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <textarea
+                class="form-control"
+                id="playlistDescription"
+                placeholder="Descrição"
+                style="height: 100px"
+              ></textarea>
+              <label for="playlistDescription">
+                <i class="bi bi-card-text me-2"></i>
+                Descrição (opcional)
+              </label>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select class="form-select" id="playlistCategory">
+                  <option value="mixed">Mista</option>
+                  <option value="music">Música</option>
+                  <option value="video">Vídeo</option>
+                  <option value="images">Imagens</option>
+                </select>
+                <label for="playlistCategory">
+                  <i class="bi bi-folder me-2"></i>
+                  Categoria
+                </label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select class="form-select" id="playlistVisibility">
+                  <option value="public">Pública</option>
+                  <option value="private">Privada</option>
+                  <option value="unlisted">Não listada</option>
+                </select>
+                <label for="playlistVisibility">
+                  <i class="bi bi-eye me-2"></i>
+                  Visibilidade
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="playlistTags"
+                placeholder="tags, separadas, por, vírgula"
+              />
+              <label for="playlistTags">
+                <i class="bi bi-tags me-2"></i>
+                Tags (opcional)
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-check-circle me-2"></i>
+            Criar Playlist
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Playlist Details Modal -->
+<div
+  class="modal fade"
+  id="playlistDetailsModal"
+  tabindex="-1"
+  aria-labelledby="playlistDetailsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content glass">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="playlistDetailsModalLabel">
+          <i class="bi bi-collection-play me-2"></i>
+          Detalhes da Playlist
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body" id="playlistDetailsContent">
+        <!-- Playlist details will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Inicializar página de playlists
+  document.addEventListener("DOMContentLoaded", function () {
+    initializePlaylistPage();
+  });
+
+  let currentPlaylists = [];
+  let currentFilter = "all";
+
+  function initializePlaylistPage() {
+    // Verificar autenticação
+    if (!window.Session || !window.Session.isAuthenticated()) {
+      if (window.renderAlert) {
+        window.renderAlert("Faça login para acessar suas playlists", "warning");
+      }
+      if (window.Router) {
+        window.Router.navigateToRoute("login");
+      }
+      return;
+    }
+
+    // Configurar filtros
+    setupFilters();
+
+    // Configurar busca
+    setupSearch();
+
+    // Configurar formulário de criação
+    setupCreatePlaylistForm();
+
+    // Carregar playlists
+    loadPlaylists();
+
+    // Log da visita
+    if (window.logger) {
+      window.logger.userEvent("playlist_page_visited");
+    }
+  }
+
+  function setupFilters() {
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", function () {
+        // Remover active de todos os botões
+        document.querySelectorAll("[data-filter]").forEach((btn) => {
+          btn.classList.remove("active");
+          btn.classList.add("btn-outline-secondary");
+          btn.classList.remove("btn-outline-primary");
+        });
+
+        // Adicionar active ao botão clicado
+        this.classList.add("active");
+        this.classList.remove("btn-outline-secondary");
+        this.classList.add("btn-outline-primary");
+
+        // Aplicar filtro
+        currentFilter = this.getAttribute("data-filter");
+        filterPlaylists();
+      });
+    });
+  }
+
+  function setupSearch() {
+    const searchInput = document.getElementById("searchPlaylists");
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        filterPlaylists();
+      });
+    }
+  }
+
+  function setupCreatePlaylistForm() {
+    const createForm = document.getElementById("createPlaylistForm");
+    if (createForm) {
+      createForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        createPlaylist();
+      });
+    }
+  }
+
+  function loadPlaylists() {
+    // Simular carregamento de playlists
+    setTimeout(() => {
+      currentPlaylists = getMockPlaylists();
+      renderPlaylists(currentPlaylists);
+    }, 500);
+  }
+
+  function getMockPlaylists() {
+    return [
+      {
+        id: 1,
+        name: "Minhas Músicas Favoritas",
+        description: "Uma coleção das melhores músicas para relaxar",
+        category: "music",
+        visibility: "public",
+        itemCount: 42,
+        thumbnail: null,
+        tags: ["música", "relaxante", "favoritas"],
+        createdAt: new Date(Date.now() - 86400000 * 7),
+        updatedAt: new Date(Date.now() - 86400000 * 2),
+      },
+      {
+        id: 2,
+        name: "Vídeos de Viagem",
+        description: "Recordações das minhas aventuras pelo mundo",
+        category: "video",
+        visibility: "private",
+        itemCount: 18,
+        thumbnail: null,
+        tags: ["viagem", "aventura", "memórias"],
+        createdAt: new Date(Date.now() - 86400000 * 14),
+        updatedAt: new Date(Date.now() - 86400000 * 5),
+      },
+      {
+        id: 3,
+        name: "Fotos da Família",
+        description: "Momentos especiais com pessoas queridas",
+        category: "images",
+        visibility: "private",
+        itemCount: 156,
+        thumbnail: null,
+        tags: ["família", "fotos", "momentos"],
+        createdAt: new Date(Date.now() - 86400000 * 30),
+        updatedAt: new Date(Date.now() - 86400000 * 1),
+      },
+      {
+        id: 4,
+        name: "Trabalho - Apresentações",
+        description: "Materiais para apresentações profissionais",
+        category: "mixed",
+        visibility: "unlisted",
+        itemCount: 24,
+        thumbnail: null,
+        tags: ["trabalho", "apresentações", "profissional"],
+        createdAt: new Date(Date.now() - 86400000 * 21),
+        updatedAt: new Date(Date.now() - 86400000 * 3),
+      },
+    ];
+  }
+
+  function renderPlaylists(playlists) {
+    const playlistsGrid = document.getElementById("playlistsGrid");
+    const emptyState = document.getElementById("emptyState");
+
+    if (!playlistsGrid || !emptyState) return;
+
+    if (playlists.length === 0) {
+      playlistsGrid.innerHTML = "";
+      emptyState.classList.remove("d-none");
+      return;
+    }
+
+    emptyState.classList.add("d-none");
+
+    playlistsGrid.innerHTML = `
+        <div class="row">
+            ${playlists
+              .map((playlist) => createPlaylistCard(playlist))
+              .join("")}
+        </div>
+    `;
+  }
+
+  function createPlaylistCard(playlist) {
+    const categoryIcon = getCategoryIcon(playlist.category);
+    const visibilityIcon = getVisibilityIcon(playlist.visibility);
+    const visibilityText = getVisibilityText(playlist.visibility);
+
+    return `
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="playlist-card glass-card h-100">
+                <div class="playlist-thumbnail">
+                    <div class="playlist-thumbnail-placeholder">
+                        <i class="bi ${categoryIcon}"></i>
+                    </div>
+                    <div class="playlist-overlay">
+                        <div class="playlist-actions">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="openPlaylistDetails(${
+                              playlist.id
+                            })">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="editPlaylist(${
+                              playlist.id
+                            })">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deletePlaylist(${
+                              playlist.id
+                            })">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="playlist-content p-3">
+                    <div class="playlist-header d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="playlist-title">${playlist.name}</h5>
+                        <span class="playlist-visibility">
+                            <i class="bi ${visibilityIcon}" title="${visibilityText}"></i>
+                        </span>
+                    </div>
+                    <p class="playlist-description text-muted">${
+                      playlist.description || "Sem descrição"
+                    }</p>
+                    <div class="playlist-meta d-flex justify-content-between align-items-center">
+                        <div class="playlist-items">
+                            <small class="text-muted">
+                                <i class="bi bi-collection me-1"></i>
+                                ${playlist.itemCount} ${
+      playlist.itemCount === 1 ? "item" : "itens"
+    }
+                            </small>
+                        </div>
+                        <div class="playlist-updated">
+                            <small class="text-muted">
+                                ${formatDate(playlist.updatedAt, "dd/MM/yyyy")}
+                            </small>
+                        </div>
+                    </div>
+                    ${
+                      playlist.tags.length > 0
+                        ? `
+                        <div class="playlist-tags mt-2">
+                            ${playlist.tags
+                              .map(
+                                (tag) =>
+                                  `<span class="badge bg-light text-dark">${tag}</span>`
+                              )
+                              .join(" ")}
+                        </div>
+                    `
+                        : ""
+                    }
+                </div>
+            </div>
+        </div>
+    `;
+  }
+
+  function filterPlaylists() {
+    const searchTerm = document
+      .getElementById("searchPlaylists")
+      .value.toLowerCase();
+
+    let filteredPlaylists = currentPlaylists;
+
+    // Filtrar por categoria
+    if (currentFilter !== "all") {
+      filteredPlaylists = filteredPlaylists.filter((playlist) => {
+        return playlist.visibility === currentFilter;
+      });
+    }
+
+    // Filtrar por busca
+    if (searchTerm) {
+      filteredPlaylists = filteredPlaylists.filter((playlist) => {
+        return (
+          playlist.name.toLowerCase().includes(searchTerm) ||
+          playlist.description.toLowerCase().includes(searchTerm) ||
+          playlist.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+        );
+      });
+    }
+
+    renderPlaylists(filteredPlaylists);
+  }
+
+  function createPlaylist() {
+    const form = document.getElementById("createPlaylistForm");
+    const formData = new FormData(form);
+
+    const newPlaylist = {
+      name:
+        formData.get("playlistName") ||
+        document.getElementById("playlistName").value,
+      description:
+        formData.get("playlistDescription") ||
+        document.getElementById("playlistDescription").value,
+      category:
+        formData.get("playlistCategory") ||
+        document.getElementById("playlistCategory").value,
+      visibility:
+        formData.get("playlistVisibility") ||
+        document.getElementById("playlistVisibility").value,
+      tags: (
+        formData.get("playlistTags") ||
+        document.getElementById("playlistTags").value
+      )
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag),
+    };
+
+    // Simular criação
+    setTimeout(() => {
+      const playlist = {
+        id: Date.now(),
+        ...newPlaylist,
+        itemCount: 0,
+        thumbnail: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      currentPlaylists.unshift(playlist);
+      renderPlaylists(currentPlaylists);
+
+      // Fechar modal
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("createPlaylistModal")
+      );
+      if (modal) {
+        modal.hide();
+      }
+
+      // Limpar formulário
+      form.reset();
+
+      if (window.renderAlert) {
+        window.renderAlert("Playlist criada com sucesso!", "success");
+      }
+
+      if (window.logger) {
+        window.logger.userEvent("playlist_created", { name: newPlaylist.name });
+      }
+    }, 500);
+  }
+
+  function openPlaylistDetails(playlistId) {
+    const playlist = currentPlaylists.find((p) => p.id === playlistId);
+    if (!playlist) return;
+
+    const modal = new bootstrap.Modal(
+      document.getElementById("playlistDetailsModal")
+    );
+    const content = document.getElementById("playlistDetailsContent");
+
+    content.innerHTML = `
+        <div class="playlist-details">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="playlist-cover">
+                        <div class="playlist-thumbnail-placeholder large">
+                            <i class="bi ${getCategoryIcon(
+                              playlist.category
+                            )}"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h3>${playlist.name}</h3>
+                    <p class="text-muted">${
+                      playlist.description || "Sem descrição"
+                    }</p>
+                    <div class="playlist-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Categoria:</strong> ${getCategoryText(
+                                  playlist.category
+                                )}
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Visibilidade:</strong> ${getVisibilityText(
+                                  playlist.visibility
+                                )}
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Itens:</strong> ${playlist.itemCount}
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Criada:</strong> ${formatDate(
+                                  playlist.createdAt,
+                                  "dd/MM/yyyy"
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    ${
+                      playlist.tags.length > 0
+                        ? `
+                        <div class="playlist-tags mt-3">
+                            <strong>Tags:</strong><br>
+                            ${playlist.tags
+                              .map(
+                                (tag) =>
+                                  `<span class="badge bg-primary me-1">${tag}</span>`
+                              )
+                              .join("")}
+                        </div>
+                    `
+                        : ""
+                    }
+                </div>
+            </div>
+            <hr>
+            <div class="playlist-items">
+                <h5>Itens da Playlist</h5>
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Esta playlist ainda não tem itens</p>
+                    <button type="button" class="btn btn-primary" onclick="addItemsToPlaylist(${playlistId})">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Adicionar Itens
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.show();
+  }
+
+  function editPlaylist(playlistId) {
+    // Implementar edição de playlist
+    if (window.renderAlert) {
+      window.renderAlert("Edição de playlist em desenvolvimento", "info");
+    }
+  }
+
+  function deletePlaylist(playlistId) {
+    if (confirm("Tem certeza que deseja excluir esta playlist?")) {
+      currentPlaylists = currentPlaylists.filter((p) => p.id !== playlistId);
+      renderPlaylists(currentPlaylists);
+
+      if (window.renderAlert) {
+        window.renderAlert("Playlist excluída com sucesso!", "success");
+      }
+    }
+  }
+
+  function addItemsToPlaylist(playlistId) {
+    // Implementar adição de itens
+    if (window.renderAlert) {
+      window.renderAlert("Adição de itens em desenvolvimento", "info");
+    }
+  }
+
+  function getCategoryIcon(category) {
+    const icons = {
+      music: "bi-music-note-beamed",
+      video: "bi-play-circle",
+      images: "bi-image",
+      mixed: "bi-collection",
+    };
+    return icons[category] || "bi-collection";
+  }
+
+  function getVisibilityIcon(visibility) {
+    const icons = {
+      public: "bi-globe",
+      private: "bi-lock",
+      unlisted: "bi-eye-slash",
+    };
+    return icons[visibility] || "bi-globe";
+  }
+
+  function getVisibilityText(visibility) {
+    const texts = {
+      public: "Pública",
+      private: "Privada",
+      unlisted: "Não listada",
+    };
+    return texts[visibility] || "Pública";
+  }
+
+  function getCategoryText(category) {
+    const texts = {
+      music: "Música",
+      video: "Vídeo",
+      images: "Imagens",
+      mixed: "Mista",
+    };
+    return texts[category] || "Mista";
+  }
+
+  function formatDate(date, format) {
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const year = d.getFullYear();
+
+    return format.replace("dd", day).replace("MM", month).replace("yyyy", year);
+  }
+</script>
+
+<style>
+  .playlist-card {
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .playlist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .playlist-thumbnail {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .playlist-thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    color: white;
+    font-size: 3rem;
+  }
+
+  .playlist-thumbnail-placeholder.large {
+    height: 250px;
+    font-size: 4rem;
+  }
+
+  .playlist-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .playlist-card:hover .playlist-overlay {
+    opacity: 1;
+  }
+
+  .playlist-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .playlist-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+  }
+
+  .playlist-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .playlist-meta {
+    font-size: 0.85rem;
+  }
+
+  .playlist-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .playlist-tags .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .playlist-visibility {
+    font-size: 1.1rem;
+    color: var(--gray);
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+
+  .search-box .input-group-text {
+    background: transparent;
+    border-right: none;
+  }
+
+  .search-box .form-control {
+    border-left: none;
+  }
+
+  .search-box .form-control:focus {
+    box-shadow: none;
+    border-color: var(--primary-color);
+  }
+
+  .search-box .input-group-text {
+    border-color: var(--primary-color);
+  }
+
+  .search-box .form-control:focus + .input-group-text {
+    border-color: var(--primary-color);
+  }
+
+  @media (max-width: 768px) {
+    .filters {
+      margin-bottom: 1rem;
+    }
+
+    .playlist-thumbnail {
+      height: 150px;
+    }
+
+    .playlist-thumbnail-placeholder {
+      font-size: 2rem;
+    }
+
+    .playlist-actions {
+      flex-direction: column;
+    }
+  }
+</style>

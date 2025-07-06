@@ -1,0 +1,754 @@
+<div class="upload-page fade-in">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="page-header text-center">
+          <h1 class="page-title text-gradient">
+            <i class="bi bi-cloud-upload-fill me-3"></i>
+            Upload de Arquivos
+          </h1>
+          <p class="page-subtitle text-muted">
+            Faça upload de suas mídias de forma rápida e segura
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="upload-container glass-card p-4">
+          <!-- Upload Form -->
+          <form
+            id="uploadForm"
+            data-form-type="upload"
+            enctype="multipart/form-data"
+          >
+            <!-- Drag & Drop Area -->
+            <div class="upload-dropzone" id="uploadDropzone">
+              <div class="upload-dropzone-content">
+                <i class="bi bi-cloud-upload upload-icon"></i>
+                <h4 class="upload-title">Arraste e solte arquivos aqui</h4>
+                <p class="upload-subtitle">ou</p>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-lg"
+                  id="selectFilesBtn"
+                >
+                  <i class="bi bi-folder-open me-2"></i>
+                  Selecionar Arquivos
+                </button>
+                <input
+                  type="file"
+                  id="fileInput"
+                  name="files"
+                  multiple
+                  accept="image/*,video/*,audio/*"
+                  style="display: none"
+                />
+              </div>
+            </div>
+
+            <!-- File List -->
+            <div class="upload-files" id="uploadFiles" style="display: none">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h5>Arquivos Selecionados</h5>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  id="clearFiles"
+                >
+                  <i class="bi bi-trash me-1"></i>
+                  Limpar Tudo
+                </button>
+              </div>
+              <div id="fileList" class="file-list"></div>
+            </div>
+
+            <!-- Upload Options -->
+            <div
+              class="upload-options mt-4"
+              id="uploadOptions"
+              style="display: none"
+            >
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <select
+                      class="form-select"
+                      id="uploadCategory"
+                      name="category"
+                    >
+                      <option value="">Selecione uma categoria</option>
+                      <option value="images">Imagens</option>
+                      <option value="videos">Vídeos</option>
+                      <option value="audio">Áudio</option>
+                      <option value="documents">Documentos</option>
+                      <option value="others">Outros</option>
+                    </select>
+                    <label for="uploadCategory">
+                      <i class="bi bi-folder me-2"></i>
+                      Categoria
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="uploadTags"
+                      name="tags"
+                      placeholder="tags, separadas, por, vírgula"
+                    />
+                    <label for="uploadTags">
+                      <i class="bi bi-tags me-2"></i>
+                      Tags (opcional)
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <textarea
+                      class="form-control"
+                      id="uploadDescription"
+                      name="description"
+                      placeholder="Descrição dos arquivos"
+                      style="height: 100px"
+                    ></textarea>
+                    <label for="uploadDescription">
+                      <i class="bi bi-card-text me-2"></i>
+                      Descrição (opcional)
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="isPrivate"
+                      name="isPrivate"
+                    />
+                    <label class="form-check-label" for="isPrivate">
+                      <i class="bi bi-lock me-2"></i>
+                      Tornar privado
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="optimizeFiles"
+                      name="optimizeFiles"
+                      checked
+                    />
+                    <label class="form-check-label" for="optimizeFiles">
+                      <i class="bi bi-gear me-2"></i>
+                      Otimizar arquivos
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Button -->
+            <div
+              class="upload-actions text-center mt-4"
+              id="uploadActions"
+              style="display: none"
+            >
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg px-5"
+                id="uploadBtn"
+              >
+                <i class="bi bi-cloud-upload me-2"></i>
+                Fazer Upload
+              </button>
+            </div>
+          </form>
+
+          <!-- Upload Progress -->
+          <div
+            class="upload-progress mt-4"
+            id="uploadProgress"
+            style="display: none"
+          >
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="upload-progress-text">Fazendo upload...</span>
+              <span class="upload-progress-percentage">0%</span>
+            </div>
+            <div class="progress">
+              <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style="width: 0%"
+                aria-valuenow="0"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+            <div class="upload-details mt-2">
+              <small class="text-muted">
+                <span id="uploadedCount">0</span> de
+                <span id="totalCount">0</span> arquivos enviados
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Uploads -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <h3 class="section-title">Uploads Recentes</h3>
+        <div class="recent-uploads" id="recentUploads">
+          <!-- Recent uploads will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Inicializar página de upload
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeUploadPage();
+  });
+
+  let selectedFiles = [];
+  let currentUpload = null;
+
+  function initializeUploadPage() {
+    // Verificar autenticação
+    if (!window.Session || !window.Session.isAuthenticated()) {
+      if (window.renderAlert) {
+        window.renderAlert(
+          "Faça login para fazer upload de arquivos",
+          "warning"
+        );
+      }
+      if (window.Router) {
+        window.Router.navigateToRoute("login");
+      }
+      return;
+    }
+
+    // Configurar drag & drop
+    setupDragAndDrop();
+
+    // Configurar seleção de arquivos
+    setupFileSelection();
+
+    // Configurar formulário
+    setupUploadForm();
+
+    // Carregar uploads recentes
+    loadRecentUploads();
+
+    // Log da visita
+    if (window.logger) {
+      window.logger.userEvent("upload_page_visited");
+    }
+  }
+
+  function setupDragAndDrop() {
+    const dropzone = document.getElementById("uploadDropzone");
+
+    if (!dropzone) return;
+
+    // Eventos de drag & drop
+    dropzone.addEventListener("dragover", handleDragOver);
+    dropzone.addEventListener("dragleave", handleDragLeave);
+    dropzone.addEventListener("drop", handleDrop);
+
+    // Eventos de clique
+    dropzone.addEventListener("click", function (e) {
+      if (
+        e.target === dropzone ||
+        e.target.closest(".upload-dropzone-content")
+      ) {
+        document.getElementById("selectFilesBtn").click();
+      }
+    });
+  }
+
+  function setupFileSelection() {
+    const selectFilesBtn = document.getElementById("selectFilesBtn");
+    const fileInput = document.getElementById("fileInput");
+    const clearFilesBtn = document.getElementById("clearFiles");
+
+    if (selectFilesBtn && fileInput) {
+      selectFilesBtn.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", function (e) {
+        handleFileSelection(e.target.files);
+      });
+    }
+
+    if (clearFilesBtn) {
+      clearFilesBtn.addEventListener("click", function () {
+        clearSelectedFiles();
+      });
+    }
+  }
+
+  function setupUploadForm() {
+    const uploadForm = document.getElementById("uploadForm");
+
+    if (uploadForm) {
+      uploadForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        startUpload();
+      });
+    }
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const dropzone = document.getElementById("uploadDropzone");
+    dropzone.classList.add("dragover");
+  }
+
+  function handleDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const dropzone = document.getElementById("uploadDropzone");
+    dropzone.classList.remove("dragover");
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const dropzone = document.getElementById("uploadDropzone");
+    dropzone.classList.remove("dragover");
+
+    const files = e.dataTransfer.files;
+    handleFileSelection(files);
+  }
+
+  function handleFileSelection(files) {
+    const validFiles = Array.from(files).filter((file) => {
+      // Validar tipo de arquivo
+      const allowedTypes = ["image/", "video/", "audio/"];
+      const isValidType = allowedTypes.some((type) =>
+        file.type.startsWith(type)
+      );
+
+      if (!isValidType) {
+        if (window.renderAlert) {
+          window.renderAlert(`Arquivo não suportado: ${file.name}`, "warning");
+        }
+        return false;
+      }
+
+      // Validar tamanho (100MB max)
+      const maxSize = 100 * 1024 * 1024;
+      if (file.size > maxSize) {
+        if (window.renderAlert) {
+          window.renderAlert(`Arquivo muito grande: ${file.name}`, "warning");
+        }
+        return false;
+      }
+
+      return true;
+    });
+
+    if (validFiles.length === 0) {
+      return;
+    }
+
+    // Adicionar arquivos válidos
+    validFiles.forEach((file) => {
+      if (
+        !selectedFiles.find((f) => f.name === file.name && f.size === file.size)
+      ) {
+        selectedFiles.push(file);
+      }
+    });
+
+    updateFileList();
+    showUploadOptions();
+  }
+
+  function updateFileList() {
+    const fileList = document.getElementById("fileList");
+    const uploadFiles = document.getElementById("uploadFiles");
+
+    if (!fileList || !uploadFiles) return;
+
+    if (selectedFiles.length === 0) {
+      uploadFiles.style.display = "none";
+      return;
+    }
+
+    uploadFiles.style.display = "block";
+
+    fileList.innerHTML = selectedFiles
+      .map((file, index) => {
+        const fileSize = formatBytes(file.size);
+        const fileIcon = getFileIcon(file.type);
+
+        return `
+            <div class="file-item glass-card p-3 mb-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="bi ${fileIcon} text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="col">
+                        <div class="file-name fw-semibold">${file.name}</div>
+                        <div class="file-details text-muted">
+                            <small>${fileSize} • ${file.type}</small>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFile(${index})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+      })
+      .join("");
+  }
+
+  function showUploadOptions() {
+    const uploadOptions = document.getElementById("uploadOptions");
+    const uploadActions = document.getElementById("uploadActions");
+
+    if (selectedFiles.length > 0) {
+      if (uploadOptions) uploadOptions.style.display = "block";
+      if (uploadActions) uploadActions.style.display = "block";
+    } else {
+      if (uploadOptions) uploadOptions.style.display = "none";
+      if (uploadActions) uploadActions.style.display = "none";
+    }
+  }
+
+  function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updateFileList();
+    showUploadOptions();
+
+    if (selectedFiles.length === 0) {
+      clearSelectedFiles();
+    }
+  }
+
+  function clearSelectedFiles() {
+    selectedFiles = [];
+    updateFileList();
+    showUploadOptions();
+
+    // Resetar input
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  }
+
+  async function startUpload() {
+    if (selectedFiles.length === 0) {
+      if (window.renderAlert) {
+        window.renderAlert(
+          "Selecione pelo menos um arquivo para upload",
+          "warning"
+        );
+      }
+      return;
+    }
+
+    // Mostrar progresso
+    const uploadProgress = document.getElementById("uploadProgress");
+    const uploadBtn = document.getElementById("uploadBtn");
+
+    if (uploadProgress) uploadProgress.style.display = "block";
+    if (uploadBtn) uploadBtn.disabled = true;
+
+    // Simular upload
+    await simulateUpload();
+
+    // Resetar após upload
+    setTimeout(() => {
+      if (uploadProgress) uploadProgress.style.display = "none";
+      if (uploadBtn) uploadBtn.disabled = false;
+
+      clearSelectedFiles();
+
+      if (window.renderAlert) {
+        window.renderAlert("Upload concluído com sucesso!", "success");
+      }
+
+      // Recarregar uploads recentes
+      loadRecentUploads();
+    }, 1000);
+  }
+
+  async function simulateUpload() {
+    const totalFiles = selectedFiles.length;
+    const progressBar = document.querySelector(".progress-bar");
+    const progressText = document.querySelector(".upload-progress-percentage");
+    const uploadedCount = document.getElementById("uploadedCount");
+    const totalCount = document.getElementById("totalCount");
+
+    if (totalCount) totalCount.textContent = totalFiles;
+
+    for (let i = 0; i < totalFiles; i++) {
+      // Simular tempo de upload
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const progress = ((i + 1) / totalFiles) * 100;
+
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
+        progressBar.setAttribute("aria-valuenow", progress);
+      }
+
+      if (progressText) {
+        progressText.textContent = `${Math.round(progress)}%`;
+      }
+
+      if (uploadedCount) {
+        uploadedCount.textContent = i + 1;
+      }
+    }
+  }
+
+  function loadRecentUploads() {
+    const recentUploads = document.getElementById("recentUploads");
+
+    if (!recentUploads) return;
+
+    // Simular dados de uploads recentes
+    const mockUploads = [
+      {
+        name: "video_exemplo.mp4",
+        type: "video/mp4",
+        size: 15728640,
+        date: new Date(Date.now() - 3600000),
+      },
+      {
+        name: "foto_paisagem.jpg",
+        type: "image/jpeg",
+        size: 2097152,
+        date: new Date(Date.now() - 7200000),
+      },
+      {
+        name: "musica_favorita.mp3",
+        type: "audio/mpeg",
+        size: 5242880,
+        date: new Date(Date.now() - 10800000),
+      },
+    ];
+
+    recentUploads.innerHTML = mockUploads
+      .map((upload) => {
+        const fileSize = formatBytes(upload.size);
+        const fileIcon = getFileIcon(upload.type);
+        const uploadDate = formatDate(upload.date, "dd/MM/yyyy HH:mm");
+
+        return `
+            <div class="recent-upload-item glass-card p-3 mb-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="bi ${fileIcon} text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="col">
+                        <div class="file-name fw-semibold">${upload.name}</div>
+                        <div class="file-details text-muted">
+                            <small>${fileSize} • ${uploadDate}</small>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary btn-sm" title="Visualizar">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" title="Compartilhar">
+                                <i class="bi bi-share"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+      })
+      .join("");
+  }
+
+  function getFileIcon(mimeType) {
+    if (mimeType.startsWith("image/")) {
+      return "bi-image";
+    } else if (mimeType.startsWith("video/")) {
+      return "bi-play-circle";
+    } else if (mimeType.startsWith("audio/")) {
+      return "bi-music-note";
+    }
+    return "bi-file-earmark";
+  }
+
+  function formatBytes(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
+  function formatDate(date, format) {
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const year = d.getFullYear();
+    const hours = d.getHours().toString().padStart(2, "0");
+    const minutes = d.getMinutes().toString().padStart(2, "0");
+
+    return format
+      .replace("dd", day)
+      .replace("MM", month)
+      .replace("yyyy", year)
+      .replace("HH", hours)
+      .replace("mm", minutes);
+  }
+</script>
+
+<style>
+  .upload-dropzone {
+    border: 2px dashed var(--light-gray);
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .upload-dropzone:hover,
+  .upload-dropzone.dragover {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.05);
+  }
+
+  .upload-dropzone-content {
+    max-width: 400px;
+  }
+
+  .upload-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .upload-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-subtitle {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+  }
+
+  .file-item {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .file-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .recent-upload-item {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .recent-upload-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .upload-progress {
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+  }
+
+  .progress {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(99, 102, 241, 0.1);
+  }
+
+  .progress-bar {
+    background: linear-gradient(
+      45deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    border-radius: 4px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .upload-dropzone {
+      padding: 2rem 1rem;
+      min-height: 200px;
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+    }
+
+    .upload-title {
+      font-size: 1.2rem;
+    }
+
+    .file-item .row,
+    .recent-upload-item .row {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .file-item .col-auto,
+    .recent-upload-item .col-auto {
+      margin-bottom: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,665 @@
+<!-- Modal de Alerta Universal -->
+<div
+  class="modal fade"
+  id="alertModal"
+  tabindex="-1"
+  aria-labelledby="alertModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card">
+      <div class="modal-header border-0">
+        <div class="modal-icon me-3" id="alertIcon">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <h5 class="modal-title" id="alertModalLabel">Informação</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Fechar"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p id="alertMessage" class="mb-0">Mensagem de alerta</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="alertConfirmBtn"
+          data-bs-dismiss="modal"
+        >
+          OK
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary d-none"
+          id="alertCancelBtn"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div
+  class="modal fade"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card">
+      <div class="modal-header border-0">
+        <div class="modal-icon me-3 text-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Fechar"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage" class="mb-0">
+          Tem certeza que deseja realizar esta ação?
+        </p>
+      </div>
+      <div class="modal-footer border-0">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="confirmBtn">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Loading -->
+<div
+  class="modal fade"
+  id="loadingModal"
+  tabindex="-1"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content glass-card">
+      <div class="modal-body text-center py-4">
+        <div class="loading-spinner mb-3">
+          <div
+            class="spinner-border text-primary"
+            role="status"
+            style="width: 3rem; height: 3rem"
+          >
+            <span class="visually-hidden">Carregando...</span>
+          </div>
+        </div>
+        <h6 id="loadingMessage" class="text-muted mb-0">Carregando...</h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div
+  class="toast-container position-fixed top-0 end-0 p-3"
+  id="toastContainer"
+  style="z-index: 11"
+>
+  <!-- Toasts serão inseridos aqui dinamicamente -->
+</div>
+
+<style>
+  /* Modal customizado */
+  .modal-content {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
+  }
+
+  .modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+    align-items: center;
+  }
+
+  .modal-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .modal-icon.text-primary {
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    color: var(--bs-primary);
+  }
+
+  .modal-icon.text-success {
+    background: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--bs-success);
+  }
+
+  .modal-icon.text-warning {
+    background: rgba(var(--bs-warning-rgb), 0.1);
+    color: var(--bs-warning);
+  }
+
+  .modal-icon.text-danger {
+    background: rgba(var(--bs-danger-rgb), 0.1);
+    color: var(--bs-danger);
+  }
+
+  .modal-icon.text-info {
+    background: rgba(var(--bs-info-rgb), 0.1);
+    color: var(--bs-info);
+  }
+
+  .modal-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .modal-body {
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem 1.5rem;
+    gap: 0.5rem;
+  }
+
+  .modal-footer .btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+  }
+
+  /* Loading Modal */
+  .loading-spinner {
+    position: relative;
+  }
+
+  .loading-spinner::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4rem;
+    height: 4rem;
+    margin: -2rem 0 0 -2rem;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: rgba(var(--bs-primary-rgb), 0.3);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.6;
+    }
+  }
+
+  /* Toast customizado */
+  .toast {
+    --bs-toast-bg: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.1);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+  }
+
+  .toast-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(var(--bs-primary-rgb), 0.1);
+    padding: 0.75rem 1rem;
+  }
+
+  .toast-body {
+    padding: 0.75rem 1rem;
+  }
+
+  .toast-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+  }
+
+  .toast-icon.bg-primary {
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    color: var(--bs-primary);
+  }
+
+  .toast-icon.bg-success {
+    background: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--bs-success);
+  }
+
+  .toast-icon.bg-warning {
+    background: rgba(var(--bs-warning-rgb), 0.1);
+    color: var(--bs-warning);
+  }
+
+  .toast-icon.bg-danger {
+    background: rgba(var(--bs-danger-rgb), 0.1);
+    color: var(--bs-danger);
+  }
+
+  .toast-icon.bg-info {
+    background: rgba(var(--bs-info-rgb), 0.1);
+    color: var(--bs-info);
+  }
+
+  /* Animações */
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  .toast.show {
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  .toast.hide {
+    animation: slideOutRight 0.3s ease-in;
+  }
+
+  /* Responsividade */
+  @media (max-width: 576px) {
+    .modal-dialog {
+      margin: 1rem;
+    }
+
+    .modal-content {
+      border-radius: 0.75rem;
+    }
+
+    .modal-header {
+      padding: 1rem 1rem 0.75rem;
+    }
+
+    .modal-body {
+      padding: 0.75rem 1rem;
+    }
+
+    .modal-footer {
+      padding: 0.75rem 1rem 1rem;
+      flex-direction: column;
+    }
+
+    .modal-footer .btn {
+      width: 100%;
+    }
+
+    .toast {
+      min-width: 280px;
+      margin: 0 1rem;
+    }
+  }
+
+  /* Tema escuro */
+  @media (prefers-color-scheme: dark) {
+    .modal-content {
+      background: rgba(30, 30, 30, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-title {
+      color: #ffffff;
+    }
+
+    .modal-body p {
+      color: #b0b0b0;
+    }
+
+    .toast {
+      --bs-toast-bg: rgba(30, 30, 30, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .toast-header {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .toast-body {
+      color: #b0b0b0;
+    }
+  }
+</style>
+
+<script>
+  // Gerenciador de Modais e Alertas
+  class AlertManager {
+    constructor() {
+      this.toastCounter = 0;
+      this.confirmCallback = null;
+      this.init();
+    }
+
+    init() {
+      // Garantir que os modais existam
+      this.ensureModalsExist();
+
+      // Configurar eventos
+      this.setupEvents();
+    }
+
+    ensureModalsExist() {
+      if (!document.getElementById("alertModal")) {
+        document.body.insertAdjacentHTML("beforeend", this.getModalHTML());
+      }
+    }
+
+    setupEvents() {
+      // Configurar botão de confirmação
+      const confirmBtn = document.getElementById("confirmBtn");
+      if (confirmBtn) {
+        confirmBtn.addEventListener("click", () => {
+          if (this.confirmCallback) {
+            this.confirmCallback();
+            this.confirmCallback = null;
+          }
+          this.hideConfirm();
+        });
+      }
+    }
+
+    // Mostrar alerta simples
+    showAlert(message, type = "info", title = null) {
+      const modal = document.getElementById("alertModal");
+      const titleElement = document.getElementById("alertModalLabel");
+      const messageElement = document.getElementById("alertMessage");
+      const iconElement = document.getElementById("alertIcon");
+      const confirmBtn = document.getElementById("alertConfirmBtn");
+      const cancelBtn = document.getElementById("alertCancelBtn");
+
+      // Configurar título
+      if (title) {
+        titleElement.textContent = title;
+      } else {
+        titleElement.textContent = this.getDefaultTitle(type);
+      }
+
+      // Configurar mensagem
+      messageElement.textContent = message;
+
+      // Configurar ícone
+      iconElement.className = `modal-icon me-3 text-${type}`;
+      iconElement.innerHTML = `<i class="fas ${this.getIcon(type)}"></i>`;
+
+      // Configurar botões
+      confirmBtn.className = `btn btn-${type}`;
+      cancelBtn.classList.add("d-none");
+
+      // Mostrar modal
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+
+      return bootstrapModal;
+    }
+
+    // Mostrar confirmação
+    showConfirm(message, callback, title = "Confirmação") {
+      const modal = document.getElementById("confirmModal");
+      const titleElement = document.getElementById("confirmModalLabel");
+      const messageElement = document.getElementById("confirmMessage");
+
+      titleElement.textContent = title;
+      messageElement.textContent = message;
+
+      this.confirmCallback = callback;
+
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+
+      return bootstrapModal;
+    }
+
+    // Mostrar loading
+    showLoading(message = "Carregando...") {
+      const modal = document.getElementById("loadingModal");
+      const messageElement = document.getElementById("loadingMessage");
+
+      messageElement.textContent = message;
+
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+
+      return bootstrapModal;
+    }
+
+    // Ocultar loading
+    hideLoading() {
+      const modal = document.getElementById("loadingModal");
+      const bootstrapModal = bootstrap.Modal.getInstance(modal);
+      if (bootstrapModal) {
+        bootstrapModal.hide();
+      }
+    }
+
+    // Ocultar confirmação
+    hideConfirm() {
+      const modal = document.getElementById("confirmModal");
+      const bootstrapModal = bootstrap.Modal.getInstance(modal);
+      if (bootstrapModal) {
+        bootstrapModal.hide();
+      }
+    }
+
+    // Mostrar toast
+    showToast(message, type = "info", title = null, duration = 5000) {
+      const toastContainer = document.getElementById("toastContainer");
+      const toastId = `toast-${++this.toastCounter}`;
+
+      const toastHTML = `
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="${toastId}">
+                <div class="toast-header">
+                    <div class="toast-icon bg-${type}">
+                        <i class="fas ${this.getIcon(type)}"></i>
+                    </div>
+                    <strong class="me-auto">${
+                      title || this.getDefaultTitle(type)
+                    }</strong>
+                    <small class="text-muted">${this.getTimeString()}</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            </div>
+        `;
+
+      toastContainer.insertAdjacentHTML("beforeend", toastHTML);
+
+      const toastElement = document.getElementById(toastId);
+      const toast = new bootstrap.Toast(toastElement, {
+        autohide: duration > 0,
+        delay: duration,
+      });
+
+      toast.show();
+
+      // Remover toast após ser ocultado
+      toastElement.addEventListener("hidden.bs.toast", () => {
+        toastElement.remove();
+      });
+
+      return toast;
+    }
+
+    // Métodos utilitários
+    getDefaultTitle(type) {
+      const titles = {
+        success: "Sucesso",
+        danger: "Erro",
+        warning: "Atenção",
+        info: "Informação",
+        primary: "Informação",
+      };
+      return titles[type] || "Informação";
+    }
+
+    getIcon(type) {
+      const icons = {
+        success: "fa-check-circle",
+        danger: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle",
+        primary: "fa-info-circle",
+      };
+      return icons[type] || "fa-info-circle";
+    }
+
+    getTimeString() {
+      const now = new Date();
+      return now.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    getModalHTML() {
+      return `
+            <!-- Modal de Alerta Universal -->
+            <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass-card">
+                        <div class="modal-header border-0">
+                            <div class="modal-icon me-3" id="alertIcon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <h5 class="modal-title" id="alertModalLabel">Informação</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="alertMessage" class="mb-0">Mensagem de alerta</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-primary" id="alertConfirmBtn" data-bs-dismiss="modal">OK</button>
+                            <button type="button" class="btn btn-outline-secondary d-none" id="alertCancelBtn" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal de Confirmação -->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass-card">
+                        <div class="modal-header border-0">
+                            <div class="modal-icon me-3 text-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="confirmMessage" class="mb-0">Tem certeza que deseja realizar esta ação?</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="confirmBtn">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal de Loading -->
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content glass-card">
+                        <div class="modal-body text-center py-4">
+                            <div class="loading-spinner mb-3">
+                                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                            </div>
+                            <h6 id="loadingMessage" class="text-muted mb-0">Carregando...</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Toast Container -->
+            <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" style="z-index: 11;">
+                <!-- Toasts serão inseridos aqui dinamicamente -->
+            </div>
+        `;
+    }
+  }
+
+  // Inicializar gerenciador global
+  document.addEventListener("DOMContentLoaded", function () {
+    window.AlertManager = new AlertManager();
+
+    // Criar funções globais de conveniência
+    window.showAlert = (message, type, title) =>
+      window.AlertManager.showAlert(message, type, title);
+    window.showConfirm = (message, callback, title) =>
+      window.AlertManager.showConfirm(message, callback, title);
+    window.showLoading = (message) => window.AlertManager.showLoading(message);
+    window.hideLoading = () => window.AlertManager.hideLoading();
+    window.showToast = (message, type, title, duration) =>
+      window.AlertManager.showToast(message, type, title, duration);
+
+    // Compatibilidade com renderAlert existente
+    window.renderAlert = (message, type) => {
+      if (type === "error") type = "danger";
+      return window.AlertManager.showToast(message, type, null, 5000);
+    };
+  });
+
+  // Exportar para uso em módulos
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = AlertManager;
+  }
+</script>

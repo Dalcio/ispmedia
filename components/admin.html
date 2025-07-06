@@ -1,0 +1,910 @@
+<div class="admin-page fade-in">
+  <div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="admin-header">
+          <h1 class="page-title text-gradient">
+            <i class="bi bi-gear-fill me-3"></i>
+            Painel Administrativo
+          </h1>
+          <p class="page-subtitle text-muted">
+            Gerencie usuários, conteúdo e configurações da plataforma
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card glass-card p-4">
+          <div class="stat-icon">
+            <i class="bi bi-people-fill text-primary"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-number">1,234</h3>
+            <p class="stat-label">Usuários Ativos</p>
+            <span class="stat-change text-success">
+              <i class="bi bi-arrow-up"></i> +12% este mês
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card glass-card p-4">
+          <div class="stat-icon">
+            <i class="bi bi-file-earmark-fill text-info"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-number">45,678</h3>
+            <p class="stat-label">Arquivos Totais</p>
+            <span class="stat-change text-success">
+              <i class="bi bi-arrow-up"></i> +8% este mês
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card glass-card p-4">
+          <div class="stat-icon">
+            <i class="bi bi-hdd-fill text-warning"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-number">2.4TB</h3>
+            <p class="stat-label">Armazenamento</p>
+            <span class="stat-change text-warning">
+              <i class="bi bi-arrow-up"></i> 85% usado
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card glass-card p-4">
+          <div class="stat-icon">
+            <i class="bi bi-download text-success"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-number">89,012</h3>
+            <p class="stat-label">Downloads</p>
+            <span class="stat-change text-success">
+              <i class="bi bi-arrow-up"></i> +15% este mês
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <ul class="nav nav-tabs admin-tabs" id="adminTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="users-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#users"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-people me-2"></i>
+              Usuários
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="content-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#content"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-collection me-2"></i>
+              Conteúdo
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="reports-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#reports"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-graph-up me-2"></i>
+              Relatórios
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="settings-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#settings"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-gear me-2"></i>
+              Configurações
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="adminTabsContent">
+      <!-- Users Tab -->
+      <div class="tab-pane fade show active" id="users" role="tabpanel">
+        <div class="admin-section glass-card p-4">
+          <div
+            class="section-header d-flex justify-content-between align-items-center mb-4"
+          >
+            <h4>Gerenciamento de Usuários</h4>
+            <div class="section-actions">
+              <button type="button" class="btn btn-outline-primary me-2">
+                <i class="bi bi-download me-1"></i>
+                Exportar
+              </button>
+              <button type="button" class="btn btn-primary">
+                <i class="bi bi-person-plus me-1"></i>
+                Novo Usuário
+              </button>
+            </div>
+          </div>
+
+          <!-- Users Table -->
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Papel</th>
+                  <th>Status</th>
+                  <th>Último Login</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <!-- Users will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Tab -->
+      <div class="tab-pane fade" id="content" role="tabpanel">
+        <div class="admin-section glass-card p-4">
+          <div
+            class="section-header d-flex justify-content-between align-items-center mb-4"
+          >
+            <h4>Gerenciamento de Conteúdo</h4>
+            <div class="section-actions">
+              <button type="button" class="btn btn-outline-danger me-2">
+                <i class="bi bi-trash me-1"></i>
+                Limpeza
+              </button>
+              <button type="button" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>
+                Novo Conteúdo
+              </button>
+            </div>
+          </div>
+
+          <!-- Content Stats -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="content-stat">
+                <div class="stat-icon">
+                  <i class="bi bi-image text-primary"></i>
+                </div>
+                <div class="stat-info">
+                  <h5>12,345</h5>
+                  <p>Imagens</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="content-stat">
+                <div class="stat-icon">
+                  <i class="bi bi-play-circle text-success"></i>
+                </div>
+                <div class="stat-info">
+                  <h5>3,456</h5>
+                  <p>Vídeos</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="content-stat">
+                <div class="stat-icon">
+                  <i class="bi bi-music-note text-info"></i>
+                </div>
+                <div class="stat-info">
+                  <h5>8,901</h5>
+                  <p>Áudios</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="content-stat">
+                <div class="stat-icon">
+                  <i class="bi bi-file-earmark text-warning"></i>
+                </div>
+                <div class="stat-info">
+                  <h5>2,567</h5>
+                  <p>Documentos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Content -->
+          <div class="recent-content">
+            <h5 class="mb-3">Conteúdo Recente</h5>
+            <div class="content-list" id="recentContentList">
+              <!-- Recent content will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports Tab -->
+      <div class="tab-pane fade" id="reports" role="tabpanel">
+        <div class="admin-section glass-card p-4">
+          <div class="section-header mb-4">
+            <h4>Relatórios e Analytics</h4>
+          </div>
+
+          <!-- Charts -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="chart-container">
+                <h6>Uploads por Mês</h6>
+                <div class="chart-placeholder">
+                  <canvas id="uploadsChart" width="400" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="chart-container">
+                <h6>Tipos de Arquivo</h6>
+                <div class="chart-placeholder">
+                  <canvas id="fileTypesChart" width="400" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reports List -->
+          <div class="reports-list">
+            <h5 class="mb-3">Relatórios Disponíveis</h5>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="report-card p-3 border rounded">
+                  <h6>Relatório de Usuários</h6>
+                  <p class="text-muted">Estatísticas detalhadas de usuários</p>
+                  <button class="btn btn-sm btn-outline-primary">Gerar</button>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="report-card p-3 border rounded">
+                  <h6>Relatório de Armazenamento</h6>
+                  <p class="text-muted">Uso de espaço por categoria</p>
+                  <button class="btn btn-sm btn-outline-primary">Gerar</button>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="report-card p-3 border rounded">
+                  <h6>Relatório de Atividade</h6>
+                  <p class="text-muted">Logs de atividade dos usuários</p>
+                  <button class="btn btn-sm btn-outline-primary">Gerar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div class="tab-pane fade" id="settings" role="tabpanel">
+        <div class="admin-section glass-card p-4">
+          <div class="section-header mb-4">
+            <h4>Configurações do Sistema</h4>
+          </div>
+
+          <form id="settingsForm">
+            <div class="settings-group mb-4">
+              <h6>Configurações Gerais</h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="siteName" class="form-label"
+                      >Nome do Site</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="siteName"
+                      value="ISPMedia"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="siteDescription" class="form-label"
+                      >Descrição</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="siteDescription"
+                      value="Plataforma de Mídia Premium"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-group mb-4">
+              <h6>Configurações de Upload</h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="maxFileSize" class="form-label"
+                      >Tamanho máximo (MB)</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="maxFileSize"
+                      value="100"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="allowedTypes" class="form-label"
+                      >Tipos permitidos</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="allowedTypes"
+                      value="image/*, video/*, audio/*"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-group mb-4">
+              <h6>Configurações de Segurança</h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="requireEmailVerification"
+                      checked
+                    />
+                    <label
+                      class="form-check-label"
+                      for="requireEmailVerification"
+                    >
+                      Verificação de email obrigatória
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="enableTwoFactor"
+                    />
+                    <label class="form-check-label" for="enableTwoFactor">
+                      Autenticação de dois fatores
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-2"></i>
+                Salvar Configurações
+              </button>
+              <button type="button" class="btn btn-outline-secondary ms-2">
+                <i class="bi bi-arrow-clockwise me-2"></i>
+                Resetar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Inicializar página de administração
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeAdminPage();
+  });
+
+  function initializeAdminPage() {
+    // Verificar se é admin
+    if (!window.Session || !window.Session.isAdmin()) {
+      if (window.renderAlert) {
+        window.renderAlert(
+          "Acesso negado. Você não tem permissões administrativas.",
+          "error"
+        );
+      }
+      if (window.Router) {
+        window.Router.navigateToRoute("home");
+      }
+      return;
+    }
+
+    // Carregar dados
+    loadUsersData();
+    loadRecentContent();
+    setupSettingsForm();
+
+    // Inicializar gráficos (simulados)
+    initializeCharts();
+
+    // Log da visita
+    if (window.logger) {
+      window.logger.userEvent("admin_page_visited");
+    }
+  }
+
+  function loadUsersData() {
+    const usersTableBody = document.getElementById("usersTableBody");
+    if (!usersTableBody) return;
+
+    // Simular dados de usuários
+    const mockUsers = [
+      {
+        id: 1,
+        name: "João Silva",
+        email: "joao@email.com",
+        role: "user",
+        status: "active",
+        lastLogin: new Date(Date.now() - 3600000),
+      },
+      {
+        id: 2,
+        name: "Maria Santos",
+        email: "maria@email.com",
+        role: "user",
+        status: "active",
+        lastLogin: new Date(Date.now() - 7200000),
+      },
+      {
+        id: 3,
+        name: "Pedro Admin",
+        email: "admin@ispmedia.com",
+        role: "admin",
+        status: "active",
+        lastLogin: new Date(Date.now() - 1800000),
+      },
+    ];
+
+    usersTableBody.innerHTML = mockUsers
+      .map(
+        (user) => `
+        <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>
+                <span class="badge ${
+                  user.role === "admin" ? "bg-primary" : "bg-secondary"
+                }">
+                    ${user.role === "admin" ? "Admin" : "Usuário"}
+                </span>
+            </td>
+            <td>
+                <span class="badge ${
+                  user.status === "active" ? "bg-success" : "bg-danger"
+                }">
+                    ${user.status === "active" ? "Ativo" : "Inativo"}
+                </span>
+            </td>
+            <td>${formatDateTime(user.lastLogin)}</td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editUser(${
+                      user.id
+                    })">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${
+                      user.id
+                    })">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `
+      )
+      .join("");
+  }
+
+  function loadRecentContent() {
+    const recentContentList = document.getElementById("recentContentList");
+    if (!recentContentList) return;
+
+    // Simular conteúdo recente
+    const mockContent = [
+      {
+        id: 1,
+        name: "vacation_video.mp4",
+        type: "video",
+        size: 15728640,
+        uploader: "João Silva",
+        uploadDate: new Date(Date.now() - 3600000),
+      },
+      {
+        id: 2,
+        name: "profile_photo.jpg",
+        type: "image",
+        size: 2097152,
+        uploader: "Maria Santos",
+        uploadDate: new Date(Date.now() - 7200000),
+      },
+      {
+        id: 3,
+        name: "podcast_episode.mp3",
+        type: "audio",
+        size: 8388608,
+        uploader: "Pedro Admin",
+        uploadDate: new Date(Date.now() - 10800000),
+      },
+    ];
+
+    recentContentList.innerHTML = mockContent
+      .map(
+        (content) => `
+        <div class="content-item d-flex align-items-center p-3 border rounded mb-2">
+            <div class="content-icon me-3">
+                <i class="bi ${getContentIcon(content.type)} text-primary"></i>
+            </div>
+            <div class="content-info flex-grow-1">
+                <h6 class="mb-1">${content.name}</h6>
+                <p class="text-muted mb-0">
+                    ${formatBytes(content.size)} • ${
+          content.uploader
+        } • ${formatDateTime(content.uploadDate)}
+                </p>
+            </div>
+            <div class="content-actions">
+                <button class="btn btn-sm btn-outline-primary me-1" onclick="viewContent(${
+                  content.id
+                })">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteContent(${
+                  content.id
+                })">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+    `
+      )
+      .join("");
+  }
+
+  function setupSettingsForm() {
+    const settingsForm = document.getElementById("settingsForm");
+    if (settingsForm) {
+      settingsForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        saveSettings();
+      });
+    }
+  }
+
+  function initializeCharts() {
+    // Simular gráficos (em produção, usar Chart.js ou similar)
+    const uploadsChart = document.getElementById("uploadsChart");
+    const fileTypesChart = document.getElementById("fileTypesChart");
+
+    if (uploadsChart) {
+      const ctx = uploadsChart.getContext("2d");
+      ctx.fillStyle = "#6366f1";
+      ctx.fillRect(0, 0, 400, 200);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "16px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("Gráfico de Uploads", 200, 100);
+      ctx.fillText("(Implementar Chart.js)", 200, 120);
+    }
+
+    if (fileTypesChart) {
+      const ctx = fileTypesChart.getContext("2d");
+      ctx.fillStyle = "#8b5cf6";
+      ctx.fillRect(0, 0, 400, 200);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "16px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("Tipos de Arquivo", 200, 100);
+      ctx.fillText("(Implementar Chart.js)", 200, 120);
+    }
+  }
+
+  function editUser(userId) {
+    if (window.renderAlert) {
+      window.renderAlert("Edição de usuário em desenvolvimento", "info");
+    }
+  }
+
+  function deleteUser(userId) {
+    if (confirm("Tem certeza que deseja excluir este usuário?")) {
+      if (window.renderAlert) {
+        window.renderAlert("Usuário excluído com sucesso!", "success");
+      }
+      loadUsersData(); // Recarregar dados
+    }
+  }
+
+  function viewContent(contentId) {
+    if (window.renderAlert) {
+      window.renderAlert("Visualização de conteúdo em desenvolvimento", "info");
+    }
+  }
+
+  function deleteContent(contentId) {
+    if (confirm("Tem certeza que deseja excluir este conteúdo?")) {
+      if (window.renderAlert) {
+        window.renderAlert("Conteúdo excluído com sucesso!", "success");
+      }
+      loadRecentContent(); // Recarregar dados
+    }
+  }
+
+  function saveSettings() {
+    // Simular salvamento de configurações
+    setTimeout(() => {
+      if (window.renderAlert) {
+        window.renderAlert("Configurações salvas com sucesso!", "success");
+      }
+    }, 500);
+  }
+
+  function getContentIcon(type) {
+    const icons = {
+      image: "bi-image",
+      video: "bi-play-circle",
+      audio: "bi-music-note",
+    };
+    return icons[type] || "bi-file-earmark";
+  }
+
+  function formatBytes(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
+  function formatDateTime(date) {
+    return (
+      new Date(date).toLocaleDateString("pt-BR") +
+      " " +
+      new Date(date).toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  }
+</script>
+
+<style>
+  .admin-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+  }
+
+  .stat-info h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--dark-gray);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-change {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .admin-tabs {
+    border-bottom: 2px solid var(--light-gray);
+  }
+
+  .admin-tabs .nav-link {
+    border: none;
+    padding: 1rem 1.5rem;
+    color: var(--gray);
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .admin-tabs .nav-link:hover {
+    color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.05);
+  }
+
+  .admin-tabs .nav-link.active {
+    color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom: 2px solid var(--primary-color);
+  }
+
+  .admin-section {
+    border-radius: 16px;
+    min-height: 400px;
+  }
+
+  .section-header {
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 1rem;
+  }
+
+  .content-stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .content-stat .stat-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+  }
+
+  .content-stat h5 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .content-stat p {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0;
+  }
+
+  .content-item {
+    transition: all 0.3s ease;
+  }
+
+  .content-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .content-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.1);
+  }
+
+  .chart-container {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .chart-placeholder {
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .report-card {
+    transition: all 0.3s ease;
+  }
+
+  .report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .settings-group {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .settings-group h6 {
+    color: var(--dark-gray);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  @media (max-width: 768px) {
+    .stat-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .admin-tabs .nav-link {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .section-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .content-item {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .content-actions {
+      margin-top: 1rem;
+    }
+  }
+</style>

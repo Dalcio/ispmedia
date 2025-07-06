@@ -1,0 +1,284 @@
+<nav class="navbar navbar-expand-lg glass-navbar">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand" href="#" data-page="home">
+      <svg class="icon icon-lg me-2">
+        <use xlink:href="#icon-play"></use>
+      </svg>
+      ISPMedia
+    </a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <svg class="icon">
+        <use xlink:href="#icon-menu"></use>
+      </svg>
+    </button>
+
+    <!-- Navigation items -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-page="home">
+            <svg class="icon icon-sm me-2">
+              <use xlink:href="#icon-home"></use>
+            </svg>
+            Início
+          </a>
+        </li>
+        <li class="nav-item" data-role="user,admin">
+          <a class="nav-link" href="#" data-page="upload">
+            <svg class="icon icon-sm me-2">
+              <use xlink:href="#icon-upload"></use>
+            </svg>
+            Upload
+          </a>
+        </li>
+        <li class="nav-item" data-role="user,admin">
+          <a class="nav-link" href="#" data-page="playlist">
+            <svg class="icon icon-sm me-2">
+              <use xlink:href="#icon-playlist"></use>
+            </svg>
+            Playlists
+          </a>
+        </li>
+        <li class="nav-item" data-role="admin">
+          <a class="nav-link" href="#" data-page="admin">
+            <svg class="icon icon-sm me-2">
+              <use xlink:href="#icon-admin"></use>
+            </svg>
+            Admin
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right side items -->
+      <ul class="navbar-nav">
+        <!-- Search -->
+        <li class="nav-item">
+          <button
+            class="nav-link btn btn-link"
+            data-action="search"
+            title="Buscar (Ctrl+K)"
+          >
+            <svg class="icon icon-sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </button>
+        </li>
+        <!-- Theme toggle -->
+        <li class="nav-item">
+          <button
+            class="nav-link btn btn-link"
+            data-action="toggle-theme"
+            title="Alternar tema"
+          >
+            <svg class="icon icon-sm">
+              <use xlink:href="#icon-moon"></use>
+            </svg>
+          </button>
+        </li>
+
+        <!-- User menu -->
+        <li class="nav-item dropdown" data-role="user,admin">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <svg class="icon icon-sm me-2">
+              <use xlink:href="#icon-user"></use>
+            </svg>
+            <span id="user-name">Usuário</span>
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end glass"
+            aria-labelledby="userDropdown"
+          >
+            <li>
+              <a class="dropdown-item" href="#" data-page="profile">
+                <svg class="icon icon-sm me-2">
+                  <use xlink:href="#icon-user"></use>
+                </svg>
+                Perfil
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-page="settings">
+                <svg class="icon icon-sm me-2">
+                  <use xlink:href="#icon-settings"></use>
+                </svg>
+                Configurações
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="#" data-action="logout">
+                <svg class="icon icon-sm me-2">
+                  <use xlink:href="#icon-logout"></use>
+                </svg>
+                Sair
+              </a>
+            </li>
+          </ul>
+        </li>
+        <!-- Login button -->
+        <li class="nav-item" data-role="guest">
+          <a
+            class="nav-link btn btn-outline-primary"
+            href="#"
+            data-page="login"
+            data-action="login"
+          >
+            <svg class="icon icon-sm me-2">
+              <use xlink:href="#icon-login"></use>
+            </svg>
+            Entrar
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Inicializar navbar após carregamento
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeNavbar();
+    updateUserDisplay();
+  });
+
+  function initializeNavbar() {
+    // Adicionar eventos aos links de navegação
+    document.querySelectorAll("[data-page]").forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const page = this.getAttribute("data-page");
+        if (page && window.Router) {
+          window.Router.navigateToRoute(page);
+        }
+      });
+    });
+
+    // Adicionar eventos às ações
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        const action = this.getAttribute("data-action");
+        handleNavbarAction(action);
+      });
+    });
+
+    // Atualizar menu baseado no usuário
+    updateMenuVisibility();
+  }
+
+  function handleNavbarAction(action) {
+    switch (action) {
+      case "search":
+        openSearchModal();
+        break;
+      case "toggle-theme":
+        toggleTheme();
+        break;
+      case "logout":
+        if (window.Session) {
+          window.Session.logout();
+        }
+        break;
+      case "login":
+        if (window.Router) {
+          window.Router.navigateToRoute("login");
+        }
+        break;
+    }
+  }
+
+  function updateMenuVisibility() {
+    const user = window.Session ? window.Session.getUser() : null;
+    const userRole = user ? user.role : "guest";
+
+    // Mostrar/ocultar itens baseado no papel
+    document.querySelectorAll("[data-role]").forEach((item) => {
+      const requiredRoles = item.getAttribute("data-role").split(",");
+      const hasRole =
+        requiredRoles.includes(userRole) || requiredRoles.includes("any");
+      item.style.display = hasRole ? "" : "none";
+    });
+  }
+
+  function updateUserDisplay() {
+    const user = window.Session ? window.Session.getUser() : null;
+    const userNameElement = document.getElementById("user-name");
+
+    if (user && userNameElement) {
+      userNameElement.textContent = user.name || user.email;
+    }
+  }
+
+  function openSearchModal() {
+    // Implementar modal de busca
+    if (window.renderAlert) {
+      window.renderAlert("Busca em desenvolvimento", "info");
+    }
+  }
+
+  function toggleTheme() {
+    const currentTheme =
+      document.documentElement.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+
+    document.documentElement.setAttribute("data-theme", newTheme);
+    document.body.classList.toggle("theme-light", newTheme === "light");
+    document.body.classList.toggle("theme-dark", newTheme === "dark");
+
+    // Atualizar ícone
+    const themeIcon = document.querySelector('[data-action="toggle-theme"] i');
+    if (themeIcon) {
+      themeIcon.className =
+        newTheme === "light" ? "bi bi-moon-stars-fill" : "bi bi-sun-fill";
+    }
+
+    // Salvar preferência
+    try {
+      localStorage.setItem("ispmedia_theme", newTheme);
+    } catch (error) {
+      console.log("Failed to save theme preference");
+    }
+
+    if (window.logger) {
+      window.logger.userEvent("theme_changed", { theme: newTheme });
+    }
+  }
+
+  // Carregar tema salvo
+  try {
+    const savedTheme = localStorage.getItem("ispmedia_theme");
+    if (savedTheme) {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      document.body.classList.toggle("theme-light", savedTheme === "light");
+      document.body.classList.toggle("theme-dark", savedTheme === "dark");
+
+      const themeIcon = document.querySelector(
+        '[data-action="toggle-theme"] i'
+      );
+      if (themeIcon) {
+        themeIcon.className =
+          savedTheme === "light" ? "bi bi-moon-stars-fill" : "bi bi-sun-fill";
+      }
+    }
+  } catch (error) {
+    console.log("Failed to load theme preference");
+  }
+</script>
