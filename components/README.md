@@ -1,101 +1,126 @@
-# Componentes HTML
+# Components - ISPMedia
 
-Esta pasta contém todos os componentes HTML reutilizáveis da aplicação ISPMedia.
+Esta pasta contém todos os componentes HTML reutilizáveis do ISPMedia.
 
-## Estrutura dos Componentes
+## 📁 Estrutura
 
-### Componentes de Layout
-
-- **navbar.html** - Barra de navegação responsiva
-- **footer.html** - Rodapé informativo
-
-### Componentes de Página
-
-- **home.html** - Página inicial
-- **login.html** - Página de autenticação
-- **upload.html** - Interface de upload de arquivos
-- **playlist.html** - Gerenciamento de playlists
-- **detalhes.html** - Visualização de detalhes de conteúdo
-- **admin.html** - Painel administrativo
-
-### Componentes Reutilizáveis
-
-- **card.html** - Componente de card genérico
-- **form-login.html** - Formulário de login
-- **modal-alert.html** - Modal de alertas
-
-## Padrões de Desenvolvimento
-
-### Estrutura HTML
-
-- Todos os componentes devem ser fragmentos HTML válidos
-- Não incluir tags `<html>`, `<head>`, `<body>`
-- Usar classes Bootstrap 5 para estilização
-- Aplicar classes personalizadas quando necessário
-
-### Classes CSS
-
-- Usar classes utilitárias do Bootstrap
-- Aplicar classes `.glass` para efeitos de glassmorphism
-- Usar classes `.fade-in`, `.slide-in-left`, `.slide-in-right` para animações
-
-### Atributos Especiais
-
-- `data-page="pagina"` - Para navegação SPA
-- `data-action="acao"` - Para ações globais
-- `data-role="papel"` - Para controle de acesso
-- `data-form-type="tipo"` - Para identificação de formulários
-
-### Acessibilidade
-
-- Usar atributos ARIA apropriados
-- Incluir textos alternativos para imagens
-- Garantir contraste adequado
-- Suportar navegação por teclado
-
-## Exemplo de Componente
-
-```html
-<!-- Exemplo de componente básico -->
-<div class="component-container fade-in">
-  <div class="card glass-card">
-    <div class="card-header">
-      <h5 class="card-title">Título do Componente</h5>
-    </div>
-    <div class="card-body">
-      <p class="card-text">Conteúdo do componente...</p>
-    </div>
-  </div>
-</div>
+```
+components/
+├── README.md          # Este arquivo
+├── navbar.html        # Navegação superior
+├── footer.html        # Rodapé global
+└── modal-alert.html   # Modal de alertas
 ```
 
-## Carregamento de Componentes
+## 🧩 Componentes Disponíveis
+
+### **navbar.html**
+**Navegação Superior**
+- Glassmorphism design
+- Menu responsivo mobile
+- Controle de autenticação
+- Ícones SVG inline
+- Navegação SPA dinâmica
+
+**Funcionalidades:**
+- Menu hamburger mobile
+- Logout automático
+- Indicador de utilizador logado
+- Navegação por roles (Admin/User)
+
+### **footer.html**
+**Rodapé Global**
+- Links rápidos
+- Atalhos de teclado
+- Status da aplicação
+- Design minimalista
+
+**Funcionalidades:**
+- Links para páginas principais
+- Indicador de versão
+- Atalhos visuais
+- Responsividade completa
+
+### **modal-alert.html**
+**Modal de Alertas**
+- Alertas de sistema
+- Confirmações
+- Notificações
+- Mensagens de erro/sucesso
+
+**Funcionalidades:**
+- Auto-dismiss timer
+- Animações suaves
+- Tipos de alerta (info, success, warning, error)
+- Botões de ação personalizáveis
+
+## 🔧 Carregamento
 
 Os componentes são carregados dinamicamente via JavaScript:
 
 ```javascript
-// Carregar componente principal
-await loadComponent("components/home.html");
-
-// Carregar componente de UI
-await loadUIComponent("components/navbar.html", "#navbar-container");
+// Exemplo de carregamento
+await loadComponent('navbar', 'components/navbar.html');
+await loadComponent('footer', 'components/footer.html');
 ```
 
-## Testes
+## 🎨 Design System
 
-Para testar componentes:
+Todos os componentes seguem o design system do ISPMedia:
 
-1. Navegue até a página que usa o componente
-2. Verifique se o HTML é carregado corretamente
-3. Teste interações e funcionalidades
-4. Valide responsividade em diferentes tamanhos de tela
+- **Glassmorphism**: Transparência e blur
+- **Paleta Azul**: Tons de azul claro
+- **Tipografia**: Inter font family
+- **Espaçamento**: Sistema de grid 8px
+- **Responsividade**: Mobile-first
+- **Animações**: Transições suaves
 
-## Contribuição
+## 📱 Responsividade
 
-Ao criar novos componentes:
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
 
-1. Siga os padrões estabelecidos
-2. Documente funcionalidades especiais
-3. Teste em diferentes dispositivos
-4. Valide acessibilidade
-5. Otimize para performance
+Todos os componentes adaptam-se automaticamente ao tamanho da tela.
+
+## 🔍 Integração
+
+### **Navbar**
+- Integra com `session.js` para autenticação
+- Integra com `routes.js` para navegação
+- Controla visibilidade por role
+
+### **Footer**
+- Sempre visível
+- Links dinâmicos baseados em autenticação
+- Atalhos de teclado visuais
+
+### **Modal Alert**
+- Chamado via `renderAlert()` em `functions.js`
+- Tipos: `info`, `success`, `warning`, `error`
+- Auto-dismiss configurável
+
+## 🎯 Boas Práticas
+
+1. **Componentes Isolados**: Cada componente é independente
+2. **Styles Inline**: CSS está no style.css global
+3. **JavaScript Externo**: Lógica nos scripts principais
+4. **Acessibilidade**: ARIA labels e keyboard navigation
+5. **Performance**: Carregamento sob demanda
+
+## 🚀 Extensibilidade
+
+Para adicionar novos componentes:
+
+1. Criar arquivo HTML na pasta `components/`
+2. Adicionar estilos no `style.css`
+3. Registrar carregamento no `app.js`
+4. Documentar no README.md
+
+## 🔧 Debugging
+
+Para verificar componentes carregados:
+```javascript
+console.log('Navbar loaded:', document.querySelector('#navbar'));
+console.log('Footer loaded:', document.querySelector('#footer'));
+```

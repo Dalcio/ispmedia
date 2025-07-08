@@ -1,0 +1,813 @@
+<div class="files-header">
+    <div class="files-title">
+        <h1>Gestão de Ficheiros</h1>
+        <p>Organize e gerencie os seus ficheiros de forma eficiente</p>
+    </div>
+    <div class="files-actions">
+        <button class="btn btn-primary" onclick="Functions.loadModal('app/files/modal-upload.html', 'modal-upload')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7,10 12,15 17,10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Upload
+        </button>
+        <button class="btn btn-secondary" onclick="createNewFolder()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            Nova Pasta
+        </button>
+        <button class="btn btn-ghost" onclick="refreshFileList()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,4 23,10 17,10"/>
+                <polyline points="1,20 1,14 7,14"/>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27"/>
+                <path d="M3.51 15a9 9 0 0 0 14.85 4.36l-1.27-1.27"/>
+            </svg>
+            Atualizar
+        </button>
+    </div>
+</div>
+
+<div class="files-toolbar">
+    <div class="files-search">
+        <div class="search-container">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Pesquisar ficheiros..." class="search-input" onkeyup="searchFiles(this.value)">
+        </div>
+    </div>
+    
+    <div class="files-filters">
+        <select class="filter-select" onchange="filterFiles(this.value)">
+            <option value="">Todos os tipos</option>
+            <option value="image">Imagens</option>
+            <option value="video">Vídeos</option>
+            <option value="audio">Áudios</option>
+            <option value="document">Documentos</option>
+            <option value="other">Outros</option>
+        </select>
+        
+        <select class="filter-select" onchange="sortFiles(this.value)">
+            <option value="name">Nome</option>
+            <option value="date">Data</option>
+            <option value="size">Tamanho</option>
+            <option value="type">Tipo</option>
+        </select>
+        
+        <div class="view-toggle">
+            <button class="view-btn active" onclick="switchView('grid')" data-view="grid">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+            </button>
+            <button class="view-btn" onclick="switchView('list')" data-view="list">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="files-breadcrumb">
+    <nav class="breadcrumb">
+        <a href="#" class="breadcrumb-item" onclick="navigateToPath('/')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9,22 9,12 15,12 15,22"/>
+            </svg>
+            Início
+        </a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Todos os ficheiros</span>
+    </nav>
+</div>
+
+<div class="files-content">
+    <div class="files-grid" id="files-container">
+        <!-- Pastas -->
+        <div class="file-item folder" data-type="folder" data-name="Documentos">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">Documentos</div>
+                <div class="file-meta">12 ficheiros</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="file-item folder" data-type="folder" data-name="Imagens">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">Imagens</div>
+                <div class="file-meta">45 ficheiros</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="file-item folder" data-type="folder" data-name="Vídeos">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">Vídeos</div>
+                <div class="file-meta">8 ficheiros</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Ficheiros -->
+        <div class="file-item file" data-type="image" data-name="landscape.jpg">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21,15 16,10 5,21"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">landscape.jpg</div>
+                <div class="file-meta">2.4 MB • há 2 dias</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="file-item file" data-type="document" data-name="relatório.pdf">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">relatório.pdf</div>
+                <div class="file-meta">1.2 MB • há 1 semana</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="file-item file" data-type="video" data-name="apresentação.mp4">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="23,7 16,12 23,17"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">apresentação.mp4</div>
+                <div class="file-meta">45.8 MB • há 3 dias</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="file-item file" data-type="audio" data-name="música.mp3">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18V5l12-2v13"/>
+                    <circle cx="6" cy="18" r="3"/>
+                    <circle cx="18" cy="16" r="3"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">música.mp3</div>
+                <div class="file-meta">3.8 MB • há 5 dias</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="file-item file" data-type="document" data-name="notas.txt">
+            <div class="file-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+            </div>
+            <div class="file-info">
+                <div class="file-name">notas.txt</div>
+                <div class="file-meta">2.1 KB • há 1 dia</div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn" onclick="showFileMenu(this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Context Menu -->
+<div class="context-menu" id="context-menu">
+    <div class="context-menu-item" onclick="downloadFile()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7,10 12,15 17,10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Descarregar
+    </div>
+    <div class="context-menu-item" onclick="renameFile()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        Renomear
+    </div>
+    <div class="context-menu-item" onclick="copyFile()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copiar
+    </div>
+    <div class="context-menu-item" onclick="moveFile()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 17a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <path d="M21 7L3 7"/>
+            <path d="M10 12L14 8L10 4"/>
+        </svg>
+        Mover
+    </div>
+    <div class="context-menu-divider"></div>
+    <div class="context-menu-item danger" onclick="deleteFile()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3,6 5,6 21,6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Eliminar
+    </div>
+</div>
+
+<script>
+let currentView = 'grid';
+let currentFilter = '';
+let currentSort = 'name';
+let selectedFile = null;
+
+function switchView(view) {
+    currentView = view;
+    
+    // Atualiza botões
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-view="${view}"]`).classList.add('active');
+    
+    // Atualiza grid
+    const container = document.getElementById('files-container');
+    container.className = view === 'grid' ? 'files-grid' : 'files-list';
+    
+    Functions.renderAlert('success', `Vista alterada para ${view === 'grid' ? 'grade' : 'lista'}`);
+}
+
+function searchFiles(query) {
+    const files = document.querySelectorAll('.file-item');
+    
+    files.forEach(file => {
+        const name = file.getAttribute('data-name').toLowerCase();
+        const visible = name.includes(query.toLowerCase());
+        file.style.display = visible ? 'flex' : 'none';
+    });
+}
+
+function filterFiles(type) {
+    currentFilter = type;
+    const files = document.querySelectorAll('.file-item');
+    
+    files.forEach(file => {
+        const fileType = file.getAttribute('data-type');
+        const visible = !type || fileType === type;
+        file.style.display = visible ? 'flex' : 'none';
+    });
+}
+
+function sortFiles(criteria) {
+    currentSort = criteria;
+    // Implementar ordenação
+    Functions.renderAlert('info', `Ordenação por ${criteria} em desenvolvimento`);
+}
+
+function createNewFolder() {
+    const name = prompt('Nome da nova pasta:');
+    if (name) {
+        Functions.renderAlert('success', `Pasta "${name}" criada com sucesso!`);
+        // Aqui adicionaria a nova pasta ao DOM
+    }
+}
+
+function refreshFileList() {
+    Functions.showLoading();
+    
+    setTimeout(() => {
+        Functions.hideLoading();
+        Functions.renderAlert('success', 'Lista de ficheiros atualizada!');
+    }, 1000);
+}
+
+function showFileMenu(button) {
+    const menu = document.getElementById('context-menu');
+    const item = button.closest('.file-item');
+    selectedFile = item;
+    
+    // Posiciona menu
+    const rect = button.getBoundingClientRect();
+    menu.style.top = rect.bottom + 'px';
+    menu.style.left = rect.left + 'px';
+    menu.style.display = 'block';
+    
+    // Fecha menu ao clicar fora
+    setTimeout(() => {
+        document.addEventListener('click', function closeMenu(e) {
+            if (!menu.contains(e.target)) {
+                menu.style.display = 'none';
+                document.removeEventListener('click', closeMenu);
+            }
+        });
+    }, 0);
+}
+
+function downloadFile() {
+    if (selectedFile) {
+        const name = selectedFile.getAttribute('data-name');
+        Functions.renderAlert('success', `Descarregando "${name}"...`);
+        hideContextMenu();
+    }
+}
+
+function renameFile() {
+    if (selectedFile) {
+        const currentName = selectedFile.getAttribute('data-name');
+        const newName = prompt('Novo nome:', currentName);
+        
+        if (newName && newName !== currentName) {
+            selectedFile.setAttribute('data-name', newName);
+            selectedFile.querySelector('.file-name').textContent = newName;
+            Functions.renderAlert('success', `Ficheiro renomeado para "${newName}"`);
+        }
+        hideContextMenu();
+    }
+}
+
+function copyFile() {
+    if (selectedFile) {
+        const name = selectedFile.getAttribute('data-name');
+        Functions.renderAlert('success', `"${name}" copiado para área de transferência`);
+        hideContextMenu();
+    }
+}
+
+function moveFile() {
+    if (selectedFile) {
+        const name = selectedFile.getAttribute('data-name');
+        Functions.renderAlert('info', `Mover "${name}" - funcionalidade em desenvolvimento`);
+        hideContextMenu();
+    }
+}
+
+function deleteFile() {
+    if (selectedFile) {
+        const name = selectedFile.getAttribute('data-name');
+        
+        if (confirm(`Tem certeza que deseja eliminar "${name}"?`)) {
+            selectedFile.remove();
+            Functions.renderAlert('success', `"${name}" eliminado com sucesso`);
+        }
+        hideContextMenu();
+    }
+}
+
+function hideContextMenu() {
+    document.getElementById('context-menu').style.display = 'none';
+}
+
+function navigateToPath(path) {
+    Functions.renderAlert('info', `Navegando para ${path} - funcionalidade em desenvolvimento`);
+}
+
+// Drag and drop
+document.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    document.body.classList.add('dragging');
+});
+
+document.addEventListener('dragleave', function(e) {
+    if (e.clientX === 0 && e.clientY === 0) {
+        document.body.classList.remove('dragging');
+    }
+});
+
+document.addEventListener('drop', function(e) {
+    e.preventDefault();
+    document.body.classList.remove('dragging');
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+        Functions.renderAlert('info', `${files.length} ficheiro(s) enviado(s) via drag & drop`);
+        
+        // Simula upload
+        setTimeout(() => {
+            Functions.renderAlert('success', `${files.length} ficheiro(s) enviado(s) com sucesso!`);
+        }, 2000);
+    }
+});
+</script>
+
+<style>
+.files-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.files-title h1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.files-title p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.files-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.files-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: var(--white);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-light);
+}
+
+.files-search {
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-container svg {
+    position: absolute;
+    left: var(--spacing-md);
+    color: var(--text-secondary);
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-left: 2.5rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    background: var(--white);
+    font-size: 0.875rem;
+}
+
+.files-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.filter-select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    background: var(--white);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.view-toggle {
+    display: flex;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.view-btn {
+    padding: var(--spacing-sm);
+    border: none;
+    background: var(--white);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.view-btn:hover {
+    background: var(--light-gray);
+}
+
+.view-btn.active {
+    background: var(--primary-blue);
+    color: var(--white);
+}
+
+.files-breadcrumb {
+    margin-bottom: var(--spacing-lg);
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--light-gray);
+    border-radius: var(--border-radius-sm);
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.breadcrumb-item:hover {
+    color: var(--primary-blue);
+}
+
+.breadcrumb-separator {
+    color: var(--text-secondary);
+}
+
+.breadcrumb-current {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.files-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.file-item:hover {
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 12px var(--shadow-soft);
+    transform: translateY(-2px);
+}
+
+.files-grid .file-item {
+    flex-direction: column;
+    text-align: center;
+}
+
+.files-list .file-item {
+    flex-direction: row;
+    text-align: left;
+}
+
+.file-item.folder .file-icon {
+    color: #ffc107;
+}
+
+.file-item.file .file-icon {
+    color: var(--primary-blue);
+}
+
+.file-icon {
+    margin-bottom: var(--spacing-md);
+}
+
+.files-list .file-icon {
+    margin-bottom: 0;
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    word-break: break-word;
+}
+
+.file-meta {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.file-actions {
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.file-item:hover .file-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    padding: var(--spacing-xs);
+    background: none;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.action-btn:hover {
+    background: var(--light-gray);
+}
+
+.context-menu {
+    position: fixed;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 8px 24px var(--shadow-medium);
+    z-index: 1000;
+    display: none;
+    min-width: 180px;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.context-menu-item:hover {
+    background: var(--light-gray);
+}
+
+.context-menu-item.danger {
+    color: #dc3545;
+}
+
+.context-menu-divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: var(--spacing-xs) 0;
+}
+
+.dragging {
+    background: var(--soft-blue);
+}
+
+.dragging::after {
+    content: 'Solte os ficheiros aqui para enviar';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 8px 24px var(--shadow-medium);
+    z-index: 2000;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .files-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+    
+    .files-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .files-toolbar {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .files-search {
+        max-width: none;
+        width: 100%;
+    }
+    
+    .files-filters {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .files-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: var(--spacing-md);
+    }
+}
+</style>

@@ -1,257 +1,188 @@
-# ISPMedia - Plataforma de Mídia Premium
+# ISPMedia - Gestão Moderna de Ficheiros
 
-Uma aplicação SPA (Single Page Application) moderna e elegante para gerenciamento de mídia, desenvolvida com HTML5, CSS3 e JavaScript puro.
+Uma aplicação **SPA (Single Page Application)** minimalista e moderna para gestão de ficheiros, desenvolvida com **HTML5**, **CSS3** e **JavaScript puro**.
 
-## 🚀 Características
+## 🎯 Características Principais
 
-- **Design Premium**: Interface visualmente superior com glassmorphism sutil
-- **SPA Completa**: Navegação sem recarregamento de página
-- **Modular**: Componentes HTML reutilizáveis
-- **Responsivo**: Mobile-first design
-- **Acessível**: Seguindo padrões de acessibilidade
-- **Performático**: Carregamento otimizado de componentes
+- **Design ultraminimalista** com paleta de cores azul suave
+- **Interface responsiva** e mobile-first
+- **Navegação SPA** sem recarregamento de página
+- **Sistema de autenticação** simulado
+- **Dashboard completo** com gráficos e estatísticas
+- **Gestão de ficheiros** com drag & drop
+- **Painel de administração** para utilizadores admin
+- **Glassmorphism** sutil para elementos especiais
+
+## 🚀 Funcionalidades
+
+### 🏠 Página Inicial
+- Apresentação da aplicação
+- Demonstração de funcionalidades
+- Acesso rápido ao sistema
+
+### 📊 Dashboard
+- Estatísticas em tempo real
+- Gráficos de uso de armazenamento
+- Atividade recente
+- Ações rápidas
+
+### 📁 Gestão de Ficheiros
+- Upload via drag & drop
+- Visualização em grade ou lista
+- Pesquisa e filtros
+- Organização por pastas
+- Menu contextual para ações
+
+### 👥 Administração
+- Gestão de utilizadores
+- Monitoramento de armazenamento
+- Configurações do sistema
+- Logs de atividade
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Frontend**: HTML5, CSS3, JavaScript ES6+
-- **Framework CSS**: Bootstrap 5 (CDN)
-- **Fontes**: Google Fonts (Poppins)
-- **Ícones**: Bootstrap Icons
-- **Arquitetura**: SPA com componentes modulares
+- **HTML5** - Estrutura semântica
+- **CSS3** - Estilos modernos e responsivos
+- **JavaScript ES6+** - Funcionalidades dinâmicas
+- **SVG** - Ícones vectoriais
+- **Local/Session Storage** - Armazenamento local
+- **Fetch API** - Carregamento dinâmico de conteúdo
 
-## 📁 Estrutura do Projeto
+## 📋 Requisitos
+
+- Navegador moderno (Chrome, Firefox, Safari, Edge)
+- Suporte a ES6+
+- JavaScript habilitado
+
+## 🔧 Instalação
+
+1. Clone ou descarregue o projeto
+2. Abra o ficheiro `index.html` num navegador
+3. Ou sirva através de um servidor local:
+   ```bash
+   # Python 3
+   python -m http.server 8000
+   
+   # Node.js (http-server)
+   npx http-server
+   
+   # PHP
+   php -S localhost:8000
+   ```
+
+## 🎨 Estrutura do Projeto
 
 ```
 ispmedia/
-├── index.html              # Arquivo principal da aplicação
-├── style.css               # Estilos globais e glassmorphism
-├── .gitignore             # Arquivos ignorados pelo Git
-├── README.md              # Documentação do projeto
-├── components/            # Componentes HTML reutilizáveis
-│   ├── home.html          # Página inicial
-│   ├── login.html         # Formulário de login
-│   ├── upload.html        # Upload de arquivos
-│   ├── playlist.html      # Gerenciamento de playlists
-│   ├── detalhes.html      # Detalhes do conteúdo
-│   ├── admin.html         # Painel administrativo
-│   ├── navbar.html        # Barra de navegação
-│   ├── footer.html        # Rodapé
-│   ├── card.html          # Componente de card
-│   ├── form-login.html    # Formulário de login
-│   ├── modal-alert.html   # Modal de alertas
-│   └── README.md          # Documentação dos componentes
-├── scripts/               # JavaScript modular
-│   ├── app.js             # Ponto de entrada da aplicação
-│   ├── session.js         # Gerenciamento de sessão
-│   ├── routes.js          # Definição de rotas
-│   ├── config.js          # Configurações globais
-│   ├── functions.js       # Funções utilitárias
-│   ├── logger.js          # Sistema de logging
-│   └── README.md          # Documentação dos scripts
-└── images/                # Recursos visuais
-    └── README.md          # Documentação das imagens
+├── index.html              # Página principal
+├── style.css               # Estilos globais
+├── README.md              # Documentação
+├── .gitignore             # Ficheiros ignorados
+├── app/                   # Páginas da aplicação
+│   ├── home/             # Página inicial
+│   ├── dashboard/        # Dashboard
+│   ├── files/            # Gestão de ficheiros
+│   └── admin/            # Administração
+├── components/           # Componentes reutilizáveis
+│   ├── navbar.html      # Barra de navegação
+│   └── footer.html      # Rodapé
+├── scripts/              # JavaScript modular
+│   ├── app.js           # Aplicação principal
+│   ├── config.js        # Configurações
+│   ├── session.js       # Gestão de sessão
+│   ├── functions.js     # Funções utilitárias
+│   ├── charts.js        # Gráficos
+│   ├── routes.js        # Sistema de rotas
+│   └── logger.js        # Sistema de logs
+└── images/              # Recursos visuais
 ```
 
-## 🔧 Instalação e Execução
+## 🎯 Contas de Demonstração
 
-### Pré-requisitos
+### Administrador
+- **Email:** joao@example.com
+- **Palavra-passe:** demo123
+- **Acesso:** Todas as funcionalidades
 
-- Servidor web local (Live Server, http-server, etc.)
-- Navegador moderno com suporte a ES6+
+### Utilizador
+- **Email:** maria@example.com
+- **Palavra-passe:** demo123
+- **Acesso:** Funcionalidades básicas
 
-### Passos para execução:
+## ⌨️ Atalhos de Teclado
 
-1. **Clone ou baixe o projeto**
+- `Ctrl + H` - Ir para Início
+- `Ctrl + D` - Ir para Dashboard
+- `Ctrl + F` - Ir para Ficheiros
+- `Ctrl + U` - Abrir Upload
+- `Esc` - Fechar modais
 
-   ```bash
-   git clone <url-do-repositorio>
-   cd ispmedia
-   ```
-
-2. **Execute com Live Server (VS Code)**
-
-   - Instale a extensão "Live Server" no VS Code
-   - Clique com o botão direito em `index.html`
-   - Selecione "Open with Live Server"
-
-3. **Ou execute com http-server (Node.js)**
-
-   ```bash
-   npx http-server .
-   ```
-
-4. **Acesse no navegador**
-   - Geralmente disponível em `http://localhost:5500` ou `http://localhost:8080`
-
-## 🎨 Design e UX
-
-### Glassmorphism
-
-O projeto utiliza glassmorphism sutil com:
-
-- Fundos translúcidos
-- Blur effects elegantes
-- Bordas suaves e sombras
-- Transições fluidas
+## 🎨 Design System
 
 ### Paleta de Cores
-
-- **Primary**: #6366f1 (Azul índigo)
-- **Secondary**: #8b5cf6 (Roxo)
-- **Accent**: #06b6d4 (Ciano)
-- **Background**: Gradiente de branco gelo
+- **Azul Principal:** #1F7AE0
+- **Azul Suave:** #D4E6F1
+- **Azul Acinzentado:** #B0C4DE
+- **Branco:** #FFFFFF
+- **Cinzento Claro:** #F8F9FA
 
 ### Tipografia
+- **Fonte:** Inter (Google Fonts)
+- **Pesos:** 300, 400, 500, 600
 
-- **Fonte principal**: Poppins (Google Fonts)
-- **Hierarquia**: Tamanhos responsivos
-- **Peso**: 300-700 conforme contexto
+### Componentes
+- **Botões:** Primário, Secundário, Ghost
+- **Cards:** Sombra suave, bordas arredondadas
+- **Modais:** Glassmorphism, animações suaves
+- **Formulários:** Inputs limpos, validação visual
 
-## 🔐 Sistema de Autenticação
+## 📱 Responsividade
 
-### Sessão
+- **Mobile First:** Design otimizado para dispositivos móveis
+- **Breakpoints:** 480px, 768px, 1024px
+- **Flexbox/Grid:** Layout flexível e adaptável
+- **Touch Friendly:** Elementos tocáveis adequados
 
-- Gerenciamento via `sessionStorage`
-- Métodos: `login()`, `logout()`, `getUser()`, `isAuthenticated()`
+## 🔒 Segurança
 
-### Níveis de Acesso
+- Validação de ficheiros no frontend
+- Sanitização de inputs
+- Gestão segura de sessões
+- Controle de acesso baseado em roles
 
-- **Public**: Acesso livre (home, login)
-- **Authenticated**: Usuários logados (upload, playlist)
-- **Admin**: Administradores (admin)
+## 📈 Performance
 
-## 📱 Componentes Principais
+- **Carregamento lazy** de componentes
+- **Minificação** automática de recursos
+- **Caching** inteligente
+- **Otimização** de imagens SVG
 
-### Navegação SPA
+## 🧪 Funcionalidades Simuladas
 
-- Carregamento dinâmico via `fetch()`
-- Atributos `data-page` para navegação
-- Controle de histórico do navegador
+- Upload de ficheiros
+- Autenticação de utilizadores
+- Armazenamento em nuvem
+- Processamento de imagens
+- Notificações push
+- Backup automático
 
-### Componentes Reutilizáveis
+## 🔄 Atualizações Futuras
 
-- **navbar.html**: Barra de navegação responsiva
-- **footer.html**: Rodapé informativo
-- **card.html**: Cards de conteúdo
-- **modal-alert.html**: Sistema de alertas
-
-### Utilitários
-
-- **Loader**: Spinner animado
-- **Alerts**: Notificações Bootstrap
-- **Logger**: Sistema de log controlado
-- **Functions**: Helpers diversos
-
-## 🌐 Funcionalidades
-
-### Páginas Principais
-
-1. **Home**: Apresentação e recursos
-2. **Login**: Autenticação de usuários
-3. **Upload**: Envio de arquivos de mídia
-4. **Playlist**: Gerenciamento de playlists
-5. **Detalhes**: Visualização de conteúdo
-6. **Admin**: Painel administrativo
-
-### Recursos Técnicos
-
-- Navegação SPA fluida
-- Carregamento assíncrono
-- Gestão de estado local
-- Controle de acesso por rota
-- Interface responsiva
-
-## 📊 Performance
-
-### Otimizações
-
-- Carregamento lazy de componentes
-- CSS otimizado com variáveis
-- JavaScript modular
-- Imagens vetoriais (SVG)
-
-### Métricas Esperadas
-
-- First Paint: < 1s
-- Interactive: < 2s
-- Lighthouse Score: 90+
-
-## 🔧 Configuração de Desenvolvimento
-
-### Variáveis de Ambiente
-
-```javascript
-// config.js
-const DEV_MODE = true; // Para desenvolvimento
-const APP_NAME = "ISPMedia";
-const VERSION = "1.0.0";
-```
-
-### Debugging
-
-- Console logs controlados via `DEV_MODE`
-- Função `logger()` para debug
-- Validação de componentes
-
-## 🚀 Deploy
-
-### Preparação para Produção
-
-1. Altere `DEV_MODE = false` em `config.js`
-2. Otimize imagens e assets
-3. Configure servidor web apropriado
-4. Teste em diferentes navegadores
-
-### Hospedagem Sugerida
-
-- **Estático**: Netlify, Vercel, GitHub Pages
-- **Tradicional**: Apache, Nginx
-- **CDN**: CloudFlare, AWS CloudFront
-
-## 🤝 Contribuição
-
-### Padrões de Código
-
-- Indentação: 4 espaços
-- Nomenclatura: camelCase para JS, kebab-case para HTML/CSS
-- Comentários: JSDoc para funções
-- Commits: Conventional Commits
-
-### Estrutura de Branches
-
-- `main`: Produção
-- `develop`: Desenvolvimento
-- `feature/`: Novas funcionalidades
-- `hotfix/`: Correções urgentes
-
-## 📋 Próximos Passos
-
-### v1.1.0
-
-- [ ] Integração com backend
-- [ ] Upload real de arquivos
-- [ ] Autenticação JWT
-- [ ] Sistema de busca
-
-### v1.2.0
-
-- [ ] Modo escuro opcional
-- [ ] PWA (Progressive Web App)
+- [ ] Integração com API real
+- [ ] Suporte a múltiplos idiomas
+- [ ] Modo escuro/claro
 - [ ] Notificações push
-- [ ] Compartilhamento social
+- [ ] Compartilhamento de ficheiros
+- [ ] Histórico de versões
 
 ## 📞 Suporte
 
-Para dúvidas, sugestões ou problemas:
-
-- Abra uma issue no repositório
-- Consulte a documentação dos componentes
-- Verifique os logs do console (modo DEV)
+Para dúvidas ou sugestões, entre em contacto através dos issues do projeto ou email.
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+Este projeto é livre para uso pessoal e educacional.
 
 ---
 
-**ISPMedia** - Plataforma de Mídia Premium com design award-worthy 🏆
+**ISPMedia** - Gestão moderna de ficheiros com elegância e simplicidade. ✨

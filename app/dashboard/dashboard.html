@@ -1,0 +1,546 @@
+<div class="dashboard-header">
+    <div class="dashboard-welcome">
+        <h1>Dashboard</h1>
+        <p>Bem-vindo de volta, <span class="user-name">Utilizador</span>!</p>
+    </div>
+    <div class="dashboard-actions">
+        <button class="btn btn-primary" onclick="Functions.loadModal('app/files/modal-upload.html', 'modal-upload')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7,10 12,15 17,10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Upload Ficheiro
+        </button>
+        <button class="btn btn-secondary" onclick="refreshDashboard()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,4 23,10 17,10"/>
+                <polyline points="1,20 1,14 7,14"/>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27"/>
+                <path d="M3.51 15a9 9 0 0 0 14.85 4.36l-1.27-1.27"/>
+            </svg>
+            Atualizar
+        </button>
+    </div>
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-label">Total de Ficheiros</div>
+                <div class="stat-value" id="total-files">1,234</div>
+            </div>
+        </div>
+        <div class="stat-trend positive">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
+                <polyline points="17,6 23,6 23,12"/>
+            </svg>
+            <span>+12% este mês</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7,10 12,15 17,10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-label">Uploads Hoje</div>
+                <div class="stat-value" id="uploads-today">45</div>
+            </div>
+        </div>
+        <div class="stat-trend positive">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
+                <polyline points="17,6 23,6 23,12"/>
+            </svg>
+            <span>+8% desde ontem</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    <polyline points="7.5,4.21 12,6.81 16.5,4.21"/>
+                    <polyline points="7.5,19.79 7.5,14.6 3,12"/>
+                    <polyline points="21,12 16.5,14.6 16.5,19.79"/>
+                    <polyline points="12,22.81 12,17"/>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-label">Espaço Usado</div>
+                <div class="stat-value" id="storage-used">2.5 GB</div>
+            </div>
+        </div>
+        <div class="stat-trend neutral">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <span>25% do total</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-label">Pastas</div>
+                <div class="stat-value" id="total-folders">28</div>
+            </div>
+        </div>
+        <div class="stat-trend positive">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
+                <polyline points="17,6 23,6 23,12"/>
+            </svg>
+            <span>+3 esta semana</span>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-content">
+    <div class="dashboard-main">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Uso de Armazenamento</h3>
+                <div class="card-actions">
+                    <button class="btn btn-ghost btn-sm" onclick="Charts.renderStorageChart('storage-chart', Charts.getSampleStorageData())">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23,4 23,10 17,10"/>
+                            <polyline points="1,20 1,14 7,14"/>
+                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27"/>
+                            <path d="M3.51 15a9 9 0 0 0 14.85 4.36l-1.27-1.27"/>
+                        </svg>
+                        Atualizar
+                    </button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div id="storage-chart"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Tipos de Ficheiros</h3>
+                <div class="card-actions">
+                    <button class="btn btn-ghost btn-sm" onclick="Charts.renderBarChart('file-types-chart', Charts.getSampleBarData())">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23,4 23,10 17,10"/>
+                            <polyline points="1,20 1,14 7,14"/>
+                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27"/>
+                            <path d="M3.51 15a9 9 0 0 0 14.85 4.36l-1.27-1.27"/>
+                        </svg>
+                        Atualizar
+                    </button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div id="file-types-chart"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-sidebar">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Atividade Recente</h3>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon upload">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7,10 12,15 17,10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Ficheiro enviado</div>
+                        <div class="activity-description">documento.pdf</div>
+                        <div class="activity-time">há 2 minutos</div>
+                    </div>
+                </div>
+                
+                <div class="activity-item">
+                    <div class="activity-icon folder">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Pasta criada</div>
+                        <div class="activity-description">Projetos 2025</div>
+                        <div class="activity-time">há 15 minutos</div>
+                    </div>
+                </div>
+                
+                <div class="activity-item">
+                    <div class="activity-icon delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Ficheiro eliminado</div>
+                        <div class="activity-description">imagem_antiga.jpg</div>
+                        <div class="activity-time">há 1 hora</div>
+                    </div>
+                </div>
+                
+                <div class="activity-item">
+                    <div class="activity-icon download">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7,10 12,15 17,10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Ficheiro descarregado</div>
+                        <div class="activity-description">relatório.xlsx</div>
+                        <div class="activity-time">há 3 horas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Acesso Rápido</h3>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action" onclick="Functions.loadModal('app/files/modal-upload.html', 'modal-upload')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7,10 12,15 17,10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Upload</span>
+                </button>
+                <button class="quick-action" onclick="Routes.navigate('/files')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span>Ficheiros</span>
+                </button>
+                <button class="quick-action" onclick="Functions.renderAlert('info', 'Funcionalidade em desenvolvimento')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3h18v18H3z"/>
+                        <path d="M8 12h8"/>
+                        <path d="M12 8v8"/>
+                    </svg>
+                    <span>Nova Pasta</span>
+                </button>
+                <button class="quick-action" onclick="Functions.renderAlert('info', 'Funcionalidade em desenvolvimento')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <span>Pesquisar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function refreshDashboard() {
+    Functions.showLoading();
+    
+    // Simula atualização dos dados
+    setTimeout(() => {
+        // Atualiza estatísticas
+        document.getElementById('total-files').textContent = Math.floor(Math.random() * 1000) + 1000;
+        document.getElementById('uploads-today').textContent = Math.floor(Math.random() * 50) + 30;
+        document.getElementById('total-folders').textContent = Math.floor(Math.random() * 20) + 20;
+        
+        // Atualiza gráficos
+        Charts.renderStorageChart('storage-chart', Charts.getSampleStorageData());
+        Charts.renderBarChart('file-types-chart', Charts.getSampleBarData());
+        
+        Functions.hideLoading();
+        Functions.renderAlert('success', 'Dashboard atualizado com sucesso!');
+    }, 1000);
+}
+
+// Inicializa dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    // Atualiza nome do utilizador
+    const user = Session.getUser();
+    if (user) {
+        document.querySelectorAll('.user-name').forEach(element => {
+            element.textContent = user.name;
+        });
+    }
+    
+    // Renderiza gráficos iniciais
+    setTimeout(() => {
+        Charts.renderStorageChart('storage-chart', Charts.getSampleStorageData());
+        Charts.renderBarChart('file-types-chart', Charts.getSampleBarData());
+    }, 500);
+});
+</script>
+
+<style>
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.dashboard-welcome h1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.dashboard-welcome p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.dashboard-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-medium);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--shadow-medium);
+}
+
+.stat-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-md);
+    background: linear-gradient(135deg, var(--primary-blue), var(--gray-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.875rem;
+}
+
+.stat-trend.positive {
+    color: #28a745;
+}
+
+.stat-trend.negative {
+    color: #dc3545;
+}
+
+.stat-trend.neutral {
+    color: var(--text-secondary);
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--spacing-xl);
+}
+
+.dashboard-main {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.chart-container {
+    text-align: center;
+    padding: var(--spacing-lg);
+}
+
+.activity-list {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.activity-item:hover {
+    background: var(--light-gray);
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+}
+
+.activity-icon.upload {
+    background: #17a2b8;
+}
+
+.activity-icon.folder {
+    background: #ffc107;
+}
+
+.activity-icon.delete {
+    background: #dc3545;
+}
+
+.activity-icon.download {
+    background: #28a745;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.activity-description {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.activity-time {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.quick-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    background: var(--light-gray);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.quick-action:hover {
+    background: var(--white);
+    box-shadow: 0 2px 8px var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+.quick-action span {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 1024px) {
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-sidebar {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+    
+    .dashboard-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
