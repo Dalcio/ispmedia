@@ -27,12 +27,7 @@ class SPARouter {
       requiresAuth: false,
     });
 
-    this.routes.set("/dashboard", {
-      title: "Dashboard - ISP Media",
-      component: "dashboard",
-      path: "/app/home/home.html",
-      requiresAuth: true,
-    });
+    // ...dashboard route removed...
 
     this.routes.set("/files", {
       title: "File Manager - ISP Media",
@@ -227,7 +222,7 @@ class SPARouter {
       return homeTemplate.innerHTML;
     } else {
       // Fallback - load from index.html
-      const response = await fetch("/index.html");
+      const response = await fetch("/web/index.html");
       const html = await response.text();
 
       // Extract content between main tags or body
@@ -555,8 +550,7 @@ class SPARouter {
 
     // Map current paths to SPA routes
     let route = "/";
-    if (currentPath.includes("/app/home/")) route = "/dashboard";
-    else if (currentPath.includes("/app/files/")) route = "/files";
+    if (currentPath.includes("/app/files/")) route = "/files";
     else if (currentPath.includes("/app/admin/")) route = "/admin";
 
     this.handleRoute(route, false);

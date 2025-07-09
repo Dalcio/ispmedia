@@ -83,11 +83,7 @@
             </div>
           </a>
 
-          <a
-            href="../dashboard/dashboard.html"
-            class="card interactive"
-            style="text-decoration: none; color: inherit"
-          >
+          <!-- Dashboard card removed -->
             <div class="flex items-center gap-4">
               <div
                 style="
@@ -400,7 +396,7 @@
     <script src="../../scripts/app.js"></script>
     <script>
       // Load navbar
-      fetch("/components/navbar.html")
+      fetch("/web/components/navbar.html")
         .then((response) => response.text())
         .then((html) => {
           document.getElementById("navbar-container").innerHTML = html;

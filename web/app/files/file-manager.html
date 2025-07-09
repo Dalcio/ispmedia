@@ -516,7 +516,7 @@
       let isGridView = true;
 
       // Load components
-      fetch("/components/navbar.html")
+      fetch("/web/components/navbar.html")
         .then((response) => response.text())
         .then((html) => {
           document.getElementById("navbar-container").innerHTML = html;

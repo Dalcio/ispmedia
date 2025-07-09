@@ -97,29 +97,6 @@
                     justify-content: center;
                   "
                 >
-                  <span style="font-size: 1.5rem">📊</span>
-                </div>
-              </div>
-              <h4 class="mb-3">Analytics Dashboard</h4>
-              <p class="text-gray">
-                Get insights into your media performance with beautiful,
-                real-time analytics and reporting.
-              </p>
-            </div>
-
-            <div class="card interactive animate-slide-in">
-              <div class="mb-4">
-                <div
-                  style="
-                    width: 48px;
-                    height: 48px;
-                    background: var(--primary-light);
-                    border-radius: var(--radius-lg);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                  "
-                >
                   <span style="font-size: 1.5rem">⚡</span>
                 </div>
               </div>
@@ -252,7 +229,7 @@
     <script>
       // Load navbar
       function loadNavbar() {
-        fetch("/components/navbar.html")
+        fetch("/web/components/navbar.html")
           .then((response) => response.text())
           .then((html) => {
             document.getElementById("navbar-container").innerHTML = html;
@@ -274,7 +251,7 @@
       }
 
       function loadAuthModal() {
-        fetch("/app/home/modal-auth.html")
+        fetch("/web/app/home/modal-auth.html")
           .then((response) => response.text())
           .then((html) => {
             document.getElementById("auth-modal-container").innerHTML = html;
@@ -282,7 +259,7 @@
       }
       function loadUploadModal() {
         console.log("📤 Loading upload modal...");
-        fetch("/app/files/modal-upload.html")
+        fetch("/web/app/files/modal-upload.html")
           .then((response) => response.text())
           .then((html) => {
             document.getElementById("upload-modal-container").innerHTML = html;

@@ -136,8 +136,7 @@ class AuthManager {
             linkPath.includes("index.html")) ||
           (currentPath.includes("/app/home/") &&
             linkPath.includes("/app/home/")) ||
-          (currentPath.includes("/app/dashboard/") &&
-            linkPath.includes("/app/dashboard/")) ||
+          // ...dashboard link logic removed...
           (currentPath.includes("/app/files/") &&
             linkPath.includes("/app/files/")) ||
           (currentPath.includes("/app/admin/") &&
@@ -427,7 +426,7 @@ class PageGuard {
     const currentPath = window.location.pathname;
     const protectedPaths = [
       "/app/home/",
-      "/app/dashboard/",
+      // ...dashboard path removed...
       "/app/files/",
       "/app/admin/",
     ];
