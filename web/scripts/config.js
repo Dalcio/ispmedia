@@ -78,10 +78,9 @@ const AppConfig = {
     compactMode: false,
     showThumbnails: true,
   },
-
   // Storage keys for localStorage
   storageKeys: {
-    auth: "ispmedia_auth",
+    token: "ispmedia_token",
     user: "ispmedia_user",
     playlists: "ispmedia_playlists",
     reviews: "ispmedia_reviews",
@@ -89,25 +88,30 @@ const AppConfig = {
     uploadHistory: "ispmedia_upload_history",
     settings: "ispmedia_settings",
   },
-
-  // API endpoints (for future backend integration)
+  // API configuration
   api: {
-    baseUrl: "",
+    baseUrl: "http://localhost:3000/api",
+    timeout: 10000, // 10 seconds
+    retryAttempts: 3,
+    retryDelay: 1000, // 1 second
     endpoints: {
-      auth: "/api/auth",
-      users: "/api/users",
-      media: "/api/media",
-      playlists: "/api/playlists",
-      reviews: "/api/reviews",
-      upload: "/api/upload",
+      auth: "/auth",
+      users: "/users",
+      artists: "/artists",
+      albums: "/albums",
+      musics: "/musics",
+      playlists: "/playlists",
+      reviews: "/reviews",
+      upload: "/upload",
+      health: "/health",
     },
   },
-
   // Development settings
   development: {
     enableDebugMode: false,
-    enableMockData: true,
+    enableMockData: false, // Desabilitado pois vamos usar a API real
     logLevel: "info", // 'debug', 'info', 'warn', 'error'
+    useRealAPI: true, // Flag para indicar que estamos usando API real
   },
 };
 

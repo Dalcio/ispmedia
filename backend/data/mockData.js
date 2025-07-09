@@ -4,7 +4,7 @@ let users = [
     id: 1,
     username: "admin",
     email: "admin@ispmedia.com",
-    password: "$2b$10$rQZ8kHp.O8mX9vJ2Np9gW.5J5mP3lQ7wY1XtR2sF4uN6mK8hL9pCG", // password123
+    password: "$2b$10$.lv9IMcILyLmVzSMVmoROudnDQabhspqsktgbdKD1m4vTPFlhDDfy", // password123
     role: "admin",
     firstName: "Administrador",
     lastName: "Sistema",
@@ -16,7 +16,7 @@ let users = [
     id: 2,
     username: "editor1",
     email: "editor@ispmedia.com",
-    password: "$2b$10$rQZ8kHp.O8mX9vJ2Np9gW.5J5mP3lQ7wY1XtR2sF4uN6mK8hL9pCG", // password123
+    password: "$2b$10$.lv9IMcILyLmVzSMVmoROudnDQabhspqsktgbdKD1m4vTPFlhDDfy", // password123
     role: "editor",
     firstName: "João",
     lastName: "Editor",
@@ -28,7 +28,7 @@ let users = [
     id: 3,
     username: "visitante1",
     email: "visitante@ispmedia.com",
-    password: "$2b$10$rQZ8kHp.O8mX9vJ2Np9gW.5J5mP3lQ7wY1XtR2sF4uN6mK8hL9pCG", // password123
+    password: "$2b$10$.lv9IMcILyLmVzSMVmoROudnDQabhspqsktgbdKD1m4vTPFlhDDfy", // password123
     role: "visitante",
     firstName: "Maria",
     lastName: "Silva",

@@ -1,143 +1,119 @@
 // ISP Media - Playlist Manager
-// Simulates playlist functionality with localStorage
+// Handles playlist functionality with real API
 
 class PlaylistManager {
   static init() {
+    this.api = window.ISPMediaAPI;
+    this.playlists = [];
     this.loadPlaylists();
     this.setupEventListeners();
   }
-  static loadPlaylists() {
-    const stored = localStorage.getItem("ispmedia_playlists");
-    this.playlists = stored ? JSON.parse(stored) : [];
-
-    // Create default playlists if none exist
-    if (this.playlists.length === 0) {
-      this.playlists = [
-        {
-          id: "fav-" + Date.now(),
-          name: "Favorites",
-          description: "Your favorite tracks",
-          isPublic: false,
-          isDefault: true,
-          createdBy: "system",
-          createdAt: new Date().toISOString(),
-          media: [],
-        },
-        {
-          id: "recent-" + Date.now(),
-          name: "Recently Played",
-          description: "Recently played media",
-          isPublic: false,
-          isDefault: true,
-          createdBy: "system",
-          createdAt: new Date().toISOString(),
-          media: [],
-        },
-      ];
-      this.savePlaylists();
+  
+  static async loadPlaylists() {
+    try {
+      if (!window.SessionManager?.isAuthenticated) {
+        this.playlists = [];
+        return;
+      }
+      
+      const response = await this.api.getPlaylists();
+      this.playlists = response.playlists || [];
+    } catch (error) {
+      console.error('Erro ao carregar playlists:', error);
+      this.playlists = [];
+      NotificationManager.show('Erro ao carregar playlists', 'error');
     }
   }
-
-  static savePlaylists() {
-    localStorage.setItem("ispmedia_playlists", JSON.stringify(this.playlists));
-  }
-
-  static createPlaylist(name, description, isPublic = false) {
-    if (!AuthManager.isAuthenticated) {
+  static async createPlaylist(name, description, isPublic = false) {
+    if (!window.SessionManager?.isAuthenticated) {
       NotificationManager.show("Please log in to create playlists", "warning");
       return null;
     }
 
-    const playlist = {
-      id:
-        "playlist-" +
-        Date.now() +
-        "-" +
-        Math.random().toString(36).substr(2, 9),
-      name: name.trim(),
-      description: description.trim(),
-      isPublic: isPublic,
-      isDefault: false,
-      createdBy: AuthManager.currentUser?.username || "anonymous",
-      createdAt: new Date().toISOString(),
-      media: [],
-    };
-
-    this.playlists.push(playlist);
-    this.savePlaylists();
-    NotificationManager.show(
-      `Playlist "${name}" created successfully`,
-      "success"
-    );
-    return playlist;
+    try {
+      const playlistData = {
+        name: name.trim(),
+        description: description.trim(),
+        isPublic: isPublic
+      };
+      
+      const response = await this.api.createPlaylist(playlistData);
+      const playlist = response.playlist;
+      
+      this.playlists.push(playlist);
+      NotificationManager.show(`Playlist "${name}" created successfully`, "success");
+      return playlist;
+    } catch (error) {
+      console.error('Erro ao criar playlist:', error);
+      NotificationManager.show('Erro ao criar playlist: ' + error.message, 'error');
+      return null;
+    }
   }
-
-  static deletePlaylist(playlistId) {
-    const playlist = this.getPlaylist(playlistId);
-    if (!playlist) return false;
-
-    if (playlist.isDefault) {
-      NotificationManager.show("Cannot delete default playlists", "error");
+  static async deletePlaylist(playlistId) {
+    try {
+      await this.api.deletePlaylist(playlistId);
+      
+      this.playlists = this.playlists.filter(p => p.id !== playlistId);
+      NotificationManager.show("Playlist deleted successfully", "success");
+      return true;
+    } catch (error) {
+      console.error('Erro ao deletar playlist:', error);
+      NotificationManager.show('Erro ao deletar playlist: ' + error.message, 'error');
+      return false;
+    }  }
+  static async addToPlaylist(playlistId, mediaItem) {
+    try {
+      await this.api.addToPlaylist(playlistId, mediaItem.id);
+      
+      // Update local playlist
+      const playlist = this.getPlaylist(playlistId);
+      if (playlist) {
+        playlist.media.push({
+          id: mediaItem.id,
+          title: mediaItem.title,
+          artist: mediaItem.artist,
+          duration: mediaItem.duration,
+          type: mediaItem.type,
+          thumbnail: mediaItem.thumbnail,
+          addedAt: new Date().toISOString(),
+        });
+      }
+      
+      NotificationManager.show(`Added to "${playlist?.name || 'playlist'}"`, "success");
+      return true;
+    } catch (error) {
+      console.error('Erro ao adicionar à playlist:', error);
+      NotificationManager.show('Erro ao adicionar à playlist: ' + error.message, 'error');
       return false;
     }
-
-    if (playlist.createdBy !== AuthManager.currentUser?.username) {
-      NotificationManager.show(
-        "You can only delete your own playlists",
-        "error"
-      );
-      return false;
-    }
-
-    this.playlists = this.playlists.filter((p) => p.id !== playlistId);
-    this.savePlaylists();
-    NotificationManager.show(`Playlist "${playlist.name}" deleted`, "info");
-    return true;
   }
 
-  static addToPlaylist(playlistId, mediaItem) {
-    const playlist = this.getPlaylist(playlistId);
-    if (!playlist) return false;
-
-    // Check if media already exists in playlist
-    if (playlist.media.find((m) => m.id === mediaItem.id)) {
-      NotificationManager.show("Media already in playlist", "warning");
+  static async removeFromPlaylist(playlistId, mediaId) {
+    try {
+      await this.api.removeFromPlaylist(playlistId, mediaId);
+      
+      // Update local playlist
+      const playlist = this.getPlaylist(playlistId);
+      if (playlist) {
+        playlist.media = playlist.media.filter((m) => m.id !== mediaId);
+      }
+      
+      NotificationManager.show("Removed from playlist", "info");
+      return true;
+    } catch (error) {
+      console.error('Erro ao remover da playlist:', error);
+      NotificationManager.show('Erro ao remover da playlist: ' + error.message, 'error');
       return false;
     }
-
-    playlist.media.push({
-      id: mediaItem.id,
-      title: mediaItem.title,
-      artist: mediaItem.artist,
-      duration: mediaItem.duration,
-      type: mediaItem.type,
-      thumbnail: mediaItem.thumbnail,
-      addedAt: new Date().toISOString(),
-    });
-
-    this.savePlaylists();
-    NotificationManager.show(`Added to "${playlist.name}"`, "success");
-    return true;
-  }
-
-  static removeFromPlaylist(playlistId, mediaId) {
-    const playlist = this.getPlaylist(playlistId);
-    if (!playlist) return false;
-
-    playlist.media = playlist.media.filter((m) => m.id !== mediaId);
-    this.savePlaylists();
-    NotificationManager.show("Removed from playlist", "info");
-    return true;
   }
 
   static getPlaylist(playlistId) {
     return this.playlists.find((p) => p.id === playlistId);
   }
-
   static getUserPlaylists() {
-    if (!AuthManager.isAuthenticated) return [];
+    if (!window.SessionManager?.isAuthenticated) return [];
     return this.playlists.filter(
-      (p) => p.createdBy === AuthManager.currentUser?.username || p.isDefault
+      (p) => p.createdBy === window.SessionManager.currentUser?.username
     );
   }
 
@@ -148,35 +124,23 @@ class PlaylistManager {
   static getAllPlaylists() {
     return this.playlists;
   }
-
-  static updatePlaylist(playlistId, updates) {
-    const playlist = this.getPlaylist(playlistId);
-    if (!playlist) return false;
-
-    if (
-      playlist.createdBy !== AuthManager.currentUser?.username &&
-      !playlist.isDefault
-    ) {
-      NotificationManager.show("You can only edit your own playlists", "error");
+  static async updatePlaylist(playlistId, updates) {
+    try {
+      await this.api.updatePlaylist(playlistId, updates);
+      
+      // Update local playlist
+      const playlist = this.getPlaylist(playlistId);
+      if (playlist) {
+        Object.assign(playlist, updates);
+      }
+      
+      NotificationManager.show("Playlist updated", "success");
+      return true;
+    } catch (error) {
+      console.error('Erro ao atualizar playlist:', error);
+      NotificationManager.show('Erro ao atualizar playlist: ' + error.message, 'error');
       return false;
     }
-
-    // Don't allow editing default playlist properties
-    if (
-      playlist.isDefault &&
-      (updates.name || updates.isPublic !== undefined)
-    ) {
-      NotificationManager.show(
-        "Cannot modify default playlist properties",
-        "error"
-      );
-      return false;
-    }
-
-    Object.assign(playlist, updates);
-    this.savePlaylists();
-    NotificationManager.show("Playlist updated", "success");
-    return true;
   }
 
   static setupEventListeners() {
@@ -185,20 +149,20 @@ class PlaylistManager {
       this.addToRecentlyPlayed(e.detail.media);
     });
   }
-
   static addToRecentlyPlayed(mediaItem) {
-    const recentPlaylist = this.playlists.find(
-      (p) => p.name === "Recently Played"
-    );
-    if (!recentPlaylist) return;
+    // For now, we'll just store recently played in memory
+    // Later this could be stored in user's session or sent to backend
+    if (!this.recentlyPlayed) {
+      this.recentlyPlayed = [];
+    }
 
     // Remove if already exists
-    recentPlaylist.media = recentPlaylist.media.filter(
+    this.recentlyPlayed = this.recentlyPlayed.filter(
       (m) => m.id !== mediaItem.id
     );
 
     // Add to beginning
-    recentPlaylist.media.unshift({
+    this.recentlyPlayed.unshift({
       id: mediaItem.id,
       title: mediaItem.title,
       artist: mediaItem.artist,
@@ -206,14 +170,10 @@ class PlaylistManager {
       type: mediaItem.type,
       thumbnail: mediaItem.thumbnail,
       addedAt: new Date().toISOString(),
-    });
-
-    // Keep only last 50 items
-    if (recentPlaylist.media.length > 50) {
-      recentPlaylist.media = recentPlaylist.media.slice(0, 50);
+    });    // Keep only last 50 items
+    if (this.recentlyPlayed.length > 50) {
+      this.recentlyPlayed = this.recentlyPlayed.slice(0, 50);
     }
-
-    this.savePlaylists();
   }
 
   static renderPlaylistModal() {

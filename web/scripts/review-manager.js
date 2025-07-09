@@ -1,94 +1,85 @@
 // ISP Media - Review and Rating System
-// Simulates review and rating functionality with localStorage
+// Handles review and rating functionality with real API
 
 class ReviewManager {
   static init() {
+    this.api = window.ISPMediaAPI;
+    this.reviews = [];
     this.loadReviews();
     this.setupEventListeners();
   }
 
-  static loadReviews() {
-    const stored = localStorage.getItem("ispmedia_reviews");
-    this.reviews = stored ? JSON.parse(stored) : [];
+  static async loadReviews() {
+    try {
+      const response = await this.api.getReviews();
+      this.reviews = response.reviews || [];
+    } catch (error) {
+      console.error('Erro ao carregar reviews:', error);
+      this.reviews = [];
+    }
   }
-
-  static saveReviews() {
-    localStorage.setItem("ispmedia_reviews", JSON.stringify(this.reviews));
-  }
-
-  static addReview(mediaId, rating, comment) {
-    if (!AuthManager.isAuthenticated) {
+  static async addReview(mediaId, rating, comment) {
+    if (!window.SessionManager?.isAuthenticated) {
       NotificationManager.show("Please log in to write reviews", "warning");
       return null;
     }
 
-    // Check if user already reviewed this media
-    const existingReview = this.reviews.find(
-      (r) =>
-        r.mediaId === mediaId && r.userId === AuthManager.currentUser?.username
-    );
-
-    if (existingReview) {
-      NotificationManager.show(
-        "You have already reviewed this media",
-        "warning"
-      );
+    try {
+      const reviewData = {
+        mediaId: mediaId,
+        rating: parseInt(rating),
+        comment: comment.trim()
+      };
+      
+      const response = await this.api.createReview(reviewData);
+      const review = response.review;
+      
+      this.reviews.push(review);
+      NotificationManager.show("Review added successfully", "success");
+      return review;
+    } catch (error) {
+      console.error('Erro ao adicionar review:', error);
+      NotificationManager.show('Erro ao adicionar review: ' + error.message, 'error');
       return null;
     }
-
-    const review = {
-      id:
-        "review-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9),
-      mediaId: mediaId,
-      userId: AuthManager.currentUser?.username || "anonymous",
-      rating: parseInt(rating),
-      comment: comment.trim(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      likes: 0,
-      dislikes: 0,
-      likedBy: [],
-      dislikedBy: [],
-    };
-
-    this.reviews.push(review);
-    this.saveReviews();
-    NotificationManager.show("Review added successfully", "success");
-    return review;
   }
-
-  static updateReview(reviewId, rating, comment) {
-    const review = this.getReview(reviewId);
-    if (!review) return false;
-
-    if (review.userId !== AuthManager.currentUser?.username) {
-      NotificationManager.show("You can only edit your own reviews", "error");
+  static async updateReview(reviewId, rating, comment) {
+    try {
+      const reviewData = {
+        rating: parseInt(rating),
+        comment: comment.trim()
+      };
+      
+      await this.api.updateReview(reviewId, reviewData);
+      
+      // Update local review
+      const review = this.getReview(reviewId);
+      if (review) {
+        Object.assign(review, reviewData);
+        review.updatedAt = new Date().toISOString();
+      }
+      
+      NotificationManager.show("Review updated successfully", "success");
+      return true;
+    } catch (error) {
+      console.error('Erro ao atualizar review:', error);
+      NotificationManager.show('Erro ao atualizar review: ' + error.message, 'error');
       return false;
     }
-
-    review.rating = parseInt(rating);
-    review.comment = comment.trim();
-    review.updatedAt = new Date().toISOString();
-
-    this.saveReviews();
-    NotificationManager.show("Review updated successfully", "success");
-    return true;
   }
 
-  static deleteReview(reviewId) {
-    const review = this.getReview(reviewId);
-    if (!review) return false;
-
-    if (review.userId !== AuthManager.currentUser?.username) {
-      NotificationManager.show("You can only delete your own reviews", "error");
+  static async deleteReview(reviewId) {
+    try {
+      await this.api.deleteReview(reviewId);
+      
+      this.reviews = this.reviews.filter(r => r.id !== reviewId);
+      NotificationManager.show("Review deleted successfully", "success");
+      return true;
+    } catch (error) {
+      console.error('Erro ao deletar review:', error);
+      NotificationManager.show('Erro ao deletar review: ' + error.message, 'error');
       return false;
-    }
-
-    this.reviews = this.reviews.filter((r) => r.id !== reviewId);
-    this.saveReviews();
-    NotificationManager.show("Review deleted", "info");
-    return true;
-  }
+    }  }
 
   static getReview(reviewId) {
     return this.reviews.find((r) => r.id === reviewId);
@@ -116,65 +107,80 @@ class ReviewManager {
       count: mediaReviews.length,
     };
   }
-
-  static likeReview(reviewId) {
-    if (!AuthManager.isAuthenticated) {
+  static async likeReview(reviewId) {
+    if (!window.SessionManager?.isAuthenticated) {
       NotificationManager.show("Please log in to like reviews", "warning");
       return false;
     }
 
-    const review = this.getReview(reviewId);
-    if (!review) return false;
+    try {
+      await this.api.likeReview(reviewId);
+      
+      // Update local review
+      const review = this.getReview(reviewId);
+      if (review) {
+        const userId = window.SessionManager.currentUser?.username;
+        
+        // Remove from dislikes if present
+        if (review.dislikedBy?.includes(userId)) {
+          review.dislikedBy = review.dislikedBy.filter((id) => id !== userId);
+          review.dislikes--;
+        }
 
-    const userId = AuthManager.currentUser?.username;
-
-    // Remove from dislikes if present
-    if (review.dislikedBy.includes(userId)) {
-      review.dislikedBy = review.dislikedBy.filter((id) => id !== userId);
-      review.dislikes--;
+        // Toggle like
+        if (review.likedBy?.includes(userId)) {
+          review.likedBy = review.likedBy.filter((id) => id !== userId);
+          review.likes--;
+        } else {
+          review.likedBy = review.likedBy || [];
+          review.likedBy.push(userId);
+          review.likes++;
+        }
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Erro ao curtir review:', error);
+      NotificationManager.show('Erro ao curtir review: ' + error.message, 'error');
+      return false;
     }
-
-    // Toggle like
-    if (review.likedBy.includes(userId)) {
-      review.likedBy = review.likedBy.filter((id) => id !== userId);
-      review.likes--;
-    } else {
-      review.likedBy.push(userId);
-      review.likes++;
-    }
-
-    this.saveReviews();
-    return true;
   }
-
-  static dislikeReview(reviewId) {
-    if (!AuthManager.isAuthenticated) {
+  static async dislikeReview(reviewId) {
+    if (!window.SessionManager?.isAuthenticated) {
       NotificationManager.show("Please log in to dislike reviews", "warning");
       return false;
     }
 
-    const review = this.getReview(reviewId);
-    if (!review) return false;
+    try {
+      await this.api.dislikeReview(reviewId);
+      
+      // Update local review
+      const review = this.getReview(reviewId);
+      if (review) {
+        const userId = window.SessionManager.currentUser?.username;
+        
+        // Remove from likes if present
+        if (review.likedBy?.includes(userId)) {
+          review.likedBy = review.likedBy.filter((id) => id !== userId);
+          review.likes--;
+        }
 
-    const userId = AuthManager.currentUser?.username;
-
-    // Remove from likes if present
-    if (review.likedBy.includes(userId)) {
-      review.likedBy = review.likedBy.filter((id) => id !== userId);
-      review.likes--;
+        // Toggle dislike
+        if (review.dislikedBy?.includes(userId)) {
+          review.dislikedBy = review.dislikedBy.filter((id) => id !== userId);
+          review.dislikes--;
+        } else {
+          review.dislikedBy = review.dislikedBy || [];
+          review.dislikedBy.push(userId);
+          review.dislikes++;
+        }
+      }
+      
+      return true;    } catch (error) {
+      console.error('Erro ao não curtir review:', error);
+      NotificationManager.show('Erro ao não curtir review: ' + error.message, 'error');
+      return false;
     }
-
-    // Toggle dislike
-    if (review.dislikedBy.includes(userId)) {
-      review.dislikedBy = review.dislikedBy.filter((id) => id !== userId);
-      review.dislikes--;
-    } else {
-      review.dislikedBy.push(userId);
-      review.dislikes++;
-    }
-
-    this.saveReviews();
-    return true;
   }
 
   static setupEventListeners() {

@@ -1,5 +1,98 @@
 // ISP Media - Application JavaScript
 
+// Initialize application when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🎵 ISPMedia Application Starting...');
+  
+  // Initialize API client
+  window.ISPMediaAPI = new ISPMediaAPI();
+  
+  // Initialize Session Manager
+  window.SessionManager = SessionManager;
+  SessionManager.init();
+  
+  // Initialize configuration
+  AppConfig.init();
+  
+  // Check if API is available
+  checkAPIConnection();
+  
+  // Initialize components
+  initializeApplication();
+});
+
+// Check API connection
+async function checkAPIConnection() {
+  try {
+    await window.ISPMediaAPI.healthCheck();
+    console.log('✅ API connection successful');
+    
+    // Hide any API warning messages
+    const apiWarning = document.getElementById('api-warning');
+    if (apiWarning) {
+      apiWarning.style.display = 'none';
+    }
+  } catch (error) {
+    console.warn('⚠️ API connection failed:', error.message);
+    showAPIWarning();
+  }
+}
+
+// Show API warning
+function showAPIWarning() {
+  let warning = document.getElementById('api-warning');
+  
+  if (!warning) {
+    warning = document.createElement('div');
+    warning.id = 'api-warning';
+    warning.className = 'alert alert-warning';
+    warning.innerHTML = `
+      <strong>⚠️ Backend não encontrado!</strong><br>
+      Para funcionalidade completa, certifique-se de que o backend está rodando em 
+      <a href="http://localhost:3000" target="_blank">http://localhost:3000</a><br>
+      <small>Execute: <code>cd backend && npm start</code></small>
+    `;
+    warning.style.cssText = `
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      max-width: 400px;
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 9999;
+    `;
+    
+    document.body.appendChild(warning);
+  }
+  
+  warning.style.display = 'block';
+}
+
+// Initialize application components
+function initializeApplication() {
+  // Initialize existing components if they exist
+  if (typeof ModalManager !== 'undefined') {
+    console.log('✅ ModalManager available');
+  }
+  
+  if (typeof AuthManager !== 'undefined') {
+    console.log('✅ Legacy AuthManager found, will be replaced by SessionManager');
+  }
+  
+  // Setup global error handling
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    
+    if (event.reason?.message?.includes('fetch')) {
+      console.warn('Fetch error detected, possibly API connection issue');
+    }
+  });
+}
+
 // Global Modal Management
 class ModalManager {
   static open(modalId) {
@@ -34,9 +127,17 @@ class ModalManager {
   }
 }
 
-// Authentication System
+// Legacy Authentication System (for compatibility)
+// Note: Use SessionManager for new development
 class AuthManager {
   static init() {
+    // Delegate to SessionManager if available
+    if (window.SessionManager) {
+      console.log('🔄 Delegating to SessionManager');
+      return;
+    }
+    
+    // Legacy fallback
     this.isAuthenticated = this.getStoredAuthState();
     this.currentUser = this.getStoredUserData();
     this.setupEventListeners();
@@ -412,6 +513,71 @@ class AuthManager {
     }, 3000);
   }
 }
+
+// Data Loading Utilities
+const DataLoader = {
+  async loadRecentMusic() {
+    try {
+      const response = await window.ISPMediaAPI.getMusics({ limit: 6 });
+      return response.musics || [];
+    } catch (error) {
+      console.error('Error loading recent music:', error);
+      return [];
+    }
+  },
+
+  async loadTrendingArtists() {
+    try {
+      const response = await window.ISPMediaAPI.getArtists({ limit: 4 });
+      return response.artists || [];
+    } catch (error) {
+      console.error('Error loading trending artists:', error);
+      return [];
+    }
+  },
+
+  async loadUserStats() {
+    try {
+      if (!window.SessionManager?.isAuthenticated) {
+        return {
+          totalFiles: 0,
+          storageUsed: '0 B',
+          totalViews: 0,
+          processingRate: '0%'
+        };
+      }
+
+      // These would be real API calls in a full implementation
+      return {
+        totalFiles: 24,
+        storageUsed: '1.2GB',
+        totalViews: '5.2K',
+        processingRate: '98%'
+      };
+    } catch (error) {
+      console.error('Error loading user stats:', error);
+      return {
+        totalFiles: 0,
+        storageUsed: '0 B',
+        totalViews: 0,
+        processingRate: '0%'
+      };
+    }
+  },
+
+  async loadRecentUploads() {
+    try {
+      const response = await window.ISPMediaAPI.getUploads({ limit: 5 });
+      return response.uploads || [];
+    } catch (error) {
+      console.error('Error loading recent uploads:', error);
+      return [];
+    }
+  }
+};
+
+// Make DataLoader globally available
+window.DataLoader = DataLoader;
 
 // Page Guard System for Authentication
 class PageGuard {

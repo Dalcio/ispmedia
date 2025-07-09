@@ -23,13 +23,21 @@
             >Admin</a
           >
         </li>
-      </ul>
-
-      <div class="flex items-center gap-3" id="navActions">
+      </ul>      <div class="flex items-center gap-3" id="navActions">
         <button class="btn btn-ghost btn-sm">Settings</button>
-        <button class="btn btn-primary btn-sm" onclick="openAuthModal()">
+        
+        <!-- Login Button (shown when not authenticated) -->
+        <button id="loginBtn" class="btn btn-primary btn-sm" onclick="openAuthModal()">
           Login
         </button>
+        
+        <!-- User Menu (shown when authenticated) -->
+        <div id="userMenu" class="flex items-center gap-3" style="display: none;">
+          <span id="userName" class="text-sm text-gray"></span>
+          <button id="logoutBtn" class="btn btn-ghost btn-sm">
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   </div>

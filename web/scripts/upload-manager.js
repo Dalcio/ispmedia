@@ -1,9 +1,10 @@
 // ISP Media - Enhanced Upload Manager with Drag & Drop and Validation
-// Complete upload simulation without backend
+// Real upload functionality with backend API
 
 class UploadManager {
   static init() {
     console.log("📤 Initializing UploadManager...");
+    this.api = window.ISPMediaAPI;
     this.uploadQueue = [];
     this.isUploading = false;
     this.supportedTypes = {
@@ -291,21 +292,39 @@ class UploadManager {
       }, 2000);
     }
   }
-
   static async uploadFile(uploadItem) {
+    if (!window.SessionManager?.isAuthenticated) {
+      uploadItem.status = "error";
+      uploadItem.error = "Please log in to upload files";
+      this.updateQueueDisplay();
+      return;
+    }
+
     uploadItem.status = "uploading";
     uploadItem.error = null;
     this.updateQueueDisplay();
 
     try {
-      // Simulate upload process
-      await this.simulateUpload(uploadItem);
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', uploadItem.file);
+      formData.append('title', uploadItem.title || uploadItem.name);
+      formData.append('description', uploadItem.description || '');
+      formData.append('category', uploadItem.category || 'media');
+
+      // Upload to backend
+      const response = await this.api.uploadFile(formData, (progress) => {
+        uploadItem.progress = progress;
+        this.updateQueueDisplay();
+      });
 
       uploadItem.status = "completed";
       uploadItem.progress = 100;
       uploadItem.uploadedAt = new Date().toISOString();
+      uploadItem.fileId = response.file?.id;
+      uploadItem.fileUrl = response.file?.url;
 
-      // Add to media library (simulated)
+      // Add to media library
       this.addToMediaLibrary(uploadItem);
 
       document.dispatchEvent(
@@ -313,6 +332,8 @@ class UploadManager {
           detail: { fileName: uploadItem.name, uploadItem },
         })
       );
+      
+      NotificationManager.show(`File "${uploadItem.name}" uploaded successfully`, "success");
     } catch (error) {
       uploadItem.status = "error";
       uploadItem.error = error.message;
@@ -322,6 +343,8 @@ class UploadManager {
           detail: { fileName: uploadItem.name, error: error.message },
         })
       );
+      
+      NotificationManager.show(`Upload failed: ${error.message}`, "error");
     }
 
     this.updateQueueDisplay();
@@ -343,38 +366,34 @@ class UploadManager {
       }
     }
   }
-
   static addToMediaLibrary(uploadItem) {
-    const mediaItems = JSON.parse(
-      localStorage.getItem("ispmedia_library") || "[]"
-    );
+    // The media item is already created by the backend
+    // We just need to dispatch the event for other components
+    if (uploadItem.fileId) {
+      const mediaItem = {
+        id: uploadItem.fileId,
+        title: uploadItem.title || uploadItem.name.replace(/\.[^/.]+$/, ""),
+        filename: uploadItem.name,
+        type: uploadItem.type,
+        size: uploadItem.size,
+        thumbnail: uploadItem.thumbnail,
+        url: uploadItem.fileUrl,
+        uploadedBy: window.SessionManager.currentUser?.username || "anonymous",
+        uploadedAt: uploadItem.uploadedAt,
+        description: uploadItem.description || "",
+        tags: [],
+        views: 0,
+        likes: 0,
+        downloads: 0,
+        isPublic: false,
+      };
 
-    const mediaItem = {
-      id: "media-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9),
-      title: uploadItem.name.replace(/\.[^/.]+$/, ""), // Remove extension
-      filename: uploadItem.name,
-      type: uploadItem.type,
-      size: uploadItem.size,
-      thumbnail: uploadItem.thumbnail,
-      uploadedBy: AuthManager.currentUser?.username || "anonymous",
-      uploadedAt: uploadItem.uploadedAt,
-      description: "",
-      tags: [],
-      views: 0,
-      likes: 0,
-      downloads: 0,
-      isPublic: false,
-    };
-
-    mediaItems.push(mediaItem);
-    localStorage.setItem("ispmedia_library", JSON.stringify(mediaItems));
-
-    // Dispatch event for other components
-    document.dispatchEvent(
-      new CustomEvent("mediaAdded", {
-        detail: { media: mediaItem },
-      })
-    );
+      // Dispatch event for other components
+      document.dispatchEvent(
+        new CustomEvent("mediaAdded", {
+          detail: { media: mediaItem },        })
+      );
+    }
   }
 
   static removeFromQueue(uploadId) {
