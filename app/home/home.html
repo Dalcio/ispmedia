@@ -163,6 +163,110 @@
         </div>
       </section>
 
+      <!-- Recent Media -->
+      <section class="mb-12">
+        <div class="flex justify-between items-center mb-6">
+          <h2>Recent Media</h2>
+          <a
+            href="#"
+            data-route="/files"
+            class="text-primary text-sm hover:underline"
+            >View All</a
+          >
+        </div>
+        <div
+          class="grid"
+          style="
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-4);
+          "
+        >
+          <div class="card interactive" onclick="navigateToMedia('song1')">
+            <div
+              class="media-thumb"
+              style="
+                aspect-ratio: 1;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: var(--space-3);
+              "
+            >
+              <span style="font-size: 2rem; color: white; opacity: 0.9"
+                >🎵</span
+              >
+            </div>
+            <h5 class="mb-1">Summer Vibes</h5>
+            <p class="text-gray text-sm">Electronic • 3:45</p>
+          </div>
+
+          <div class="card interactive" onclick="navigateToAlbum('album1')">
+            <div
+              class="media-thumb"
+              style="
+                aspect-ratio: 1;
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: var(--space-3);
+              "
+            >
+              <span style="font-size: 2rem; color: white; opacity: 0.9"
+                >💿</span
+              >
+            </div>
+            <h5 class="mb-1">Night Sessions</h5>
+            <p class="text-gray text-sm">Album • 12 tracks</p>
+          </div>
+
+          <div class="card interactive" onclick="navigateToMedia('video1')">
+            <div
+              class="media-thumb"
+              style="
+                aspect-ratio: 1;
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: var(--space-3);
+              "
+            >
+              <span style="font-size: 2rem; color: white; opacity: 0.9"
+                >🎥</span
+              >
+            </div>
+            <h5 class="mb-1">Music Video</h5>
+            <p class="text-gray text-sm">Video • 4:12</p>
+          </div>
+
+          <div class="card interactive" onclick="navigateToArtist('artist1')">
+            <div
+              class="media-thumb"
+              style="
+                aspect-ratio: 1;
+                background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: var(--space-3);
+              "
+            >
+              <span style="font-size: 2rem; color: white; opacity: 0.9"
+                >🎤</span
+              >
+            </div>
+            <h5 class="mb-1">Alex Producer</h5>
+            <p class="text-gray text-sm">Artist • 24 tracks</p>
+          </div>
+        </div>
+      </section>
+
       <!-- Recent Activity -->
       <section class="mb-12">
         <h2 class="mb-6">Recent Activity</h2>
@@ -300,15 +404,41 @@
         .then((response) => response.text())
         .then((html) => {
           document.getElementById("navbar-container").innerHTML = html;
-        });
-
-      // Modal functions
+        }); // Modal functions
       function openUploadModal() {
         document.getElementById("uploadModal").classList.remove("hidden");
       }
 
       function closeUploadModal() {
         document.getElementById("uploadModal").classList.add("hidden");
+      }
+
+      // Media navigation functions
+      function navigateToMedia(mediaId) {
+        if (window.router) {
+          window.router.navigateTo(`/media/${mediaId}`);
+        } else {
+          // Fallback for non-SPA mode
+          window.location.href = `/app/media/media-detail.html?id=${mediaId}`;
+        }
+      }
+
+      function navigateToAlbum(albumId) {
+        if (window.router) {
+          window.router.navigateTo(`/album/${albumId}`);
+        } else {
+          // Fallback for non-SPA mode
+          window.location.href = `/app/media/album-detail.html?id=${albumId}`;
+        }
+      }
+
+      function navigateToArtist(artistId) {
+        if (window.router) {
+          window.router.navigateTo(`/artist/${artistId}`);
+        } else {
+          // Fallback for non-SPA mode
+          window.location.href = `/app/media/artist-detail.html?id=${artistId}`;
+        }
       }
 
       // Close modal on overlay click

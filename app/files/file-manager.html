@@ -144,7 +144,64 @@
         </div>
 
         <!-- Files -->
+        <div class="file-item" onclick="openFile('song1.mp3', 'audio')">
+          <div class="file-icon audio">🎵</div>
+          <div class="file-info">
+            <p class="file-name">song1.mp3</p>
+            <p class="file-meta">4.2 MB • 1 day ago</p>
+          </div>
+          <div class="file-actions">
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="event.stopPropagation(); fileAction('download')"
+            >
+              ⬇️
+            </button>
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="event.stopPropagation(); fileAction('share')"
+            >
+              🔗
+            </button>
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="event.stopPropagation(); fileAction('delete')"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <div class="file-item" onclick="openFile('album-cover.jpg', 'image')">
+          <div class="file-icon image">🖼️</div>
+          <div class="file-info">
+            <p class="file-name">album-cover.jpg</p>
+            <p class="file-meta">2.8 MB • 3 hours ago</p>
+          </div>
+          <div class="file-actions">
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="event.stopPropagation(); fileAction('download')"
+            >
+              ⬇️
+            </button>
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="event.stopPropagation(); fileAction('share')"
+            >
+              🔗
+            </button>
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="event.stopPropagation(); fileAction('delete')"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+
         <div class="file-item" onclick="openFile('presentation.pdf')">
+          >
           <div class="file-icon pdf">📄</div>
           <div class="file-info">
             <p class="file-name">presentation.pdf</p>
@@ -494,10 +551,30 @@
         console.log("Opening folder:", folderName);
         // Add folder navigation logic here
       }
+      function openFile(fileName, fileType) {
+        console.log("Opening file:", fileName, "Type:", fileType);
 
-      function openFile(fileName) {
-        console.log("Opening file:", fileName);
-        // Add file preview/open logic here
+        // If it's a media file, navigate to detail page
+        if (
+          fileType === "audio" ||
+          fileType === "video" ||
+          fileType === "image"
+        ) {
+          // Extract file ID from filename (in real app, this would be a proper ID)
+          const fileId = fileName.split(".")[0];
+
+          // Navigate to media detail page using router
+          if (window.router) {
+            window.router.navigateTo(`/media/${fileId}`);
+          } else {
+            // Fallback for non-SPA mode
+            window.location.href = `/app/media/media-detail.html?id=${fileId}`;
+          }
+        } else {
+          // For other files, show preview or download
+          console.log("Opening file preview for:", fileName);
+          // Add file preview/open logic here
+        }
       }
 
       function createFolder() {

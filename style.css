@@ -749,6 +749,15 @@ a:hover {
   }
 }
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
 }
@@ -757,10 +766,27 @@ a:hover {
   animation: slideIn 0.3s ease-out;
 }
 
-/* Hover effects for interactive elements */
-.interactive:hover {
-  transform: translateY(-1px);
-  transition: transform var(--transition-fast);
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--surface-secondary);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 /* Focus states for accessibility */
@@ -769,4 +795,116 @@ a:hover {
 a:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+/* ===============================
+   SPA Page Transitions
+   =============================== */
+#app-content {
+  min-height: 70vh;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-header h1 {
+  margin-bottom: var(--space-2);
+}
+
+.page-header .breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.page-header .breadcrumb a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.page-header .breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   Media Detail Pages
+   =============================== */
+.media-preview,
+.album-cover,
+.artist-photo {
+  transition: transform 0.2s ease;
+}
+
+.media-preview:hover,
+.album-cover:hover,
+.artist-photo:hover {
+  transform: scale(1.02);
+}
+
+.media-thumb,
+.album-thumb {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.media-thumb:hover,
+.album-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.track-item {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.track-item:hover {
+  background-color: var(--surface-secondary);
+}
+
+/* Media grid layouts */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.media-grid-item {
+  background: var(--surface-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.media-grid-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.media-grid-item img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.media-grid-item .content {
+  padding: var(--space-3);
+}
+
+.media-grid-item .title {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+  color: var(--text-primary);
+}
+
+.media-grid-item .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }

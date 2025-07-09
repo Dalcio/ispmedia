@@ -66,6 +66,19 @@ class AuthManager {
         this.openAuthModal();
         return false;
       }
+
+      // Handle SPA routing for protected links
+      const routeLink = e.target.closest("a[data-route]");
+      if (
+        routeLink &&
+        routeLink.classList.contains("nav-protected") &&
+        !this.isAuthenticated
+      ) {
+        e.preventDefault();
+        this.showToast("Please log in to access this page.", "warning");
+        this.openAuthModal();
+        return false;
+      }
     });
 
     // Add tooltips to protected items
@@ -80,38 +93,46 @@ class AuthManager {
       }
     });
   }
-
   static highlightActivePage() {
     const currentPath = window.location.pathname;
+    const currentRoute = window.router ? window.router.currentRoute : null;
     const navLinks = document.querySelectorAll(".navbar-nav a");
 
     navLinks.forEach((link) => {
       link.classList.remove("active");
 
-      // Get the href and normalize it
-      let linkPath = link.getAttribute("href");
-      if (linkPath.startsWith("/")) {
-        linkPath = linkPath;
+      // For SPA routing, use data-route attribute
+      const linkRoute = link.getAttribute("data-route");
+      if (linkRoute && currentRoute) {
+        if (linkRoute === currentRoute) {
+          link.classList.add("active");
+        }
       } else {
-        linkPath = "/" + linkPath;
-      }
+        // Fallback for non-SPA mode
+        let linkPath = link.getAttribute("href");
+        if (linkPath && linkPath.startsWith("/")) {
+          linkPath = linkPath;
+        } else {
+          linkPath = "/" + linkPath;
+        }
 
-      // Check if current page matches the link
-      if (
-        currentPath === linkPath ||
-        (currentPath === "/" && linkPath.includes("index.html")) ||
-        (currentPath.includes("/index.html") &&
-          linkPath.includes("index.html")) ||
-        (currentPath.includes("/app/home/") &&
-          linkPath.includes("/app/home/")) ||
-        (currentPath.includes("/app/dashboard/") &&
-          linkPath.includes("/app/dashboard/")) ||
-        (currentPath.includes("/app/files/") &&
-          linkPath.includes("/app/files/")) ||
-        (currentPath.includes("/app/admin/") &&
-          linkPath.includes("/app/admin/"))
-      ) {
-        link.classList.add("active");
+        // Check if current page matches the link
+        if (
+          currentPath === linkPath ||
+          (currentPath === "/" && linkPath.includes("index.html")) ||
+          (currentPath.includes("/index.html") &&
+            linkPath.includes("index.html")) ||
+          (currentPath.includes("/app/home/") &&
+            linkPath.includes("/app/home/")) ||
+          (currentPath.includes("/app/dashboard/") &&
+            linkPath.includes("/app/dashboard/")) ||
+          (currentPath.includes("/app/files/") &&
+            linkPath.includes("/app/files/")) ||
+          (currentPath.includes("/app/admin/") &&
+            linkPath.includes("/app/admin/"))
+        ) {
+          link.classList.add("active");
+        }
       }
     });
   }
