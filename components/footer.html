@@ -1,240 +1,58 @@
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <div class="footer-brand">
-                    <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="2" y="2" width="28" height="28" rx="6" fill="#1F7AE0"/>
-                        <path d="M8 12L16 8L24 12V24L16 20L8 24V12Z" fill="white"/>
-                    </svg>
-                    <span class="brand-text">ISPMedia</span>
-                </div>
-                <p class="footer-description">
-                    Gestão moderna de ficheiros com interface elegante e funcionalidades avançadas.
-                </p>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Funcionalidades</h4>
-                <ul class="footer-links">
-                    <li><a href="#" data-route="/dashboard">Dashboard</a></li>
-                    <li><a href="#" data-route="/files">Gestão de Ficheiros</a></li>
-                    <li><a href="#" onclick="Functions.loadModal('app/files/modal-upload.html', 'modal-upload')">Upload</a></li>
-                    <li><a href="#" data-route="/admin">Administração</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Suporte</h4>
-                <ul class="footer-links">
-                    <li><a href="#" onclick="Functions.renderAlert('info', 'Funcionalidade em desenvolvimento')">Ajuda</a></li>
-                    <li><a href="#" onclick="Functions.renderAlert('info', 'Contacte-nos via email')">Contacto</a></li>
-                    <li><a href="#" onclick="Functions.renderAlert('info', 'Documentação em breve')">Documentação</a></li>
-                    <li><a href="#" onclick="Functions.renderAlert('info', 'API em desenvolvimento')">API</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Atalhos</h4>
-                <ul class="footer-shortcuts">
-                    <li><kbd>Ctrl</kbd> + <kbd>H</kbd> - Início</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>D</kbd> - Dashboard</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>F</kbd> - Ficheiros</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>U</kbd> - Upload</li>
-                </ul>
-            </div>
+<footer class="bg-secondary mt-16">
+  <div class="container">
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); padding: var(--space-12) 0 var(--space-8) 0;">
+      
+      <div>
+        <h6 class="text-gray-900 mb-4">ISP Media</h6>
+        <p class="text-sm text-muted mb-4">Modern media management platform designed for simplicity and efficiency.</p>
+        <div class="flex gap-3">
+          <a href="#" class="text-gray-600 hover:text-primary">Privacy</a>
+          <a href="#" class="text-gray-600 hover:text-primary">Terms</a>
         </div>
-        
-        <div class="footer-bottom">
-            <div class="footer-info">
-                <span>&copy; 2025 ISPMedia. Todos os direitos reservados.</span>
-                <span class="footer-version">v1.0.0</span>
-            </div>
-            <div class="footer-status">
-                <span class="status-indicator online"></span>
-                <span class="status-text">Sistema Online</span>
-            </div>
+      </div>
+      
+      <div>
+        <h6 class="text-gray-900 mb-4">Features</h6>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-sm text-muted hover:text-primary">File Management</a></li>
+          <li><a href="#" class="text-sm text-muted hover:text-primary">Dashboard</a></li>
+          <li><a href="#" class="text-sm text-muted hover:text-primary">Analytics</a></li>
+          <li><a href="#" class="text-sm text-muted hover:text-primary">Administration</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h6 class="text-gray-900 mb-4">Support</h6>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-sm text-muted hover:text-primary">Documentation</a></li>
+          <li><a href="#" class="text-sm text-muted hover:text-primary">Help Center</a></li>
+          <li><a href="#" class="text-sm text-muted hover:text-primary">Contact</a></li>
+          <li><a href="#" class="text-sm text-muted hover:text-primary">API</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h6 class="text-gray-900 mb-4">Connect</h6>
+        <p class="text-sm text-muted mb-4">Stay updated with the latest features and updates.</p>
+        <div class="flex gap-2">
+          <input type="email" placeholder="Enter your email" class="form-input" style="flex: 1;">
+          <button class="btn btn-primary btn-sm">Subscribe</button>
         </div>
+      </div>
+      
     </div>
+    
+    <div class="border-t border-gray-300 pt-6 pb-6">
+      <div class="flex justify-between items-center">
+        <p class="text-sm text-muted">© 2025 ISP Media. All rights reserved.</p>
+        <p class="text-sm text-muted">Made with ❤️ for modern web</p>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <style>
-.footer {
-    background: var(--white);
-    border-top: 1px solid var(--border-light);
-    margin-top: var(--spacing-xxl);
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-lg);
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
-}
-
-.footer-section h4 {
-    color: var(--text-primary);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--spacing-md);
-    font-size: 1rem;
-}
-
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-}
-
-.footer-brand .brand-text {
-    font-weight: var(--font-weight-semibold);
-    font-size: 1.125rem;
-    color: var(--text-primary);
-}
-
-.footer-description {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-links li {
-    margin-bottom: var(--spacing-sm);
-}
-
-.footer-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color var(--transition-fast);
-}
-
-.footer-links a:hover {
-    color: var(--primary-blue);
-}
-
-.footer-shortcuts {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-shortcuts li {
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.footer-shortcuts kbd {
-    background: var(--light-gray);
-    border: 1px solid var(--border-light);
-    border-radius: 3px;
-    padding: 2px 6px;
-    font-size: 0.75rem;
-    color: var(--text-primary);
-    font-family: var(--font-family);
-}
-
-.footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--border-light);
-}
-
-.footer-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.footer-version {
-    background: var(--light-gray);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.75rem;
-    color: var(--text-primary);
-    font-weight: var(--font-weight-medium);
-}
-
-.footer-status {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #28a745;
-    animation: pulse 2s infinite;
-}
-
-.status-indicator.online {
-    background: #28a745;
-}
-
-.status-indicator.offline {
-    background: #dc3545;
-}
-
-.status-text {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 6px rgba(40, 167, 69, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
-    }
-}
-
-@media (max-width: 768px) {
-    .footer-container {
-        padding: var(--spacing-lg) var(--spacing-md);
-    }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
-    }
-    
-    .footer-bottom {
-        flex-direction: column;
-        gap: var(--spacing-md);
-        text-align: center;
-    }
-    
-    .footer-info {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-    
-    .footer-shortcuts {
-        display: none;
-    }
+.space-y-2 > * + * {
+  margin-top: var(--space-2);
 }
 </style>

@@ -1,528 +1,352 @@
-<div class="modal glass-strong">
-    <div class="modal-header">
-        <h2 class="modal-title">Upload de Ficheiros</h2>
-        <button class="modal-close" onclick="Functions.closeModal('modal-upload')">&times;</button>
-    </div>
-    <div class="modal-body">
-        <div class="upload-container">
-            <div class="upload-area" id="upload-area">
-                <div class="upload-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7,10 12,15 17,10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                </div>
-                <div class="upload-text">
-                    <h3>Arraste ficheiros aqui</h3>
-                    <p>ou clique para selecionar ficheiros</p>
-                </div>
-                <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*,.pdf,.txt,.doc,.docx,.xls,.xlsx">
-            </div>
-            
-            <div class="upload-info">
-                <div class="info-item">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="12"/>
-                        <line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                    <span>Tamanho máximo: 100MB por ficheiro</span>
-                </div>
-                <div class="info-item">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="20,6 9,17 4,12"/>
-                    </svg>
-                    <span>Formatos suportados: JPG, PNG, PDF, MP4, MP3, TXT, DOC, XLS</span>
-                </div>
+<!-- Upload Modal with Glassmorphism -->
+<div id="uploadModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="flex justify-between items-center mb-6">
+            <h3>Upload Files</h3>
+            <button onclick="closeUploadModal()" class="btn btn-ghost btn-sm">✕</button>
+        </div>
+
+        <!-- Upload Area -->
+        <div id="uploadArea" class="upload-area" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+            <div class="upload-content">
+                <div style="font-size: 4rem; margin-bottom: var(--space-4); opacity: 0.7;">📁</div>
+                <h4 class="mb-2">Drop files here to upload</h4>
+                <p class="text-muted mb-4">or click to browse from your computer</p>
+                <input type="file" multiple class="hidden" id="fileInput" onchange="handleFileSelect(event)">
+                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+                <p class="text-xs text-muted mt-3">Supports: Images, Videos, Documents, Audio • Max file size: 100MB</p>
             </div>
         </div>
-        
-        <div class="upload-queue" id="upload-queue">
-            <!-- Ficheiros serão adicionados aqui -->
+
+        <!-- Upload Progress -->
+        <div id="uploadProgress" class="hidden mt-6">
+            <h5 class="mb-4">Uploading Files</h5>
+            <div id="uploadList" class="space-y-3">
+                <!-- Upload items will be added here dynamically -->
+            </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="Functions.closeModal('modal-upload')">Cancelar</button>
-        <button class="btn btn-primary" onclick="startUpload()" id="upload-btn" disabled>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7,10 12,15 17,10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Enviar Ficheiros
-        </button>
+
+        <!-- Upload Queue -->
+        <div id="uploadQueue" class="hidden mt-6">
+            <div class="flex justify-between items-center mb-4">
+                <h5>Files Ready to Upload</h5>
+                <button class="btn btn-ghost btn-sm" onclick="clearQueue()">Clear All</button>
+            </div>
+            <div id="queueList" class="space-y-2 mb-6">
+                <!-- Queue items will be added here dynamically -->
+            </div>
+            <div class="flex justify-end gap-3">
+                <button class="btn btn-ghost" onclick="closeUploadModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="startUpload()">
+                    <span>Upload</span>
+                    <span id="queueCount" class="ml-2 px-2 py-1 bg-white text-primary rounded-full text-xs">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Initial Actions -->
+        <div id="uploadActions" class="flex justify-end gap-3 mt-6">
+            <button class="btn btn-ghost" onclick="closeUploadModal()">Cancel</button>
+        </div>
     </div>
 </div>
 
-<script>
-let selectedFiles = [];
-let isUploading = false;
-
-// Inicialização
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadArea = document.getElementById('upload-area');
-    const fileInput = document.getElementById('file-input');
-    
-    // Eventos do upload area
-    uploadArea.addEventListener('click', () => {
-        if (!isUploading) {
-            fileInput.click();
-        }
-    });
-    
-    uploadArea.addEventListener('dragover', handleDragOver);
-    uploadArea.addEventListener('dragleave', handleDragLeave);
-    uploadArea.addEventListener('drop', handleDrop);
-    
-    // Evento de seleção de ficheiros
-    fileInput.addEventListener('change', handleFileSelect);
-});
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!isUploading) {
-        document.getElementById('upload-area').classList.add('drag-over');
-    }
-}
-
-function handleDragLeave(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    document.getElementById('upload-area').classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    document.getElementById('upload-area').classList.remove('drag-over');
-    
-    if (!isUploading) {
-        const files = Array.from(e.dataTransfer.files);
-        processFiles(files);
-    }
-}
-
-function handleFileSelect(e) {
-    const files = Array.from(e.target.files);
-    processFiles(files);
-}
-
-function processFiles(files) {
-    const validFiles = [];
-    
-    files.forEach(file => {
-        const errors = Functions.validateFile(file);
-        
-        if (errors.length === 0) {
-            validFiles.push(file);
-        } else {
-            Functions.renderAlert('error', `${file.name}: ${errors.join(', ')}`);
-        }
-    });
-    
-    if (validFiles.length > 0) {
-        addFilesToQueue(validFiles);
-    }
-}
-
-function addFilesToQueue(files) {
-    const queue = document.getElementById('upload-queue');
-    
-    files.forEach(file => {
-        // Verifica se o ficheiro já foi adicionado
-        const existingFile = selectedFiles.find(f => f.name === file.name && f.size === file.size);
-        if (existingFile) {
-            Functions.renderAlert('warning', `${file.name} já foi adicionado`);
-            return;
-        }
-        
-        selectedFiles.push(file);
-        
-        const fileItem = document.createElement('div');
-        fileItem.className = 'file-queue-item';
-        fileItem.innerHTML = `
-            <div class="file-info">
-                <div class="file-icon">
-                    ${getFileIcon(file.type)}
-                </div>
-                <div class="file-details">
-                    <div class="file-name">${file.name}</div>
-                    <div class="file-size">${Functions.formatFileSize(file.size)}</div>
-                </div>
-            </div>
-            <div class="file-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 0%"></div>
-                </div>
-                <div class="progress-text">0%</div>
-            </div>
-            <div class="file-actions">
-                <button class="btn btn-ghost btn-sm" onclick="removeFile('${file.name}')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
-            </div>
-        `;
-        
-        queue.appendChild(fileItem);
-    });
-    
-    updateUploadButton();
-}
-
-function getFileIcon(type) {
-    if (type.startsWith('image/')) {
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21,15 16,10 5,21"/>
-        </svg>`;
-    } else if (type.startsWith('video/')) {
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="23,7 16,12 23,17"/>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-        </svg>`;
-    } else if (type.startsWith('audio/')) {
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18V5l12-2v13"/>
-            <circle cx="6" cy="18" r="3"/>
-            <circle cx="18" cy="16" r="3"/>
-        </svg>`;
-    } else {
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>`;
-    }
-}
-
-function removeFile(fileName) {
-    selectedFiles = selectedFiles.filter(file => file.name !== fileName);
-    
-    const queue = document.getElementById('upload-queue');
-    const fileItems = queue.querySelectorAll('.file-queue-item');
-    
-    fileItems.forEach(item => {
-        const nameElement = item.querySelector('.file-name');
-        if (nameElement.textContent === fileName) {
-            item.remove();
-        }
-    });
-    
-    updateUploadButton();
-}
-
-function updateUploadButton() {
-    const uploadBtn = document.getElementById('upload-btn');
-    const hasFiles = selectedFiles.length > 0;
-    
-    uploadBtn.disabled = !hasFiles || isUploading;
-    uploadBtn.textContent = hasFiles ? 
-        `Enviar ${selectedFiles.length} ficheiro${selectedFiles.length > 1 ? 's' : ''}` : 
-        'Enviar Ficheiros';
-}
-
-function startUpload() {
-    if (selectedFiles.length === 0 || isUploading) return;
-    
-    isUploading = true;
-    updateUploadButton();
-    
-    const uploadBtn = document.getElementById('upload-btn');
-    uploadBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-        </svg>
-        Enviando...
-    `;
-    
-    // Simula upload de cada ficheiro
-    const uploadPromises = selectedFiles.map((file, index) => {
-        return simulateFileUpload(file, index);
-    });
-    
-    Promise.all(uploadPromises).then(() => {
-        Functions.renderAlert('success', `${selectedFiles.length} ficheiro(s) enviado(s) com sucesso!`);
-        
-        setTimeout(() => {
-            Functions.closeModal('modal-upload');
-            resetUploadModal();
-        }, 1000);
-    }).catch(error => {
-        Functions.renderAlert('error', 'Erro durante o upload. Tente novamente.');
-        isUploading = false;
-        updateUploadButton();
-    });
-}
-
-function simulateFileUpload(file, index) {
-    return new Promise((resolve) => {
-        const fileItems = document.querySelectorAll('.file-queue-item');
-        const fileItem = fileItems[index];
-        const progressFill = fileItem.querySelector('.progress-fill');
-        const progressText = fileItem.querySelector('.progress-text');
-        
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.random() * 10;
-            
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                resolve();
-            }
-            
-            progressFill.style.width = progress + '%';
-            progressText.textContent = Math.round(progress) + '%';
-            
-            if (progress === 100) {
-                progressText.textContent = 'Concluído';
-                progressFill.style.background = '#28a745';
-            }
-        }, 100);
-    });
-}
-
-function resetUploadModal() {
-    selectedFiles = [];
-    isUploading = false;
-    
-    document.getElementById('upload-queue').innerHTML = '';
-    document.getElementById('file-input').value = '';
-    
-    const uploadBtn = document.getElementById('upload-btn');
-    uploadBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7,10 12,15 17,10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Enviar Ficheiros
-    `;
-    
-    updateUploadButton();
-}
-</script>
-
 <style>
-.upload-container {
-    margin-bottom: var(--spacing-xl);
-}
-
 .upload-area {
-    border: 2px dashed var(--border-light);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-xxl);
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-lg);
+    padding: var(--space-12) var(--space-8);
     text-align: center;
+    transition: all var(--transition-fast);
+    background: var(--bg-secondary);
     cursor: pointer;
-    transition: all var(--transition-medium);
-    position: relative;
-    margin-bottom: var(--spacing-lg);
 }
 
-.upload-area:hover {
-    border-color: var(--primary-blue);
-    background: var(--soft-blue);
+.upload-area:hover,
+.upload-area.drag-over {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
 }
 
 .upload-area.drag-over {
-    border-color: var(--primary-blue);
-    background: var(--soft-blue);
     transform: scale(1.02);
 }
 
-.upload-icon {
-    margin-bottom: var(--spacing-lg);
-    color: var(--primary-blue);
+.upload-content {
+    pointer-events: none;
 }
 
-.upload-text h3 {
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-primary);
-}
-
-.upload-text p {
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.upload-area input[type="file"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.upload-info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.info-item {
+.upload-item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.info-item svg {
-    color: var(--primary-blue);
-}
-
-.upload-queue {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid var(--border-light);
-    border-radius: var(--border-radius-md);
-    background: var(--light-gray);
-    padding: var(--spacing-md);
-}
-
-.upload-queue:empty {
-    display: none;
-}
-
-.file-queue-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
+    gap: var(--space-3);
+    padding: var(--space-3);
     background: var(--white);
-    border-radius: var(--border-radius-sm);
-    margin-bottom: var(--spacing-sm);
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
 }
 
-.file-queue-item:last-child {
-    margin-bottom: 0;
-}
-
-.file-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    flex: 1;
-}
-
-.file-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--border-radius-sm);
-    background: var(--soft-blue);
+.upload-item .file-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-blue);
+    font-size: 1rem;
+    color: white;
 }
 
-.file-details {
+.upload-item .file-info {
     flex: 1;
+    min-width: 0;
 }
 
-.file-name {
-    font-weight: var(--font-weight-medium);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
+.upload-item .file-name {
+    font-weight: 500;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
     word-break: break-word;
 }
 
-.file-size {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.file-progress {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    min-width: 120px;
+.upload-item .file-meta {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin: 0;
 }
 
 .progress-bar {
-    width: 80px;
-    height: 6px;
-    background: var(--border-light);
-    border-radius: 3px;
+    width: 100%;
+    height: 4px;
+    background: var(--gray-200);
+    border-radius: 2px;
     overflow: hidden;
+    margin-top: var(--space-2);
 }
 
 .progress-fill {
     height: 100%;
-    background: var(--primary-blue);
-    transition: width var(--transition-fast);
+    background: var(--primary-color);
+    transition: width 0.3s ease;
 }
 
-.progress-text {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    min-width: 40px;
-    text-align: right;
-}
-
-.file-actions {
+.queue-item {
     display: flex;
-    gap: var(--spacing-xs);
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .upload-area {
-        padding: var(--spacing-xl);
-    }
-    
-    .file-queue-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-sm);
-    }
-    
-    .file-info {
-        width: 100%;
-    }
-    
-    .file-progress {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .progress-bar {
-        flex: 1;
-        margin-right: var(--spacing-sm);
-    }
-}
-
-@media (max-width: 480px) {
-    .upload-info {
-        gap: var(--spacing-md);
-    }
-    
-    .info-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-xs);
-    }
-    
-    .modal-footer {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-    
-    .modal-footer .btn {
-        width: 100%;
-    }
-}
+.space-y-2 > * + * { margin-top: var(--space-2); }
+.space-y-3 > * + * { margin-top: var(--space-3); }
+.ml-2 { margin-left: var(--space-2); }
 </style>
+
+<script>
+let uploadQueue = [];
+let isUploading = false;
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        clearQueue();
+    }
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('drag-over');
+    
+    const files = Array.from(e.dataTransfer.files);
+    addFilesToQueue(files);
+}
+
+function handleFileSelect(e) {
+    const files = Array.from(e.target.files);
+    addFilesToQueue(files);
+}
+
+function addFilesToQueue(files) {
+    files.forEach(file => {
+        if (file.size > 100 * 1024 * 1024) { // 100MB limit
+            alert(`File "${file.name}" is too large. Maximum size is 100MB.`);
+            return;
+        }
+        
+        uploadQueue.push({
+            id: Date.now() + Math.random(),
+            file: file,
+            status: 'pending'
+        });
+    });
+    
+    updateQueueDisplay();
+}
+
+function updateQueueDisplay() {
+    const queueDiv = document.getElementById('uploadQueue');
+    const queueList = document.getElementById('queueList');
+    const queueCount = document.getElementById('queueCount');
+    const uploadActions = document.getElementById('uploadActions');
+    
+    if (uploadQueue.length > 0) {
+        queueDiv.classList.remove('hidden');
+        uploadActions.classList.add('hidden');
+        
+        queueList.innerHTML = uploadQueue.map(item => `
+            <div class="queue-item">
+                <div class="file-icon" style="background: ${getFileColor(item.file.name)};">
+                    ${getFileIcon(item.file.name)}
+                </div>
+                <div class="file-info" style="flex: 1;">
+                    <p class="file-name">${item.file.name}</p>
+                    <p class="file-meta">${formatFileSize(item.file.size)}</p>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="removeFromQueue('${item.id}')">✕</button>
+            </div>
+        `).join('');
+        
+        queueCount.textContent = uploadQueue.length;
+    } else {
+        queueDiv.classList.add('hidden');
+        uploadActions.classList.remove('hidden');
+    }
+}
+
+function removeFromQueue(id) {
+    uploadQueue = uploadQueue.filter(item => item.id !== id);
+    updateQueueDisplay();
+}
+
+function clearQueue() {
+    uploadQueue = [];
+    updateQueueDisplay();
+    document.getElementById('uploadProgress').classList.add('hidden');
+}
+
+function startUpload() {
+    if (uploadQueue.length === 0 || isUploading) return;
+    
+    isUploading = true;
+    document.getElementById('uploadQueue').classList.add('hidden');
+    document.getElementById('uploadProgress').classList.remove('hidden');
+    
+    const uploadList = document.getElementById('uploadList');
+    uploadList.innerHTML = '';
+    
+    uploadQueue.forEach((item, index) => {
+        const uploadItem = document.createElement('div');
+        uploadItem.className = 'upload-item';
+        uploadItem.innerHTML = `
+            <div class="file-icon" style="background: ${getFileColor(item.file.name)};">
+                ${getFileIcon(item.file.name)}
+            </div>
+            <div class="file-info">
+                <p class="file-name">${item.file.name}</p>
+                <p class="file-meta">${formatFileSize(item.file.size)}</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-${item.id}" style="width: 0%;"></div>
+                </div>
+            </div>
+            <div id="status-${item.id}" class="text-sm text-muted">Waiting...</div>
+        `;
+        uploadList.appendChild(uploadItem);
+        
+        // Simulate upload progress
+        setTimeout(() => simulateUpload(item.id, index), index * 500);
+    });
+}
+
+function simulateUpload(itemId, index) {
+    const progressBar = document.getElementById(`progress-${itemId}`);
+    const statusDiv = document.getElementById(`status-${itemId}`);
+    
+    let progress = 0;
+    statusDiv.textContent = 'Uploading...';
+    
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            progressBar.style.width = '100%';
+            statusDiv.textContent = 'Complete ✓';
+            statusDiv.style.color = 'var(--success)';
+            clearInterval(interval);
+            
+            // Check if all uploads are complete
+            if (document.querySelectorAll('#uploadList .upload-item').length === 
+                document.querySelectorAll('#uploadList [id^="status-"]:contains("Complete")').length) {
+                setTimeout(() => {
+                    isUploading = false;
+                    closeUploadModal();
+                }, 1000);
+            }
+        } else {
+            progressBar.style.width = progress + '%';
+        }
+    }, 200);
+}
+
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    switch (ext) {
+        case 'pdf': return '📄';
+        case 'jpg': case 'jpeg': case 'png': case 'gif': case 'webp': return '🖼️';
+        case 'mp4': case 'avi': case 'mov': case 'wmv': return '🎥';
+        case 'mp3': case 'wav': case 'flac': return '🎵';
+        case 'doc': case 'docx': return '📝';
+        case 'xls': case 'xlsx': return '📊';
+        case 'ppt': case 'pptx': return '📋';
+        case 'zip': case 'rar': return '🗜️';
+        default: return '📄';
+    }
+}
+
+function getFileColor(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    switch (ext) {
+        case 'pdf': return '#FF5252';
+        case 'jpg': case 'jpeg': case 'png': case 'gif': case 'webp': return '#4CAF50';
+        case 'mp4': case 'avi': case 'mov': case 'wmv': return '#2196F3';
+        case 'mp3': case 'wav': case 'flac': return '#9C27B0';
+        case 'doc': case 'docx': return '#2196F3';
+        case 'xls': case 'xlsx': return '#FF9800';
+        case 'ppt': case 'pptx': return '#FF5722';
+        case 'zip': case 'rar': return '#795548';
+        default: return '#9E9E9E';
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Close modal on overlay click
+document.getElementById('uploadModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeUploadModal();
+    }
+});
+
+// Make upload area clickable
+document.getElementById('uploadArea').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+</script>

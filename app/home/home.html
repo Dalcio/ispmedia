@@ -1,448 +1,223 @@
-<div class="home-hero">
-    <div class="hero-content">
-        <h1 class="hero-title">ISPMedia</h1>
-        <p class="hero-subtitle">Gestão moderna de ficheiros com interface elegante e funcionalidades avançadas</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - ISP Media</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div id="navbar-container"></div>
+
+    <!-- Main Content -->
+    <main class="container" style="padding: var(--space-12) var(--space-6);">
         
-        <div class="hero-actions">
-            <button class="btn btn-primary btn-lg" onclick="Functions.loadModal('app/home/modal-auth.html', 'modal-auth')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                    <polyline points="10,17 15,12 10,7"/>
-                    <line x1="15" y1="12" x2="3" y2="12"/>
-                </svg>
-                Começar Agora
-            </button>
-            <button class="btn btn-ghost btn-lg" onclick="scrollToFeatures()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="m9 12 2 2 4-4"/>
-                </svg>
-                Saber Mais
-            </button>
-        </div>
-    </div>
-    
-    <div class="hero-visual">
-        <div class="hero-card glass">
-            <div class="card-header">
-                <h3>Painel de Controle</h3>
-                <div class="card-actions">
-                    <div class="status-dot"></div>
+        <!-- Welcome Section -->
+        <section class="mb-12">
+            <div class="card">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="mb-2">Welcome back!</h1>
+                        <p class="text-gray">Here's what's happening with your media today.</p>
+                    </div>
+                    <button class="btn btn-primary">Upload New</button>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="text-center p-4">
+                        <h3 class="text-primary mb-2">24</h3>
+                        <p class="text-sm text-muted">Files Today</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <h3 class="text-primary mb-2">1.2GB</h3>
+                        <p class="text-sm text-muted">Storage Used</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <h3 class="text-primary mb-2">98%</h3>
+                        <p class="text-sm text-muted">Processing Rate</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <h3 class="text-primary mb-2">5.2K</h3>
+                        <p class="text-sm text-muted">Total Views</p>
+                    </div>
                 </div>
             </div>
-            <div class="card-stats">
-                <div class="stat-item">
-                    <span class="stat-label">Ficheiros</span>
-                    <span class="stat-value">1,234</span>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="mb-12">
+            <h2 class="mb-6">Quick Actions</h2>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                <a href="../files/file-manager.html" class="card interactive" style="text-decoration: none; color: inherit;">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">📁</span>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Manage Files</h5>
+                            <p class="text-sm text-muted">Organize and upload media</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="../dashboard/dashboard.html" class="card interactive" style="text-decoration: none; color: inherit;">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">📊</span>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">View Analytics</h5>
+                            <p class="text-sm text-muted">Check performance metrics</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <button class="card interactive" style="border: none; background: var(--white); cursor: pointer;" onclick="openUploadModal()">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">⬆️</span>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Quick Upload</h5>
+                            <p class="text-sm text-muted">Upload files instantly</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <a href="../admin/admin.html" class="card interactive" style="text-decoration: none; color: inherit;">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">⚙️</span>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Settings</h5>
+                            <p class="text-sm text-muted">Configure your workspace</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="mb-12">
+            <h2 class="mb-6">Recent Activity</h2>
+            <div class="card">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-secondary rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div style="width: 32px; height: 32px; background: var(--success); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                <span style="color: white; font-size: 0.875rem;">✓</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">presentation.pdf uploaded</p>
+                                <p class="text-sm text-muted">2 minutes ago</p>
+                            </div>
+                        </div>
+                        <span class="text-sm text-muted">2.4 MB</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-secondary rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div style="width: 32px; height: 32px; background: var(--info); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                <span style="color: white; font-size: 0.875rem;">📊</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">Analytics report generated</p>
+                                <p class="text-sm text-muted">1 hour ago</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-ghost btn-sm">View</button>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-secondary rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div style="width: 32px; height: 32px; background: var(--primary-color); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                <span style="color: white; font-size: 0.875rem;">👤</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">New user joined workspace</p>
+                                <p class="text-sm text-muted">3 hours ago</p>
+                            </div>
+                        </div>
+                        <span class="text-sm text-muted">john@example.com</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Espaço Usado</span>
-                    <span class="stat-value">2.5 GB</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Upload Hoje</span>
-                    <span class="stat-value">45</span>
+                
+                <div class="text-center mt-6">
+                    <button class="btn btn-ghost">View All Activity</button>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </section>
 
-<div class="features-section" id="features">
-    <div class="section-header">
-        <h2>Funcionalidades</h2>
-        <p>Tudo o que precisa para gerir os seus ficheiros de forma eficiente</p>
-    </div>
-    
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7,10 12,15 17,10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-            </div>
-            <h3>Upload Rápido</h3>
-            <p>Envie ficheiros através de drag & drop ou selecione múltiplos ficheiros de uma vez</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                </svg>
-            </div>
-            <h3>Organização Inteligente</h3>
-            <p>Organize ficheiros em pastas e categorias com sistema de etiquetas avançado</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="9" y1="9" x2="9" y2="15"/>
-                    <line x1="15" y1="9" x2="15" y2="15"/>
-                </svg>
-            </div>
-            <h3>Dashboard Completo</h3>
-            <p>Visualize estatísticas, uso de espaço e atividade recente num painel intuitivo</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                    <line x1="8" y1="21" x2="16" y2="21"/>
-                    <line x1="12" y1="17" x2="12" y2="21"/>
-                </svg>
-            </div>
-            <h3>Interface Moderna</h3>
-            <p>Design minimalista e responsivo que funciona perfeitamente em todos os dispositivos</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-            </div>
-            <h3>Segurança Avançada</h3>
-            <p>Controle de acesso baseado em funções e backup automático dos seus dados</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                </svg>
-            </div>
-            <h3>Performance Otimizada</h3>
-            <p>Carregamento rápido e operações eficientes para uma experiência fluida</p>
-        </div>
-    </div>
-</div>
+    </main>
 
-<div class="stats-section">
-    <div class="section-header">
-        <h2>Estatísticas</h2>
-        <p>Números que demonstram a eficiência da plataforma</p>
-    </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-number">99.9%</div>
-            <div class="stat-label">Uptime</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">2.5TB</div>
-            <div class="stat-label">Dados Processados</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">50K+</div>
-            <div class="stat-label">Ficheiros Geridos</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">24/7</div>
-            <div class="stat-label">Suporte</div>
+    <!-- Quick Upload Modal (Glassmorphism) -->
+    <div id="uploadModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3>Quick Upload</h3>
+                <button onclick="closeUploadModal()" class="btn btn-ghost btn-sm">✕</button>
+            </div>
+            
+            <div class="upload-area" style="border: 2px dashed var(--gray-300); border-radius: var(--radius-lg); padding: var(--space-8); text-align: center; margin-bottom: var(--space-6);">
+                <div style="font-size: 3rem; margin-bottom: var(--space-4);">📁</div>
+                <h4 class="mb-2">Drop files here</h4>
+                <p class="text-muted mb-4">or click to browse</p>
+                <input type="file" multiple class="hidden" id="fileInput">
+                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+            </div>
+            
+            <div class="flex justify-end gap-3">
+                <button class="btn btn-ghost" onclick="closeUploadModal()">Cancel</button>
+                <button class="btn btn-primary">Upload</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="cta-section">
-    <div class="cta-content">
-        <h2>Pronto para começar?</h2>
-        <p>Experimente a gestão de ficheiros mais moderna e eficiente</p>
-        <button class="btn btn-primary btn-lg" onclick="Functions.loadModal('app/home/modal-auth.html', 'modal-auth')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                <polyline points="10,17 15,12 10,7"/>
-                <line x1="15" y1="12" x2="3" y2="12"/>
-            </svg>
-            Começar Gratuitamente
-        </button>
-    </div>
-</div>
+    <!-- Footer -->
+    <div id="footer-container"></div>
 
-<script>
-function scrollToFeatures() {
-    document.getElementById('features').scrollIntoView({ 
-        behavior: 'smooth' 
-    });
-}
+    <!-- Scripts -->
+    <script>
+        // Load navbar and footer
+        fetch('/components/navbar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+            });
 
-// Animação de entrada
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.feature-card, .stat-card');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer-container').innerHTML = html;
+            });
+
+        // Modal functions
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('uploadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUploadModal();
             }
         });
-    });
-    
-    cards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
-    });
-});
-</script>
 
-<style>
-.home-hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-xxl);
-    align-items: center;
-    min-height: 60vh;
-    margin-bottom: var(--spacing-xxl);
-}
-
-.hero-content {
-    max-width: 500px;
-}
-
-.hero-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, var(--primary-blue), var(--gray-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-subtitle {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-xl);
-    line-height: 1.6;
-}
-
-.hero-actions {
-    display: flex;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
-}
-
-.hero-visual {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.hero-card {
-    width: 100%;
-    max-width: 350px;
-    padding: var(--spacing-xl);
-}
-
-.hero-card .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-lg);
-}
-
-.hero-card h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: var(--text-primary);
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #28a745;
-    animation: pulse 2s infinite;
-}
-
-.card-stats {
-    display: grid;
-    gap: var(--spacing-md);
-}
-
-.stat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-sm) 0;
-}
-
-.stat-label {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.stat-value {
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
-    font-size: 1rem;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: var(--spacing-xxl);
-}
-
-.section-header h2 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-md);
-}
-
-.section-header p {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.features-section {
-    margin-bottom: var(--spacing-xxl);
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
-}
-
-.feature-card {
-    background: var(--white);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-xl);
-    text-align: center;
-    border: 1px solid var(--border-light);
-    transition: all var(--transition-medium);
-}
-
-.feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px var(--shadow-medium);
-}
-
-.feature-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto var(--spacing-lg);
-    background: linear-gradient(135deg, var(--primary-blue), var(--gray-blue));
-    border-radius: var(--border-radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-}
-
-.feature-card h3 {
-    font-size: 1.25rem;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-md);
-}
-
-.feature-card p {
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.stats-section {
-    background: var(--white);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-xxl);
-    margin-bottom: var(--spacing-xxl);
-    border: 1px solid var(--border-light);
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-xl);
-}
-
-.stat-card {
-    text-align: center;
-    padding: var(--spacing-lg);
-}
-
-.stat-number {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: var(--font-weight-semibold);
-    color: var(--primary-blue);
-    margin-bottom: var(--spacing-sm);
-}
-
-.stat-card .stat-label {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    font-weight: var(--font-weight-medium);
-}
-
-.cta-section {
-    text-align: center;
-    padding: var(--spacing-xxl);
-    background: linear-gradient(135deg, var(--soft-blue), var(--gray-blue));
-    border-radius: var(--border-radius-lg);
-    margin-bottom: var(--spacing-xxl);
-}
-
-.cta-content h2 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-md);
-}
-
-.cta-content p {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-xl);
-}
-
-@media (max-width: 768px) {
-    .home-hero {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-xl);
-        text-align: center;
-    }
-    
-    .hero-actions {
-        justify-content: center;
-    }
-    
-    .hero-actions .btn {
-        width: 100%;
-        max-width: 200px;
-    }
-    
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-actions {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .hero-actions .btn {
-        width: 100%;
-        max-width: none;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+        // Add space-y utility styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .space-y-4 > * + * {
+                margin-top: var(--space-4);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

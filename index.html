@@ -1,41 +1,198 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISPMedia - Gestão de Ficheiros</title>
+    <title>ISP Media - Modern Media Management</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar will be loaded here -->
-    <nav id="navbar"></nav>
-    
-    <!-- Main content area -->
-    <main id="main-content">
-        <!-- Pages will be loaded here dynamically -->
-    </main>
-    
-    <!-- Footer will be loaded here -->
-    <footer id="footer"></footer>
-    
-    <!-- Modal container -->
-    <div id="modal-container"></div>
-    
-    <!-- Loading overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="loading-spinner"></div>
-    </div>
+    <!-- Navigation -->
+    <div id="navbar-container"></div>
 
-    <!-- Scripts -->
-    <script src="scripts/config.js"></script>
-    <script src="scripts/logger.js"></script>
-    <script src="scripts/session.js"></script>
-    <script src="scripts/functions.js"></script>
-    <script src="scripts/charts.js"></script>
-    <script src="scripts/routes.js"></script>
+    <!-- Hero Section -->
+    <section class="bg-secondary" style="padding: var(--space-20) 0;">
+        <div class="container text-center">
+            <h1 class="mb-6 animate-fade-in">Modern Media Management</h1>
+            <p class="text-lg text-gray mb-8 animate-fade-in" style="max-width: 600px; margin: 0 auto var(--space-8) auto;">
+                Streamline your media workflow with our clean, intuitive platform designed for modern teams.
+            </p>
+            <div class="flex justify-center gap-4 animate-fade-in">
+                <a href="/app/dashboard/dashboard.html" class="btn btn-primary btn-lg">Get Started</a>
+                <a href="#features" class="btn btn-secondary btn-lg">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" style="padding: var(--space-20) 0;">
+        <div class="container">
+            <div class="text-center mb-16">
+                <h2 class="mb-4">Everything you need</h2>
+                <p class="text-lg text-gray">Powerful features wrapped in a beautiful, simple interface</p>
+            </div>
+            
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="card interactive animate-slide-in">
+                    <div class="mb-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">📁</span>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">File Management</h4>
+                    <p class="text-gray">Organize, upload, and manage your media files with an intuitive drag-and-drop interface.</p>
+                </div>
+                
+                <div class="card interactive animate-slide-in">
+                    <div class="mb-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">📊</span>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Analytics Dashboard</h4>
+                    <p class="text-gray">Get insights into your media performance with beautiful, real-time analytics and reporting.</p>
+                </div>
+                
+                <div class="card interactive animate-slide-in">
+                    <div class="mb-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">⚡</span>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Lightning Fast</h4>
+                    <p class="text-gray">Built for speed with modern technologies. Upload, process, and deliver content in seconds.</p>
+                </div>
+                
+                <div class="card interactive animate-slide-in">
+                    <div class="mb-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">🔒</span>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Secure & Private</h4>
+                    <p class="text-gray">Enterprise-grade security with role-based access control and encrypted storage.</p>
+                </div>
+                
+                <div class="card interactive animate-slide-in">
+                    <div class="mb-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">🎨</span>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Beautiful Design</h4>
+                    <p class="text-gray">Clean, modern interface inspired by the best design systems in the industry.</p>
+                </div>
+                
+                <div class="card interactive animate-slide-in">
+                    <div class="mb-4">
+                        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.5rem;">📱</span>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Mobile Ready</h4>
+                    <p class="text-gray">Fully responsive design that works perfectly on desktop, tablet, and mobile devices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section with Glassmorphism -->
+    <section class="bg-secondary" style="padding: var(--space-20) 0;">
+        <div class="container">
+            <div class="card-glass rounded-lg" style="padding: var(--space-12); text-align: center;">
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="mb-6">
+                        <h3 class="text-primary mb-2">10K+</h3>
+                        <p class="text-gray">Files Managed</p>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-primary mb-2">500+</h3>
+                        <p class="text-gray">Happy Users</p>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-primary mb-2">99.9%</h3>
+                        <p class="text-gray">Uptime</p>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-primary mb-2">24/7</h3>
+                        <p class="text-gray">Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="padding: var(--space-20) 0;">
+        <div class="container text-center">
+            <h2 class="mb-6">Ready to get started?</h2>
+            <p class="text-lg text-gray mb-8" style="max-width: 500px; margin: 0 auto var(--space-8) auto;">
+                Join thousands of users who trust ISP Media for their content management needs.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="/app/dashboard/dashboard.html" class="btn btn-primary btn-lg">Start Free Trial</a>
+                <a href="#" class="btn btn-ghost btn-lg">View Pricing</a>
+            </div>
+        </div>
+    </section>    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal-container"></div>    <!-- Scripts -->
     <script src="scripts/app.js"></script>
+    <script>
+        // Load navbar and footer
+        fetch('/components/navbar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+            });        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer-container').innerHTML = html;
+            });
+
+        fetch('/app/home/modal-auth.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('auth-modal-container').innerHTML = html;
+            });
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards for animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';                observer.observe(card);
+            });
+        });
+
+        // Global auth modal function
+        function openAuthModal() {
+            const modal = document.getElementById('authModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+    </script>
 </body>
 </html>

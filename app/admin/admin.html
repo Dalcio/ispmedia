@@ -1,852 +1,650 @@
-<div class="admin-header">
-    <div class="admin-title">
-        <h1>Administração</h1>
-        <p>Gerencie utilizadores, configurações e monitore o sistema</p>
-    </div>
-    <div class="admin-actions">
-        <button class="btn btn-primary" onclick="exportData()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7,10 12,15 17,10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Exportar Dados
-        </button>
-        <button class="btn btn-secondary" onclick="refreshStats()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23,4 23,10 17,10"/>
-                <polyline points="1,20 1,14 7,14"/>
-                <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27"/>
-                <path d="M3.51 15a9 9 0 0 0 14.85 4.36l-1.27-1.27"/>
-            </svg>
-            Atualizar
-        </button>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - ISP Media</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div id="navbar-container"></div>
 
-<div class="admin-tabs">
-    <button class="admin-tab active" onclick="switchAdminTab('users')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-        Utilizadores
-    </button>
-    <button class="admin-tab" onclick="switchAdminTab('storage')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        </svg>
-        Armazenamento
-    </button>
-    <button class="admin-tab" onclick="switchAdminTab('settings')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m15.5-6.5L16 12l4.5 4.5M8 12L3.5 7.5M3.5 16.5L8 12"/>
-        </svg>
-        Configurações
-    </button>
-    <button class="admin-tab" onclick="switchAdminTab('logs')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-        Logs
-    </button>
-</div>
-
-<div class="admin-content">
-    <!-- Painel de Utilizadores -->
-    <div id="users-panel" class="admin-panel active">
-        <div class="panel-header">
-            <h2>Gestão de Utilizadores</h2>
-            <button class="btn btn-primary" onclick="addUser()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="8.5" cy="7" r="4"/>
-                    <line x1="20" y1="8" x2="20" y2="14"/>
-                    <line x1="23" y1="11" x2="17" y2="11"/>
-                </svg>
-                Adicionar Utilizador
-            </button>
-        </div>
+    <!-- Admin Panel Content -->
+    <main class="container" style="padding: var(--space-8) var(--space-6);">
         
-        <div class="users-stats">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                    </svg>
+        <!-- Admin Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="mb-2">Admin Panel</h1>
+                <p class="text-gray">Manage users, settings, and system configuration</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="btn btn-ghost">System Logs</button>
+                <button class="btn btn-secondary">Backup Data</button>
+                <button class="btn btn-primary">System Health</button>
+            </div>
+        </div>
+
+        <!-- Admin Stats -->
+        <section class="mb-12">
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                
+                <div class="card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-sm text-muted mb-1">Total Users</p>
+                            <h3 class="text-2xl font-bold">1,247</h3>
+                        </div>
+                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.25rem;">👥</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-success">↗ +12</span>
+                        <span class="text-sm text-muted">this week</span>
+                    </div>
                 </div>
-                <div class="stat-info">
-                    <div class="stat-value">156</div>
-                    <div class="stat-label">Total de Utilizadores</div>
+
+                <div class="card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-sm text-muted mb-1">Active Sessions</p>
+                            <h3 class="text-2xl font-bold">142</h3>
+                        </div>
+                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.25rem;">⚡</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-success">↗ +8%</span>
+                        <span class="text-sm text-muted">from yesterday</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-sm text-muted mb-1">System Load</p>
+                            <h3 class="text-2xl font-bold">23%</h3>
+                        </div>
+                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.25rem;">📊</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-success">↘ -5%</span>
+                        <span class="text-sm text-muted">optimal</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-sm text-muted mb-1">Storage Used</p>
+                            <h3 class="text-2xl font-bold">2.4 TB</h3>
+                        </div>
+                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.25rem;">💾</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-warning">↗ +15%</span>
+                        <span class="text-sm text-muted">of 10 TB</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs mb-8">
+            <button class="admin-tab active" onclick="switchAdminTab('users')">User Management</button>
+            <button class="admin-tab" onclick="switchAdminTab('settings')">System Settings</button>
+            <button class="admin-tab" onclick="switchAdminTab('security')">Security</button>
+            <button class="admin-tab" onclick="switchAdminTab('maintenance')">Maintenance</button>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" class="admin-tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="card-title">User Management</h4>
+                            <p class="card-subtitle">Manage user accounts and permissions</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openUserModal()">Add User</button>
+                    </div>
+                </div>
+
+                <!-- User Search and Filters -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex gap-3">
+                        <div style="position: relative;">
+                            <input type="search" placeholder="Search users..." class="form-input" style="width: 250px; padding-left: 35px;">
+                            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400);">🔍</span>
+                        </div>
+                        <select class="form-input" style="width: auto;">
+                            <option>All Roles</option>
+                            <option>Admin</option>
+                            <option>Editor</option>
+                            <option>Viewer</option>
+                        </select>
+                    </div>
+                    <span class="text-sm text-muted">1,247 users total</span>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Last Active</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div class="user-avatar">JD</div>
+                                        <div>
+                                            <p class="font-medium">John Doe</p>
+                                            <p class="text-sm text-muted">Administrator</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>john.doe@example.com</td>
+                                <td><span class="badge badge-primary">Admin</span></td>
+                                <td>2 hours ago</td>
+                                <td><span class="status-indicator active">Active</span></td>
+                                <td>
+                                    <div class="flex gap-2">
+                                        <button class="btn btn-ghost btn-sm">Edit</button>
+                                        <button class="btn btn-ghost btn-sm">Disable</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div class="user-avatar">JS</div>
+                                        <div>
+                                            <p class="font-medium">Jane Smith</p>
+                                            <p class="text-sm text-muted">Content Editor</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>jane.smith@example.com</td>
+                                <td><span class="badge badge-secondary">Editor</span></td>
+                                <td>1 day ago</td>
+                                <td><span class="status-indicator active">Active</span></td>
+                                <td>
+                                    <div class="flex gap-2">
+                                        <button class="btn btn-ghost btn-sm">Edit</button>
+                                        <button class="btn btn-ghost btn-sm">Disable</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div class="user-avatar">MB</div>
+                                        <div>
+                                            <p class="font-medium">Mike Brown</p>
+                                            <p class="text-sm text-muted">Viewer</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>mike.brown@example.com</td>
+                                <td><span class="badge badge-gray">Viewer</span></td>
+                                <td>3 days ago</td>
+                                <td><span class="status-indicator inactive">Inactive</span></td>
+                                <td>
+                                    <div class="flex gap-2">
+                                        <button class="btn btn-ghost btn-sm">Edit</button>
+                                        <button class="btn btn-ghost btn-sm">Enable</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6">
+                    <p class="text-sm text-muted">Showing 1 to 10 of 1,247 entries</p>
+                    <div class="flex gap-2">
+                        <button class="btn btn-ghost btn-sm">Previous</button>
+                        <button class="btn btn-primary btn-sm">1</button>
+                        <button class="btn btn-ghost btn-sm">2</button>
+                        <button class="btn btn-ghost btn-sm">3</button>
+                        <button class="btn btn-ghost btn-sm">Next</button>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" class="admin-tab-content hidden">
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-6);">
+                
+                <!-- General Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">General Settings</h4>
+                        <p class="card-subtitle">Basic system configuration</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="form-label">Site Name</label>
+                            <input type="text" class="form-input" value="ISP Media" placeholder="Enter site name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Default Language</label>
+                            <select class="form-input">
+                                <option>English</option>
+                                <option>Spanish</option>
+                                <option>French</option>
+                                <option>German</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Timezone</label>
+                            <select class="form-input">
+                                <option>UTC-5 (Eastern Time)</option>
+                                <option>UTC-8 (Pacific Time)</option>
+                                <option>UTC+0 (GMT)</option>
+                                <option>UTC+1 (Central European Time)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Storage Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Storage Settings</h4>
+                        <p class="card-subtitle">Configure storage limits and policies</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="form-label">Max File Size (MB)</label>
+                            <input type="number" class="form-input" value="100" placeholder="Enter max file size">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Storage Quota per User (GB)</label>
+                            <input type="number" class="form-input" value="10" placeholder="Enter storage quota">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
+                                <span>Enable auto-cleanup of old files</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" style="accent-color: var(--primary-color);">
+                                <span>Compress uploaded images</span>
+                            </label>
+                        </div>
+                        
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div id="securityTab" class="admin-tab-content hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Security Settings</h4>
+                    <p class="card-subtitle">Manage security policies and access control</p>
+                </div>
+                
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-6);">
+                    <div class="space-y-4">
+                        <h5>Authentication</h5>
+                        
+                        <div class="form-group">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
+                                <span>Require strong passwords</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
+                                <span>Enable two-factor authentication</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Session timeout (minutes)</label>
+                            <input type="number" class="form-input" value="60">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h5>Access Control</h5>
+                        
+                        <div class="form-group">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" style="accent-color: var(--primary-color);">
+                                <span>Enable IP whitelist</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
+                                <span>Log all user activities</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Max login attempts</label>
+                            <input type="number" class="form-input" value="5">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <button class="btn btn-primary">Update Security Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance Tab -->
+        <div id="maintenanceTab" class="admin-tab-content hidden">
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-6);">
+                
+                <!-- System Maintenance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">System Maintenance</h4>
+                        <p class="card-subtitle">Perform system maintenance tasks</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="maintenance-action">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h6>Clear Cache</h6>
+                                    <p class="text-sm text-muted">Clear system cache and temporary files</p>
+                                </div>
+                                <button class="btn btn-secondary btn-sm">Clear Now</button>
+                            </div>
+                        </div>
+                        
+                        <div class="maintenance-action">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h6>Database Optimization</h6>
+                                    <p class="text-sm text-muted">Optimize database performance</p>
+                                </div>
+                                <button class="btn btn-secondary btn-sm">Optimize</button>
+                            </div>
+                        </div>
+                        
+                        <div class="maintenance-action">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h6>Generate Backup</h6>
+                                    <p class="text-sm text-muted">Create a full system backup</p>
+                                </div>
+                                <button class="btn btn-primary btn-sm">Backup Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Information -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">System Information</h4>
+                        <p class="card-subtitle">Current system status and details</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">Server Status:</span>
+                            <span class="status-indicator active ml-2">Online</span>
+                        </div>
+                        
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">Version:</span>
+                            <span class="text-sm text-muted ml-2">ISP Media v2.1.0</span>
+                        </div>
+                        
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">Last Backup:</span>
+                            <span class="text-sm text-muted ml-2">2 hours ago</span>
+                        </div>
+                        
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">Uptime:</span>
+                            <span class="text-sm text-muted ml-2">15 days, 4 hours</span>
+                        </div>
+                        
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">CPU Usage:</span>
+                            <span class="text-sm text-muted ml-2">23%</span>
+                        </div>
+                        
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">Memory Usage:</span>
+                            <span class="text-sm text-muted ml-2">67% (5.2GB / 8GB)</span>
+                        </div>
+                        
+                        <div class="system-info-item">
+                            <span class="text-sm font-medium">Disk Space:</span>
+                            <span class="text-sm text-muted ml-2">24% (2.4TB / 10TB)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Admin Styles -->
+    <style>
+        .admin-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-1);
+            gap: var(--space-1);
+        }
+
+        .admin-tab {
+            flex: 1;
+            padding: var(--space-3) var(--space-4);
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .admin-tab.active {
+            background: var(--white);
+            color: var(--gray-900);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .admin-tab-content {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+        }
+
+        .admin-table td {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: var(--gray-900);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .badge {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .badge-secondary {
+            background: var(--info);
+            color: white;
+        }
+
+        .badge-gray {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .status-indicator {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-indicator.active {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-indicator.inactive {
+            background: var(--gray-400);
+            color: white;
+        }
+
+        .maintenance-action {
+            padding: var(--space-4);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+        }
+
+        .system-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-2) 0;
+        }
+
+        .space-y-3 > * + * { margin-top: var(--space-3); }
+        .space-y-4 > * + * { margin-top: var(--space-4); }
+        .text-2xl { font-size: 1.5rem; }
+        .ml-2 { margin-left: var(--space-2); }
+
+        @media (max-width: 768px) {
+            .admin-tabs {
+                flex-direction: column;
+            }
             
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M8 12l2 2 4-4"/>
-                    </svg>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value">142</div>
-                    <div class="stat-label">Utilizadores Ativos</div>
-                </div>
-            </div>
+            .admin-table {
+                font-size: 0.875rem;
+            }
             
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="8.5" cy="7" r="4"/>
-                        <line x1="20" y1="8" x2="20" y2="14"/>
-                        <line x1="23" y1="11" x2="17" y2="11"/>
-                    </svg>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Novos Este Mês</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="users-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Utilizador</th>
-                        <th>Email</th>
-                        <th>Função</th>
-                        <th>Último Acesso</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="user-avatar">JS</div>
-                                <span>João Silva</span>
-                            </div>
-                        </td>
-                        <td>joao@example.com</td>
-                        <td><span class="badge admin">Admin</span></td>
-                        <td>há 2 minutos</td>
-                        <td><span class="status online">Online</span></td>
-                        <td>
-                            <div class="table-actions">
-                                <button class="btn btn-ghost btn-sm" onclick="editUser('joao@example.com')">Editar</button>
-                                <button class="btn btn-ghost btn-sm" onclick="toggleUserStatus('joao@example.com')">Desativar</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="user-avatar">MS</div>
-                                <span>Maria Santos</span>
-                            </div>
-                        </td>
-                        <td>maria@example.com</td>
-                        <td><span class="badge user">Utilizador</span></td>
-                        <td>há 1 hora</td>
-                        <td><span class="status online">Online</span></td>
-                        <td>
-                            <div class="table-actions">
-                                <button class="btn btn-ghost btn-sm" onclick="editUser('maria@example.com')">Editar</button>
-                                <button class="btn btn-ghost btn-sm" onclick="toggleUserStatus('maria@example.com')">Desativar</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="user-avatar">PC</div>
-                                <span>Pedro Costa</span>
-                            </div>
-                        </td>
-                        <td>pedro@example.com</td>
-                        <td><span class="badge user">Utilizador</span></td>
-                        <td>há 2 dias</td>
-                        <td><span class="status offline">Offline</span></td>
-                        <td>
-                            <div class="table-actions">
-                                <button class="btn btn-ghost btn-sm" onclick="editUser('pedro@example.com')">Editar</button>
-                                <button class="btn btn-ghost btn-sm" onclick="toggleUserStatus('pedro@example.com')">Desativar</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-    <!-- Painel de Armazenamento -->
-    <div id="storage-panel" class="admin-panel">
-        <div class="panel-header">
-            <h2>Gestão de Armazenamento</h2>
-            <button class="btn btn-primary" onclick="cleanupStorage()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18"/>
-                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                </svg>
-                Limpeza
-            </button>
-        </div>
-        
-        <div class="storage-overview">
-            <div class="storage-chart">
-                <div id="admin-storage-chart"></div>
-            </div>
-            <div class="storage-details">
-                <div class="detail-item">
-                    <span>Total de Espaço:</span>
-                    <strong>1 TB</strong>
-                </div>
-                <div class="detail-item">
-                    <span>Espaço Usado:</span>
-                    <strong>256 GB</strong>
-                </div>
-                <div class="detail-item">
-                    <span>Espaço Livre:</span>
-                    <strong>768 GB</strong>
-                </div>
-                <div class="detail-item">
-                    <span>Ficheiros Temporários:</span>
-                    <strong>2.4 GB</strong>
-                </div>
-            </div>
-        </div>
-        
-        <div class="storage-breakdown">
-            <h3>Distribuição por Tipo</h3>
-            <div class="breakdown-chart">
-                <div id="storage-breakdown-chart"></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Painel de Configurações -->
-    <div id="settings-panel" class="admin-panel">
-        <div class="panel-header">
-            <h2>Configurações do Sistema</h2>
-            <button class="btn btn-primary" onclick="saveSettings()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                </svg>
-                Salvar Configurações
-            </button>
-        </div>
-        
-        <div class="settings-form">
-            <div class="settings-section">
-                <h3>Geral</h3>
-                <div class="form-group">
-                    <label class="form-label">Nome da Aplicação</label>
-                    <input type="text" class="form-input" value="ISPMedia" id="app-name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tamanho máximo de upload (MB)</label>
-                    <input type="number" class="form-input" value="100" id="max-upload-size">
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="allow-registration" checked>
-                        <span class="checkbox-text">Permitir novo registo</span>
-                    </label>
-                </div>
-            </div>
+            .admin-table td {
+                padding: var(--space-2);
+            }
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script>
+        // Load components
+        fetch('/components/navbar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+            });
+
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer-container').innerHTML = html;
+            });
+
+        // Admin tab switching
+        function switchAdminTab(tabName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            <div class="settings-section">
-                <h3>Segurança</h3>
-                <div class="form-group">
-                    <label class="form-label">Tempo de sessão (minutos)</label>
-                    <input type="number" class="form-input" value="60" id="session-timeout">
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="require-2fa">
-                        <span class="checkbox-text">Exigir autenticação de 2 fatores</span>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="log-user-activity" checked>
-                        <span class="checkbox-text">Registar atividade do utilizador</span>
-                    </label>
-                </div>
-            </div>
+            // Hide all tab contents
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
             
-            <div class="settings-section">
-                <h3>Armazenamento</h3>
-                <div class="form-group">
-                    <label class="form-label">Limpeza automática (dias)</label>
-                    <input type="number" class="form-input" value="30" id="auto-cleanup">
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="compress-files" checked>
-                        <span class="checkbox-text">Comprimir ficheiros automaticamente</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Painel de Logs -->
-    <div id="logs-panel" class="admin-panel">
-        <div class="panel-header">
-            <h2>Logs do Sistema</h2>
-            <div class="panel-actions">
-                <select class="filter-select" onchange="filterLogs(this.value)">
-                    <option value="">Todos os logs</option>
-                    <option value="info">Informação</option>
-                    <option value="warning">Aviso</option>
-                    <option value="error">Erro</option>
-                </select>
-                <button class="btn btn-secondary" onclick="clearLogs()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                    </svg>
-                    Limpar Logs
-                </button>
-            </div>
-        </div>
-        
-        <div class="logs-container">
-            <div class="log-entry info">
-                <div class="log-time">2025-01-06 14:30:25</div>
-                <div class="log-level">INFO</div>
-                <div class="log-message">Sistema iniciado com sucesso</div>
-            </div>
-            <div class="log-entry info">
-                <div class="log-time">2025-01-06 14:28:15</div>
-                <div class="log-level">INFO</div>
-                <div class="log-message">Utilizador joão@example.com fez login</div>
-            </div>
-            <div class="log-entry warning">
-                <div class="log-time">2025-01-06 14:25:10</div>
-                <div class="log-level">WARNING</div>
-                <div class="log-message">Tentativa de upload de ficheiro muito grande (150MB)</div>
-            </div>
-            <div class="log-entry error">
-                <div class="log-time">2025-01-06 14:20:05</div>
-                <div class="log-level">ERROR</div>
-                <div class="log-message">Falha na conexão com o servidor de backup</div>
-            </div>
-            <div class="log-entry info">
-                <div class="log-time">2025-01-06 14:15:30</div>
-                <div class="log-level">INFO</div>
-                <div class="log-message">Backup automático concluído (2.4GB)</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-let currentAdminTab = 'users';
-
-function switchAdminTab(tab) {
-    currentAdminTab = tab;
-    
-    // Atualiza tabs
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.admin-tab[onclick="switchAdminTab('${tab}')"]`).classList.add('active');
-    
-    // Atualiza painéis
-    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`${tab}-panel`).classList.add('active');
-    
-    // Carrega dados específicos do painel
-    if (tab === 'storage') {
-        setTimeout(() => {
-            Charts.renderStorageChart('admin-storage-chart', { used: 256 * 1024 * 1024 * 1024, total: 1024 * 1024 * 1024 * 1024 });
-            Charts.renderBarChart('storage-breakdown-chart', Charts.getSampleBarData());
-        }, 100);
-    }
-}
-
-function addUser() {
-    const name = prompt('Nome do utilizador:');
-    const email = prompt('Email do utilizador:');
-    
-    if (name && email) {
-        Functions.renderAlert('success', `Utilizador ${name} adicionado com sucesso!`);
-    }
-}
-
-function editUser(email) {
-    Functions.renderAlert('info', `Editar utilizador ${email} - funcionalidade em desenvolvimento`);
-}
-
-function toggleUserStatus(email) {
-    Functions.renderAlert('info', `Alternar status do utilizador ${email} - funcionalidade em desenvolvimento`);
-}
-
-function exportData() {
-    Functions.showLoading();
-    
-    setTimeout(() => {
-        Functions.hideLoading();
-        Functions.renderAlert('success', 'Dados exportados com sucesso!');
-    }, 2000);
-}
-
-function refreshStats() {
-    Functions.showLoading();
-    
-    setTimeout(() => {
-        Functions.hideLoading();
-        Functions.renderAlert('success', 'Estatísticas atualizadas!');
-    }, 1000);
-}
-
-function cleanupStorage() {
-    if (confirm('Tem certeza que deseja executar a limpeza de armazenamento?')) {
-        Functions.showLoading();
-        
-        setTimeout(() => {
-            Functions.hideLoading();
-            Functions.renderAlert('success', 'Limpeza de armazenamento concluída! 2.4GB liberados.');
-        }, 3000);
-    }
-}
-
-function saveSettings() {
-    Functions.showLoading();
-    
-    setTimeout(() => {
-        Functions.hideLoading();
-        Functions.renderAlert('success', 'Configurações salvas com sucesso!');
-    }, 1000);
-}
-
-function filterLogs(level) {
-    const logs = document.querySelectorAll('.log-entry');
-    
-    logs.forEach(log => {
-        const logLevel = log.classList.contains(level) || level === '';
-        log.style.display = logLevel ? 'flex' : 'none';
-    });
-}
-
-function clearLogs() {
-    if (confirm('Tem certeza que deseja limpar todos os logs?')) {
-        document.querySelector('.logs-container').innerHTML = '<div class="log-entry info"><div class="log-time">' + new Date().toLocaleString() + '</div><div class="log-level">INFO</div><div class="log-message">Logs limpos pelo administrador</div></div>';
-        Functions.renderAlert('success', 'Logs limpos com sucesso!');
-    }
-}
-
-// Inicialização
-document.addEventListener('DOMContentLoaded', function() {
-    // Verifica se o utilizador é admin
-    const user = Session.getUser();
-    if (!user || user.role !== 'admin') {
-        Functions.renderAlert('error', 'Acesso negado. Apenas administradores podem acessar esta página.');
-        Routes.navigate('/dashboard');
-        return;
-    }
-    
-    // Carrega dados iniciais
-    setTimeout(() => {
-        Charts.renderStorageChart('admin-storage-chart', { used: 256 * 1024 * 1024 * 1024, total: 1024 * 1024 * 1024 * 1024 });
-    }, 500);
-});
-</script>
-
-<style>
-.admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--spacing-xl);
-}
-
-.admin-title h1 {
-    margin-bottom: var(--spacing-sm);
-}
-
-.admin-title p {
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.admin-actions {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.admin-tabs {
-    display: flex;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
-    border-bottom: 1px solid var(--border-light);
-}
-
-.admin-tab {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-lg);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    color: var(--text-secondary);
-    font-weight: var(--font-weight-medium);
-}
-
-.admin-tab.active {
-    color: var(--primary-blue);
-    border-bottom-color: var(--primary-blue);
-}
-
-.admin-tab:hover {
-    color: var(--text-primary);
-}
-
-.admin-panel {
-    display: none;
-}
-
-.admin-panel.active {
-    display: block;
-}
-
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-xl);
-}
-
-.panel-header h2 {
-    margin: 0;
-}
-
-.panel-actions {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.users-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-}
-
-.users-stats .stat-card {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-}
-
-.users-stats .stat-icon {
-    width: 48px;
-    height: 48px;
-    background: var(--soft-blue);
-    border-radius: var(--border-radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary-blue);
-}
-
-.users-stats .stat-info {
-    flex: 1;
-}
-
-.users-stats .stat-value {
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
-}
-
-.users-stats .stat-label {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.users-table {
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-    overflow: hidden;
-}
-
-.users-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.users-table th,
-.users-table td {
-    padding: var(--spacing-md);
-    text-align: left;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.users-table th {
-    background: var(--light-gray);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
-}
-
-.users-table tr:last-child td {
-    border-bottom: none;
-}
-
-.users-table tr:hover {
-    background: var(--light-gray);
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--primary-blue);
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.875rem;
-    font-weight: var(--font-weight-semibold);
-}
-
-.badge {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.75rem;
-    font-weight: var(--font-weight-medium);
-}
-
-.badge.admin {
-    background: var(--primary-blue);
-    color: var(--white);
-}
-
-.badge.user {
-    background: var(--gray-blue);
-    color: var(--text-primary);
-}
-
-.status {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.75rem;
-    font-weight: var(--font-weight-medium);
-}
-
-.status.online {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status.offline {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.table-actions {
-    display: flex;
-    gap: var(--spacing-xs);
-}
-
-.storage-overview {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
-}
-
-.storage-chart {
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-    padding: var(--spacing-lg);
-}
-
-.storage-details {
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-    padding: var(--spacing-lg);
-}
-
-.detail-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-sm) 0;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.detail-item:last-child {
-    border-bottom: none;
-}
-
-.storage-breakdown {
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-    padding: var(--spacing-lg);
-}
-
-.breakdown-chart {
-    margin-top: var(--spacing-lg);
-}
-
-.settings-form {
-    display: grid;
-    gap: var(--spacing-xl);
-}
-
-.settings-section {
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-    padding: var(--spacing-lg);
-}
-
-.settings-section h3 {
-    margin-bottom: var(--spacing-lg);
-    color: var(--text-primary);
-}
-
-.logs-container {
-    background: var(--white);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-light);
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-.log-entry {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--border-light);
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-}
-
-.log-entry:last-child {
-    border-bottom: none;
-}
-
-.log-entry.info {
-    background: #f8f9fa;
-}
-
-.log-entry.warning {
-    background: #fff3cd;
-}
-
-.log-entry.error {
-    background: #f8d7da;
-}
-
-.log-time {
-    color: var(--text-secondary);
-    min-width: 150px;
-}
-
-.log-level {
-    font-weight: var(--font-weight-semibold);
-    min-width: 80px;
-}
-
-.log-entry.info .log-level {
-    color: #17a2b8;
-}
-
-.log-entry.warning .log-level {
-    color: #856404;
-}
-
-.log-entry.error .log-level {
-    color: #721c24;
-}
-
-.log-message {
-    flex: 1;
-    color: var(--text-primary);
-}
-
-@media (max-width: 768px) {
-    .admin-header {
-        flex-direction: column;
-        gap: var(--spacing-lg);
-    }
-    
-    .admin-actions {
-        width: 100%;
-        flex-direction: column;
-    }
-    
-    .admin-tabs {
-        flex-wrap: wrap;
-        gap: var(--spacing-sm);
-    }
-    
-    .admin-tab {
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-    
-    .panel-header {
-        flex-direction: column;
-        gap: var(--spacing-md);
-    }
-    
-    .panel-actions {
-        width: 100%;
-        flex-direction: column;
-    }
-    
-    .users-stats {
-        grid-template-columns: 1fr;
-    }
-    
-    .storage-overview {
-        grid-template-columns: 1fr;
-    }
-    
-    .users-table {
-        overflow-x: auto;
-    }
-    
-    .table-actions {
-        flex-direction: column;
-    }
-    
-    .log-entry {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-xs);
-    }
-}
-</style>
+            // Activate selected tab
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+        }
+
+        function openUserModal() {
+            alert('User creation modal would open here');
+        }
+    </script>
+</body>
+</html>
