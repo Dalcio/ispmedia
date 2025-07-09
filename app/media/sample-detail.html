@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Media Detail - ISP Media</title>
+    <link rel="stylesheet" href="../../style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <div id="navbar-container"></div>
+
+    <!-- Main Content -->
+    <main class="container" style="padding: var(--space-8) var(--space-6)">
+      <!-- Media Detail Container -->
+      <div id="media-detail-content">
+        <!-- Sample media content - in real app this would be dynamic -->
+        <div class="media-detail-page">
+          <!-- Media Header -->
+          <div class="media-header">
+            <div class="media-preview">
+              <img
+                src="../../images/sample-media.jpg"
+                alt="Sample Media"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNzUgMTI1SDE3NVYxNzVIMjI1VjEyNUgxNzVaIiBmaWxsPSIjOUNBM0FGIi8+CjwvZz4KPC9zdmc+'"
+              />
+              <div class="media-controls">
+                <button class="play-btn" onclick="playMedia(sampleMedia)">
+                  ▶
+                </button>
+              </div>
+            </div>
+            <div class="media-info">
+              <h1 id="mediaTitle">Sample Music Track</h1>
+              <p id="mediaArtist">Sample Artist</p>
+              <div class="media-meta">
+                <span>Duration: 3:45</span>
+                <span>•</span>
+                <span>Uploaded: 2 days ago</span>
+                <span>•</span>
+                <span>Views: 1,234</span>
+              </div>
+              <div class="media-actions">
+                <button class="btn btn-primary" onclick="addToPlaylist()">
+                  Add to Playlist
+                </button>
+                <button class="btn btn-ghost" onclick="downloadMedia()">
+                  Download
+                </button>
+                <button class="btn btn-ghost" onclick="shareMedia()">
+                  Share
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Media Description -->
+          <div class="media-description">
+            <h3>Description</h3>
+            <p>
+              This is a sample media description. In a real application, this
+              would contain the actual description of the media file uploaded by
+              the user.
+            </p>
+
+            <!-- Tags -->
+            <div class="media-tags">
+              <span class="tag">Music</span>
+              <span class="tag">Electronic</span>
+              <span class="tag">Instrumental</span>
+            </div>
+          </div>
+
+          <!-- Rating Display -->
+          <div id="ratingDisplay" class="rating-section">
+            <!-- Rating will be rendered here -->
+          </div>
+
+          <!-- Review Form -->
+          <div id="reviewFormContainer" class="review-section">
+            <!-- Review form will be rendered here -->
+          </div>
+
+          <!-- Reviews List -->
+          <div id="reviewsContainer" class="reviews-section">
+            <!-- Reviews will be rendered here -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="../../scripts/config.js"></script>
+    <script src="../../scripts/functions.js"></script>
+    <script src="../../scripts/session.js"></script>
+    <script src="../../scripts/logger.js"></script>
+    <script src="../../scripts/router.js"></script>
+    <script src="../../scripts/notification-manager.js"></script>
+    <script src="../../scripts/form-validator.js"></script>
+    <script src="../../scripts/review-manager.js"></script>
+    <script src="../../scripts/playlist-manager.js"></script>
+    <script src="../../scripts/media-player.js"></script>
+    <script src="../../scripts/app.js"></script>
+
+    <script>
+      // Sample media data
+      const sampleMedia = {
+        id: "sample-media-123",
+        title: "Sample Music Track",
+        artist: "Sample Artist",
+        type: "audio/mp3",
+        duration: 225, // 3:45 in seconds
+        thumbnail: "../../images/sample-media.jpg",
+        url: "https://example.com/sample.mp3",
+      };
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        // Load navigation and footer
+        fetch("../../components/navbar.html")
+          .then((response) => response.text())
+          .then((html) => {
+            document.getElementById("navbar-container").innerHTML = html;
+            AuthManager.init();
+          });
+
+        fetch("../../components/footer.html")
+          .then((response) => response.text())
+          .then((html) => {
+            document.getElementById("footer-container").innerHTML = html;
+          });
+
+        // Initialize reviews for this media
+        initializeMediaReviews();
+      });
+
+      function initializeMediaReviews() {
+        const mediaId = sampleMedia.id;
+
+        // Render rating display
+        const ratingDisplay = document.getElementById("ratingDisplay");
+        ratingDisplay.innerHTML = ReviewManager.renderRatingDisplay(mediaId);
+
+        // Render review form
+        const reviewFormContainer = document.getElementById(
+          "reviewFormContainer"
+        );
+        reviewFormContainer.innerHTML = ReviewManager.renderReviewForm(mediaId);
+
+        // Render reviews list
+        const reviewsContainer = document.getElementById("reviewsContainer");
+        reviewsContainer.innerHTML = `
+          <h3>Reviews</h3>
+          ${ReviewManager.renderReviewsList(mediaId)}
+        `;
+      }
+
+      // Media actions
+      function playMedia(media) {
+        MediaPlayer.loadMedia(media, true);
+      }
+
+      function addToPlaylist() {
+        if (!AuthManager.isAuthenticated) {
+          NotificationManager.show(
+            "Please log in to add to playlist",
+            "warning"
+          );
+          AuthManager.openAuthModal();
+          return;
+        }
+
+        // In a real app, this would show a playlist selection modal
+        NotificationManager.show("Added to Favorites playlist", "success");
+        PlaylistManager.addToPlaylist("fav-" + Date.now(), sampleMedia);
+      }
+
+      function downloadMedia() {
+        // Simulate download
+        NotificationManager.show("Download started", "info");
+        setTimeout(() => {
+          NotificationManager.show("Download completed", "success");
+        }, 2000);
+      }
+
+      function shareMedia() {
+        // Copy share URL to clipboard
+        const shareUrl = window.location.href;
+        Utils.copyToClipboard(shareUrl).then((success) => {
+          if (success) {
+            NotificationManager.show(
+              "Share link copied to clipboard",
+              "success"
+            );
+          } else {
+            NotificationManager.show("Failed to copy link", "error");
+          }
+        });
+      }
+
+      // Add some sample reviews for demonstration
+      setTimeout(() => {
+        if (ReviewManager.getMediaReviews(sampleMedia.id).length === 0) {
+          // Add sample reviews (only if none exist)
+          const sampleReviews = [
+            {
+              id: "review-sample-1",
+              mediaId: sampleMedia.id,
+              userId: "john_doe",
+              rating: 5,
+              comment:
+                "Amazing track! The production quality is outstanding and the melody is very catchy.",
+              createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+              updatedAt: new Date(Date.now() - 86400000).toISOString(),
+              likes: 3,
+              dislikes: 0,
+              likedBy: ["user1", "user2", "user3"],
+              dislikedBy: [],
+            },
+            {
+              id: "review-sample-2",
+              mediaId: sampleMedia.id,
+              userId: "music_lover",
+              rating: 4,
+              comment:
+                "Really good track, but could use a bit more bass. Overall great work!",
+              createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+              updatedAt: new Date(Date.now() - 172800000).toISOString(),
+              likes: 1,
+              dislikes: 0,
+              likedBy: ["user4"],
+              dislikedBy: [],
+            },
+          ];
+
+          // Add to reviews array
+          ReviewManager.reviews.push(...sampleReviews);
+          ReviewManager.saveReviews();
+
+          // Refresh display
+          ReviewManager.refreshReviewsDisplay(sampleMedia.id);
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>

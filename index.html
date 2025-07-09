@@ -238,6 +238,15 @@
     <!-- Upload Modal -->
     <div id="upload-modal-container"></div>
     <!-- Scripts -->
+    <script src="scripts/config.js"></script>
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/notification-manager.js"></script>
+    <script src="scripts/form-validator.js"></script>
+    <script src="scripts/mock-data.js"></script>
+    <script src="scripts/playlist-manager.js"></script>
+    <script src="scripts/review-manager.js"></script>
+    <script src="scripts/media-player.js"></script>
+    <script src="scripts/upload-manager.js"></script>
     <script src="scripts/router.js"></script>
     <script src="scripts/app.js"></script>
     <script>
@@ -247,6 +256,20 @@
           .then((response) => response.text())
           .then((html) => {
             document.getElementById("navbar-container").innerHTML = html;
+
+            // Update navbar for logged in user after it's loaded
+            if (
+              typeof AuthManager !== "undefined" &&
+              AuthManager.isAuthenticated &&
+              AuthManager.currentUser
+            ) {
+              setTimeout(() => {
+                AuthManager.updateUIForLoggedInUser(AuthManager.currentUser);
+              }, 100);
+            }
+          })
+          .catch((error) => {
+            console.error("Error loading navbar:", error);
           });
       }
 
@@ -257,12 +280,16 @@
             document.getElementById("auth-modal-container").innerHTML = html;
           });
       }
-
       function loadUploadModal() {
+        console.log("📤 Loading upload modal...");
         fetch("/app/files/modal-upload.html")
           .then((response) => response.text())
           .then((html) => {
             document.getElementById("upload-modal-container").innerHTML = html;
+            console.log("✅ Upload modal loaded successfully");
+          })
+          .catch((error) => {
+            console.error("❌ Error loading upload modal:", error);
           });
       }
 

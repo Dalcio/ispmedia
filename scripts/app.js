@@ -3,10 +3,14 @@
 // Global Modal Management
 class ModalManager {
   static open(modalId) {
+    console.log("🔓 Opening modal:", modalId);
     const modal = document.getElementById(modalId);
     if (modal) {
+      console.log("✅ Modal found, removing hidden class");
       modal.classList.remove("hidden");
       document.body.style.overflow = "hidden"; // Prevent background scroll
+    } else {
+      console.log("❌ Modal not found:", modalId);
     }
   }
 
@@ -38,20 +42,28 @@ class AuthManager {
     this.setupEventListeners();
     this.updateNavigation();
     this.highlightActivePage();
+
+    // If user is already logged in, update UI
+    if (this.isAuthenticated && this.currentUser) {
+      setTimeout(() => {
+        this.updateUIForLoggedInUser(this.currentUser);
+      }, 100);
+      setTimeout(() => {
+        this.updateUIForLoggedInUser(this.currentUser);
+      }, 1000);
+    }
   }
-
   static setupEventListeners() {
-    // Login form submission
-    const loginForm = document.getElementById("loginForm");
-    if (loginForm) {
-      loginForm.addEventListener("submit", this.handleLogin.bind(this));
-    }
-
-    // Register form submission
-    const registerForm = document.getElementById("registerForm");
-    if (registerForm) {
-      registerForm.addEventListener("submit", this.handleRegister.bind(this));
-    }
+    // Use event delegation for form submissions since forms are loaded dynamically
+    document.addEventListener("submit", (e) => {
+      if (e.target.id === "loginForm") {
+        e.preventDefault();
+        this.handleLogin(e);
+      } else if (e.target.id === "registerForm") {
+        e.preventDefault();
+        this.handleRegister(e);
+      }
+    });
 
     // Setup protected navigation
     this.setupProtectedNavigation();
@@ -171,48 +183,84 @@ class AuthManager {
   static openAuthModal() {
     ModalManager.open("authModal");
   }
-
   static handleLogin(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const email =
-      formData.get("email") ||
-      e.target.querySelector('input[type="email"]').value;
-    const password =
-      formData.get("password") ||
-      e.target.querySelector('input[type="password"]').value;
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    console.log("🔐 Login attempt:", { email });
 
     // Simulate API call
     this.showLoading(e.target);
 
     setTimeout(() => {
-      console.log("Login attempt:", { email });
-      this.hideLoading(e.target);
-      ModalManager.close("authModal");
-      this.showToast("Welcome back! Login successful.", "success");
-      // Set authentication state
-      this.isAuthenticated = true;
-      this.currentUser = { email, name: email.split("@")[0] };
-      this.setStoredAuthState(true);
-      this.setStoredUserData(this.currentUser);
+      // Check credentials against mock users
+      const user = FormValidator.validateCredentials(email, password);
 
-      // Update UI to show logged in state
-      this.updateUIForLoggedInUser(this.currentUser);
-      this.updateNavigation();
+      if (user) {
+        console.log("✅ Login successful:", { email, username: user.username });
+        this.hideLoading(e.target);
+        ModalManager.close("authModal");
+        this.showToast(`Welcome back, ${user.name}!`, "success");
+
+        // Set authentication state with full user data
+        this.isAuthenticated = true;
+        this.currentUser = {
+          email: user.email,
+          username: user.username,
+          name: user.name,
+          id: user.id,
+        };
+        this.setStoredAuthState(true);
+        this.setStoredUserData(this.currentUser);
+
+        // Update UI to show logged in state
+        this.updateUIForLoggedInUser(this.currentUser);
+        this.updateNavigation();
+
+        // Retry navbar update after a delay (in case navbar loads async)
+        setTimeout(() => {
+          this.updateUIForLoggedInUser(this.currentUser);
+        }, 500);
+        setTimeout(() => {
+          this.updateUIForLoggedInUser(this.currentUser);
+        }, 1500);
+      } else {
+        console.log("❌ Login failed for:", email);
+        this.hideLoading(e.target);
+        this.showToast(
+          "Invalid email or password. Try: test@example.com / Test123!",
+          "error"
+        );
+      }
     }, 1500);
   }
-
   static handleRegister(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const inputs = e.target.querySelectorAll("input");
-    const name = inputs[0].value;
-    const email = inputs[1].value;
-    const password = inputs[2].value;
-    const confirmPassword = inputs[3].value;
+    const username = formData.get("username");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
+
+    console.log("📝 Registration attempt:", { username, email });
 
     if (password !== confirmPassword) {
       this.showToast("Passwords do not match!", "error");
+      return;
+    }
+
+    // Check if user already exists
+    const existingUsers = JSON.parse(
+      localStorage.getItem("ispmedia_users") || "[]"
+    );
+    if (existingUsers.some((u) => u.email === email)) {
+      this.showToast("Email already registered!", "error");
+      return;
+    }
+    if (existingUsers.some((u) => u.username === username)) {
+      this.showToast("Username already taken!", "error");
       return;
     }
 
@@ -220,13 +268,37 @@ class AuthManager {
     this.showLoading(e.target);
 
     setTimeout(() => {
-      console.log("Register attempt:", { name, email });
+      // Create new user
+      const newUser = {
+        id: "user-" + Date.now(),
+        username: username,
+        email: email,
+        password: password, // In real app, this would be hashed
+        name: username,
+        avatar: null,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Add to mock database
+      existingUsers.push(newUser);
+      localStorage.setItem("ispmedia_users", JSON.stringify(existingUsers));
+
+      console.log("Registration successful:", { username, email });
       this.hideLoading(e.target);
       ModalManager.close("authModal");
-      this.showToast("Account created successfully!", "success");
+      this.showToast(
+        `Account created successfully! Welcome, ${username}!`,
+        "success"
+      );
+
       // Set authentication state
       this.isAuthenticated = true;
-      this.currentUser = { email, name };
+      this.currentUser = {
+        email: newUser.email,
+        username: newUser.username,
+        name: newUser.name,
+        id: newUser.id,
+      };
       this.setStoredAuthState(true);
       this.setStoredUserData(this.currentUser);
 
@@ -252,17 +324,28 @@ class AuthManager {
       submitBtn.innerHTML = isLogin ? "Sign In" : "Create Account";
     }
   }
-
   static updateUIForLoggedInUser(user) {
     // Update navbar to show user info instead of login button
-    const navbar = document.querySelector(".navbar-content");
-    if (navbar) {
-      const actionsDiv = navbar.querySelector(".flex.items-center.gap-3");
-      if (actionsDiv) {
-        actionsDiv.innerHTML = `
-                    <span class="text-sm text-muted">Welcome, ${user.name}</span>
-                    <button class="btn btn-ghost btn-sm" onclick="AuthManager.logout()">Logout</button>
-                `;
+    const navActions = document.getElementById("navActions");
+    if (navActions) {
+      navActions.innerHTML = `
+        <span class="text-sm text-muted">Welcome, ${user.name}</span>
+        <button class="btn btn-ghost btn-sm" onclick="AuthManager.logout()">Logout</button>
+      `;
+      console.log("✅ Navbar updated for logged in user");
+    } else {
+      console.log("❌ navActions element not found");
+      // Fallback - try to find any navbar actions area
+      const navbar = document.querySelector(".navbar-content");
+      if (navbar) {
+        const actionsDiv = navbar.querySelector(".flex.items-center.gap-3");
+        if (actionsDiv) {
+          actionsDiv.innerHTML = `
+            <span class="text-sm text-muted">Welcome, ${user.name}</span>
+            <button class="btn btn-ghost btn-sm" onclick="AuthManager.logout()">Logout</button>
+          `;
+          console.log("✅ Navbar updated via fallback method");
+        }
       }
     }
   }
@@ -331,214 +414,6 @@ class AuthManager {
   }
 }
 
-// File Upload System
-class UploadManager {
-  constructor() {
-    this.queue = [];
-    this.isUploading = false;
-    this.maxFileSize = 100 * 1024 * 1024; // 100MB
-    this.supportedTypes = {
-      image: ["jpg", "jpeg", "png", "gif", "webp", "svg"],
-      video: ["mp4", "avi", "mov", "wmv", "flv"],
-      document: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"],
-      audio: ["mp3", "wav", "flac", "aac"],
-      archive: ["zip", "rar", "7z", "tar", "gz"],
-    };
-  }
-
-  addFiles(files) {
-    Array.from(files).forEach((file) => {
-      if (this.validateFile(file)) {
-        this.queue.push({
-          id: Date.now() + Math.random(),
-          file: file,
-          status: "pending",
-          progress: 0,
-        });
-      }
-    });
-    this.updateQueueDisplay();
-  }
-
-  validateFile(file) {
-    if (file.size > this.maxFileSize) {
-      AuthManager.showToast(
-        `File "${file.name}" is too large. Maximum size is 100MB.`,
-        "error"
-      );
-      return false;
-    }
-
-    const extension = file.name.split(".").pop().toLowerCase();
-    const isSupported = Object.values(this.supportedTypes).some((types) =>
-      types.includes(extension)
-    );
-
-    if (!isSupported) {
-      AuthManager.showToast(
-        `File type "${extension}" is not supported.`,
-        "error"
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  getFileType(filename) {
-    const ext = filename.split(".").pop().toLowerCase();
-    for (const [type, extensions] of Object.entries(this.supportedTypes)) {
-      if (extensions.includes(ext)) {
-        return type;
-      }
-    }
-    return "document";
-  }
-
-  getFileIcon(filename) {
-    const type = this.getFileType(filename);
-    const icons = {
-      image: "🖼️",
-      video: "🎥",
-      document: "📄",
-      audio: "🎵",
-      archive: "🗜️",
-    };
-    return icons[type] || "📄";
-  }
-
-  getFileColor(filename) {
-    const type = this.getFileType(filename);
-    const colors = {
-      image: "#4CAF50",
-      video: "#2196F3",
-      document: "#FF5252",
-      audio: "#9C27B0",
-      archive: "#795548",
-    };
-    return colors[type] || "#9E9E9E";
-  }
-
-  async startUpload() {
-    if (this.queue.length === 0 || this.isUploading) return;
-
-    this.isUploading = true;
-
-    for (const item of this.queue) {
-      await this.uploadFile(item);
-    }
-
-    this.isUploading = false;
-    AuthManager.showToast(
-      `Successfully uploaded ${this.queue.length} files!`,
-      "success"
-    );
-
-    // Clear queue after successful upload
-    setTimeout(() => {
-      this.queue = [];
-      ModalManager.close("uploadModal");
-    }, 1500);
-  }
-
-  async uploadFile(item) {
-    return new Promise((resolve) => {
-      // Simulate upload progress
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 15;
-        if (progress >= 100) {
-          progress = 100;
-          item.status = "completed";
-          item.progress = 100;
-          clearInterval(interval);
-          resolve();
-        } else {
-          item.progress = progress;
-        }
-        this.updateProgressDisplay(item);
-      }, 200);
-    });
-  }
-
-  updateProgressDisplay(item) {
-    const progressBar = document.getElementById(`progress-${item.id}`);
-    const statusDiv = document.getElementById(`status-${item.id}`);
-
-    if (progressBar) {
-      progressBar.style.width = item.progress + "%";
-    }
-
-    if (statusDiv) {
-      if (item.status === "completed") {
-        statusDiv.textContent = "Complete ✓";
-        statusDiv.style.color = "var(--success)";
-      } else {
-        statusDiv.textContent = `${Math.round(item.progress)}%`;
-      }
-    }
-  }
-
-  updateQueueDisplay() {
-    const queueDiv = document.getElementById("uploadQueue");
-    const queueList = document.getElementById("queueList");
-    const queueCount = document.getElementById("queueCount");
-
-    if (!queueDiv || !queueList) return;
-
-    if (this.queue.length > 0) {
-      queueDiv.classList.remove("hidden");
-
-      queueList.innerHTML = this.queue
-        .map(
-          (item) => `
-                <div class="queue-item">
-                    <div class="file-icon" style="background: ${this.getFileColor(
-                      item.file.name
-                    )};">
-                        ${this.getFileIcon(item.file.name)}
-                    </div>
-                    <div class="file-info" style="flex: 1;">
-                        <p class="file-name">${item.file.name}</p>
-                        <p class="file-meta">${this.formatFileSize(
-                          item.file.size
-                        )}</p>
-                    </div>
-                    <button class="btn btn-ghost btn-sm" onclick="uploadManager.removeFromQueue('${
-                      item.id
-                    }')">✕</button>
-                </div>
-            `
-        )
-        .join("");
-
-      if (queueCount) {
-        queueCount.textContent = this.queue.length;
-      }
-    } else {
-      queueDiv.classList.add("hidden");
-    }
-  }
-
-  removeFromQueue(id) {
-    this.queue = this.queue.filter((item) => item.id !== id);
-    this.updateQueueDisplay();
-  }
-
-  clearQueue() {
-    this.queue = [];
-    this.updateQueueDisplay();
-  }
-
-  formatFileSize(bytes) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  }
-}
-
 // Page Guard System for Authentication
 class PageGuard {
   static init() {
@@ -581,16 +456,79 @@ class PageGuard {
 // ===============================
 
 // Global instances
-let uploadManager;
+// uploadManager is now a static class
 
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize page guard first
   PageGuard.init();
 
+  // Initialize mock data first
+  if (typeof MockDataManager !== "undefined") {
+    MockDataManager.init();
+  }
+  // Display test credentials in console
+  console.log(
+    "%c🔑 ISP Media - Test Credentials",
+    "color: #d4af37; font-size: 16px; font-weight: bold;"
+  );
+  console.log(
+    "%cQuick test login options:",
+    "color: #2563eb; font-weight: bold;"
+  );
+  console.log("• testuser / test@example.com / Test123!");
+  console.log("• admin / admin@ispmedia.com / Admin123!");
+  console.log("• demo / demo@test.com / Demo123!");
+  console.log("• tester / tester@ispmedia.com / Tester123!");
+  console.log("• musiclover / music@lover.com / Music123!");
+  console.log("• producer / producer@studio.com / Prod123!");
+  console.log(
+    "%cOr create a new account via registration form",
+    "color: #64748b; font-style: italic;"
+  );
+  console.log(
+    "%cUse debugAuth() to check authentication status",
+    "color: #64748b; font-style: italic;"
+  );
   // Initialize systems
   AuthManager.init();
-  uploadManager = new UploadManager();
+
+  // Check for test login from test page
+  const testLogin = sessionStorage.getItem("testLogin");
+  if (testLogin) {
+    const { email, password } = JSON.parse(testLogin);
+    sessionStorage.removeItem("testLogin");
+
+    // Auto-fill and submit login form
+    setTimeout(() => {
+      const emailInput = document.querySelector(
+        '#loginForm input[type="email"]'
+      );
+      const passwordInput = document.querySelector(
+        '#loginForm input[type="password"]'
+      );
+
+      if (emailInput && passwordInput) {
+        emailInput.value = email;
+        passwordInput.value = password;
+
+        // Open modal and submit
+        ModalManager.open("authModal");
+        setTimeout(() => {
+          document
+            .getElementById("loginForm")
+            .dispatchEvent(new Event("submit"));
+        }, 500);
+      }
+    }, 1000);
+  }
+  // Initialize other managers if available
+  if (typeof NotificationManager !== "undefined") NotificationManager.init();
+  if (typeof FormValidator !== "undefined") FormValidator.init();
+  if (typeof PlaylistManager !== "undefined") PlaylistManager.init();
+  if (typeof ReviewManager !== "undefined") ReviewManager.init();
+  if (typeof MediaPlayer !== "undefined") MediaPlayer.init();
+  if (typeof UploadManager !== "undefined") UploadManager.init();
 
   // Setup modal overlay clicks
   ModalManager.closeOnOverlay("authModal");
@@ -604,10 +542,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Handle Upload Button Click
 function handleUploadClick() {
+  console.log("🔄 Upload click triggered");
+  console.log("📋 Auth status:", AuthManager.isAuthenticated);
+
   if (AuthManager.isAuthenticated) {
+    console.log("✅ User authenticated, opening upload modal");
     // User is logged in, open upload modal
     openUploadModal();
   } else {
+    console.log("❌ User not authenticated");
     // User is not logged in, show login prompt and open auth modal
     AuthManager.showToast("Please log in to upload files.", "warning");
     openAuthModal();
@@ -624,7 +567,15 @@ function closeAuthModal() {
 }
 
 function openUploadModal() {
-  ModalManager.open("uploadModal");
+  console.log("📤 Opening upload modal");
+  const modal = document.getElementById("uploadModal");
+  if (modal) {
+    console.log("✅ Upload modal found, opening");
+    ModalManager.open("uploadModal");
+  } else {
+    console.log("❌ Upload modal not found in DOM");
+    AuthManager.showToast("Upload modal not loaded", "error");
+  }
 }
 
 function closeUploadModal() {
@@ -651,7 +602,7 @@ function switchTab(tab) {
 function handleDrop(e) {
   e.preventDefault();
   document.getElementById("uploadArea").classList.remove("drag-over");
-  uploadManager.addFiles(e.dataTransfer.files);
+  UploadManager.addFiles(e.dataTransfer.files);
 }
 
 function handleDragOver(e) {
@@ -665,15 +616,17 @@ function handleDragLeave(e) {
 }
 
 function handleFileSelect(e) {
-  uploadManager.addFiles(e.target.files);
+  UploadManager.addFiles(e.target.files);
 }
 
 function startUpload() {
-  uploadManager.startUpload();
+  console.log("🚀 Starting upload via global function");
+  UploadManager.startUpload();
 }
 
 function clearQueue() {
-  uploadManager.clearQueue();
+  console.log("🗑️ Clearing upload queue via global function");
+  UploadManager.clearQueue();
 }
 
 // Add CSS for toast animations
@@ -690,3 +643,77 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Global helper functions for testing
+window.testLogin = function (
+  email = "test@example.com",
+  password = "Test123!"
+) {
+  console.log(`🔑 Attempting login with: ${email}`);
+
+  // Find the login form and fill it
+  const emailInput = document.querySelector('#loginForm input[type="email"]');
+  const passwordInput = document.querySelector(
+    '#loginForm input[type="password"]'
+  );
+
+  if (emailInput && passwordInput) {
+    emailInput.value = email;
+    passwordInput.value = password;
+
+    // Submit the form
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+      loginForm.dispatchEvent(new Event("submit"));
+    }
+  } else {
+    console.log("❌ Login form not found. Make sure you are on the main page.");
+  }
+};
+
+window.showTestCredentials = function () {
+  console.log(
+    "%c🔑 Available Test Accounts:",
+    "color: #d4af37; font-size: 14px; font-weight: bold;"
+  );
+  const users = JSON.parse(localStorage.getItem("ispmedia_users") || "[]");
+  if (users.length === 0) {
+    console.log(
+      "%c❌ No users found! Mock data not loaded.",
+      "color: #ef4444;"
+    );
+    console.log("Try running: MockDataManager.init()");
+  } else {
+    users.forEach((user) => {
+      console.log(`👤 ${user.name} | 📧 ${user.email} | 🔒 ${user.password}`);
+    });
+  }
+  console.log(
+    "%cUse testLogin('email', 'password') to login instantly",
+    "color: #64748b; font-style: italic;"
+  );
+};
+
+window.debugAuth = function () {
+  console.log(
+    "%c🔍 Authentication Debug:",
+    "color: #2563eb; font-size: 14px; font-weight: bold;"
+  );
+  console.log("Is Authenticated:", AuthManager.isAuthenticated);
+  console.log("Current User:", AuthManager.currentUser);
+  console.log(
+    "Mock Users Count:",
+    JSON.parse(localStorage.getItem("ispmedia_users") || "[]").length
+  );
+  console.log("LocalStorage Auth:", localStorage.getItem("isAuthenticated"));
+  console.log("LocalStorage User:", localStorage.getItem("userData"));
+};
+
+window.refreshNavbar = function () {
+  if (AuthManager.isAuthenticated && AuthManager.currentUser) {
+    AuthManager.updateUIForLoggedInUser(AuthManager.currentUser);
+    console.log("🔄 Navbar refreshed for logged in user");
+  } else {
+    console.log("❌ No user logged in to refresh navbar");
+  }
+};

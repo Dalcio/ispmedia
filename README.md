@@ -2,7 +2,22 @@
 
 A beautiful, modern web application for media management with glassmorphism design, responsive layout, and seamless user experience.
 
-## 🚀 Features
+## � Test User Credentials
+
+The application comes with pre-configured test users for immediate testing:
+
+| Username     | Email               | Password     | Role  | Description               |
+| ------------ | ------------------- | ------------ | ----- | ------------------------- |
+| `testuser`   | test@example.com    | `Test123!`   | User  | General test account      |
+| `admin`      | admin@ispmedia.com  | `Admin123!`  | Admin | Platform administrator    |
+| `musiclover` | music@lover.com     | `Music123!`  | User  | Music enthusiast account  |
+| `demo`       | demo@test.com       | `Demo123!`   | User  | Demo account for features |
+| `producer`   | producer@studio.com | `Prod123!`   | User  | Studio producer account   |
+| `tester`     | tester@ispmedia.com | `Tester123!` | User  | QA testing account        |
+
+**Quick Login**: Use any of the above credentials to log in immediately. You can also create new accounts through the registration form.
+
+## �🚀 Features
 
 - **Modern UI/UX**: Clean, glassmorphism-inspired design with discrete gold accent (#D4AF37)
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
@@ -123,7 +138,27 @@ ispmedia/
 1. Clone or download the project
 2. Start a local web server in the project directory
 3. Open `index.html` in your browser
-4. The application will automatically initialize
+4. The application will automatically initialize with mock data
+
+### Immediate Testing
+
+1. **Quick Test Page** - Open `test.html` for one-click login testing
+2. **Main Application** - Load `index.html` in any modern browser
+3. **Use test credentials** - Log in with any account from the table above
+4. **Test features**:
+   - 📁 Upload files (drag & drop supported)
+   - 🎵 Create and manage playlists
+   - ⭐ Rate and review media
+   - 🔍 Search and filter content
+   - 📊 View analytics dashboard
+   - 👤 Edit user profile
+
+### Developer Console Helpers
+
+Open browser console for additional testing tools:
+
+- `testLogin('email', 'password')` - Quick login function
+- `showTestCredentials()` - Display all available test accounts
 
 ### Development Server
 

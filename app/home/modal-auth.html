@@ -26,13 +26,13 @@
         Sign Up
       </button>
     </div>
-
     <!-- Login Form -->
     <form id="loginForm" class="auth-form">
       <div class="form-group">
         <label class="form-label">Email</label>
         <input
           type="email"
+          name="email"
           class="form-input"
           placeholder="Enter your email"
           required
@@ -43,6 +43,7 @@
         <label class="form-label">Password</label>
         <input
           type="password"
+          name="password"
           class="form-input"
           placeholder="Enter your password"
           required
@@ -65,15 +66,15 @@
         Sign In
       </button>
     </form>
-
     <!-- Register Form -->
     <form id="registerForm" class="auth-form hidden">
       <div class="form-group">
-        <label class="form-label">Full Name</label>
+        <label class="form-label">Username</label>
         <input
           type="text"
+          name="username"
           class="form-input"
-          placeholder="Enter your full name"
+          placeholder="Choose a username"
           required
         />
       </div>
@@ -82,6 +83,7 @@
         <label class="form-label">Email</label>
         <input
           type="email"
+          name="email"
           class="form-input"
           placeholder="Enter your email"
           required
@@ -92,16 +94,17 @@
         <label class="form-label">Password</label>
         <input
           type="password"
+          name="password"
           class="form-input"
           placeholder="Create a password"
           required
         />
       </div>
-
       <div class="form-group">
         <label class="form-label">Confirm Password</label>
         <input
           type="password"
+          name="confirmPassword"
           class="form-input"
           placeholder="Confirm your password"
           required
@@ -201,20 +204,5 @@
     }
   });
 
-  // Form submissions
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    // Handle login logic here
-    console.log("Login form submitted");
-    closeAuthModal();
-  });
-
-  document
-    .getElementById("registerForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      // Handle registration logic here
-      console.log("Register form submitted");
-      closeAuthModal();
-    });
+  // Form submissions are handled by app.js
 </script>

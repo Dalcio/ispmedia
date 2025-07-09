@@ -483,7 +483,8 @@ class SPARouter {
     // Reinitialize home page functionality
     window.handleUploadClick = () => {
       if (AuthManager.isAuthenticated) {
-        if (window.uploadManager) {
+        // Use the static UploadManager class
+        if (typeof UploadManager !== "undefined") {
           ModalManager.open("uploadModal");
         } else {
           AuthManager.showToast("Upload system not ready", "error");
