@@ -1,650 +1,768 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel - ISP Media</title>
-    <link rel="stylesheet" href="../../style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../../style.css" />
+  </head>
+  <body>
     <!-- Navigation -->
     <div id="navbar-container"></div>
 
     <!-- Admin Panel Content -->
-    <main class="container" style="padding: var(--space-8) var(--space-6);">
-        
-        <!-- Admin Header -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="mb-2">Admin Panel</h1>
-                <p class="text-gray">Manage users, settings, and system configuration</p>
+    <main class="container" style="padding: var(--space-8) var(--space-6)">
+      <!-- Admin Header -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="mb-2">Admin Panel</h1>
+          <p class="text-gray">
+            Manage users, settings, and system configuration
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn btn-ghost">System Logs</button>
+          <button class="btn btn-secondary">Backup Data</button>
+          <button class="btn btn-primary">System Health</button>
+        </div>
+      </div>
+
+      <!-- Admin Stats -->
+      <section class="mb-12">
+        <div
+          class="grid"
+          style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))"
+        >
+          <div class="card">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-sm text-muted mb-1">Total Users</p>
+                <h3 class="text-2xl font-bold">1,247</h3>
+              </div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--primary-light);
+                  border-radius: var(--radius-lg);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <span style="font-size: 1.25rem">👥</span>
+              </div>
             </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-success">↗ +12</span>
+              <span class="text-sm text-muted">this week</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-sm text-muted mb-1">Active Sessions</p>
+                <h3 class="text-2xl font-bold">142</h3>
+              </div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--primary-light);
+                  border-radius: var(--radius-lg);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <span style="font-size: 1.25rem">⚡</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-success">↗ +8%</span>
+              <span class="text-sm text-muted">from yesterday</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-sm text-muted mb-1">System Load</p>
+                <h3 class="text-2xl font-bold">23%</h3>
+              </div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--primary-light);
+                  border-radius: var(--radius-lg);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <span style="font-size: 1.25rem">📊</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-success">↘ -5%</span>
+              <span class="text-sm text-muted">optimal</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-sm text-muted mb-1">Storage Used</p>
+                <h3 class="text-2xl font-bold">2.4 TB</h3>
+              </div>
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--primary-light);
+                  border-radius: var(--radius-lg);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <span style="font-size: 1.25rem">💾</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-warning">↗ +15%</span>
+              <span class="text-sm text-muted">of 10 TB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Admin Tabs -->
+      <div class="admin-tabs mb-8">
+        <button class="admin-tab active" onclick="switchAdminTab('users')">
+          User Management
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('settings')">
+          System Settings
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('security')">
+          Security
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('maintenance')">
+          Maintenance
+        </button>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="usersTab" class="admin-tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="flex justify-between items-center">
+              <div>
+                <h4 class="card-title">User Management</h4>
+                <p class="card-subtitle">
+                  Manage user accounts and permissions
+                </p>
+              </div>
+              <button class="btn btn-primary" onclick="openUserModal()">
+                Add User
+              </button>
+            </div>
+          </div>
+
+          <!-- User Search and Filters -->
+          <div class="flex justify-between items-center mb-6">
             <div class="flex gap-3">
-                <button class="btn btn-ghost">System Logs</button>
-                <button class="btn btn-secondary">Backup Data</button>
-                <button class="btn btn-primary">System Health</button>
+              <div style="position: relative">
+                <input
+                  type="search"
+                  placeholder="Search users..."
+                  class="form-input"
+                  style="width: 250px; padding-left: 35px"
+                />
+                <span
+                  style="
+                    position: absolute;
+                    left: 12px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--gray-400);
+                  "
+                  >🔍</span
+                >
+              </div>
+              <select class="form-input" style="width: auto">
+                <option>All Roles</option>
+                <option>Admin</option>
+                <option>Editor</option>
+                <option>Viewer</option>
+              </select>
             </div>
-        </div>
+            <span class="text-sm text-muted">1,247 users total</span>
+          </div>
 
-        <!-- Admin Stats -->
-        <section class="mb-12">
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                
-                <div class="card">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-sm text-muted mb-1">Total Users</p>
-                            <h3 class="text-2xl font-bold">1,247</h3>
-                        </div>
-                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.25rem;">👥</span>
-                        </div>
+          <!-- Users Table -->
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Last Active</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="user-avatar">JD</div>
+                      <div>
+                        <p class="font-medium">John Doe</p>
+                        <p class="text-sm text-muted">Administrator</p>
+                      </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-success">↗ +12</span>
-                        <span class="text-sm text-muted">this week</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-sm text-muted mb-1">Active Sessions</p>
-                            <h3 class="text-2xl font-bold">142</h3>
-                        </div>
-                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.25rem;">⚡</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-success">↗ +8%</span>
-                        <span class="text-sm text-muted">from yesterday</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-sm text-muted mb-1">System Load</p>
-                            <h3 class="text-2xl font-bold">23%</h3>
-                        </div>
-                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.25rem;">📊</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-success">↘ -5%</span>
-                        <span class="text-sm text-muted">optimal</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-sm text-muted mb-1">Storage Used</p>
-                            <h3 class="text-2xl font-bold">2.4 TB</h3>
-                        </div>
-                        <div style="width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.25rem;">💾</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-warning">↗ +15%</span>
-                        <span class="text-sm text-muted">of 10 TB</span>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Admin Tabs -->
-        <div class="admin-tabs mb-8">
-            <button class="admin-tab active" onclick="switchAdminTab('users')">User Management</button>
-            <button class="admin-tab" onclick="switchAdminTab('settings')">System Settings</button>
-            <button class="admin-tab" onclick="switchAdminTab('security')">Security</button>
-            <button class="admin-tab" onclick="switchAdminTab('maintenance')">Maintenance</button>
-        </div>
-
-        <!-- Users Tab -->
-        <div id="usersTab" class="admin-tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h4 class="card-title">User Management</h4>
-                            <p class="card-subtitle">Manage user accounts and permissions</p>
-                        </div>
-                        <button class="btn btn-primary" onclick="openUserModal()">Add User</button>
-                    </div>
-                </div>
-
-                <!-- User Search and Filters -->
-                <div class="flex justify-between items-center mb-6">
-                    <div class="flex gap-3">
-                        <div style="position: relative;">
-                            <input type="search" placeholder="Search users..." class="form-input" style="width: 250px; padding-left: 35px;">
-                            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400);">🔍</span>
-                        </div>
-                        <select class="form-input" style="width: auto;">
-                            <option>All Roles</option>
-                            <option>Admin</option>
-                            <option>Editor</option>
-                            <option>Viewer</option>
-                        </select>
-                    </div>
-                    <span class="text-sm text-muted">1,247 users total</span>
-                </div>
-
-                <!-- Users Table -->
-                <div class="table-container">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Last Active</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div class="user-avatar">JD</div>
-                                        <div>
-                                            <p class="font-medium">John Doe</p>
-                                            <p class="text-sm text-muted">Administrator</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>john.doe@example.com</td>
-                                <td><span class="badge badge-primary">Admin</span></td>
-                                <td>2 hours ago</td>
-                                <td><span class="status-indicator active">Active</span></td>
-                                <td>
-                                    <div class="flex gap-2">
-                                        <button class="btn btn-ghost btn-sm">Edit</button>
-                                        <button class="btn btn-ghost btn-sm">Disable</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div class="user-avatar">JS</div>
-                                        <div>
-                                            <p class="font-medium">Jane Smith</p>
-                                            <p class="text-sm text-muted">Content Editor</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>jane.smith@example.com</td>
-                                <td><span class="badge badge-secondary">Editor</span></td>
-                                <td>1 day ago</td>
-                                <td><span class="status-indicator active">Active</span></td>
-                                <td>
-                                    <div class="flex gap-2">
-                                        <button class="btn btn-ghost btn-sm">Edit</button>
-                                        <button class="btn btn-ghost btn-sm">Disable</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div class="user-avatar">MB</div>
-                                        <div>
-                                            <p class="font-medium">Mike Brown</p>
-                                            <p class="text-sm text-muted">Viewer</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>mike.brown@example.com</td>
-                                <td><span class="badge badge-gray">Viewer</span></td>
-                                <td>3 days ago</td>
-                                <td><span class="status-indicator inactive">Inactive</span></td>
-                                <td>
-                                    <div class="flex gap-2">
-                                        <button class="btn btn-ghost btn-sm">Edit</button>
-                                        <button class="btn btn-ghost btn-sm">Enable</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="flex justify-between items-center mt-6">
-                    <p class="text-sm text-muted">Showing 1 to 10 of 1,247 entries</p>
+                  </td>
+                  <td>john.doe@example.com</td>
+                  <td><span class="badge badge-primary">Admin</span></td>
+                  <td>2 hours ago</td>
+                  <td><span class="status-indicator active">Active</span></td>
+                  <td>
                     <div class="flex gap-2">
-                        <button class="btn btn-ghost btn-sm">Previous</button>
-                        <button class="btn btn-primary btn-sm">1</button>
-                        <button class="btn btn-ghost btn-sm">2</button>
-                        <button class="btn btn-ghost btn-sm">3</button>
-                        <button class="btn btn-ghost btn-sm">Next</button>
+                      <button class="btn btn-ghost btn-sm">Edit</button>
+                      <button class="btn btn-ghost btn-sm">Disable</button>
                     </div>
-                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="user-avatar">JS</div>
+                      <div>
+                        <p class="font-medium">Jane Smith</p>
+                        <p class="text-sm text-muted">Content Editor</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>jane.smith@example.com</td>
+                  <td><span class="badge badge-secondary">Editor</span></td>
+                  <td>1 day ago</td>
+                  <td><span class="status-indicator active">Active</span></td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button class="btn btn-ghost btn-sm">Edit</button>
+                      <button class="btn btn-ghost btn-sm">Disable</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="user-avatar">MB</div>
+                      <div>
+                        <p class="font-medium">Mike Brown</p>
+                        <p class="text-sm text-muted">Viewer</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>mike.brown@example.com</td>
+                  <td><span class="badge badge-gray">Viewer</span></td>
+                  <td>3 days ago</td>
+                  <td>
+                    <span class="status-indicator inactive">Inactive</span>
+                  </td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button class="btn btn-ghost btn-sm">Edit</button>
+                      <button class="btn btn-ghost btn-sm">Enable</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex justify-between items-center mt-6">
+            <p class="text-sm text-muted">Showing 1 to 10 of 1,247 entries</p>
+            <div class="flex gap-2">
+              <button class="btn btn-ghost btn-sm">Previous</button>
+              <button class="btn btn-primary btn-sm">1</button>
+              <button class="btn btn-ghost btn-sm">2</button>
+              <button class="btn btn-ghost btn-sm">3</button>
+              <button class="btn btn-ghost btn-sm">Next</button>
             </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Settings Tab -->
-        <div id="settingsTab" class="admin-tab-content hidden">
-            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-6);">
-                
-                <!-- General Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">General Settings</h4>
-                        <p class="card-subtitle">Basic system configuration</p>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="form-group">
-                            <label class="form-label">Site Name</label>
-                            <input type="text" class="form-input" value="ISP Media" placeholder="Enter site name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Default Language</label>
-                            <select class="form-input">
-                                <option>English</option>
-                                <option>Spanish</option>
-                                <option>French</option>
-                                <option>German</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Timezone</label>
-                            <select class="form-input">
-                                <option>UTC-5 (Eastern Time)</option>
-                                <option>UTC-8 (Pacific Time)</option>
-                                <option>UTC+0 (GMT)</option>
-                                <option>UTC+1 (Central European Time)</option>
-                            </select>
-                        </div>
-                        
-                        <button class="btn btn-primary">Save Changes</button>
-                    </div>
-                </div>
-
-                <!-- Storage Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Storage Settings</h4>
-                        <p class="card-subtitle">Configure storage limits and policies</p>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="form-group">
-                            <label class="form-label">Max File Size (MB)</label>
-                            <input type="number" class="form-input" value="100" placeholder="Enter max file size">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Storage Quota per User (GB)</label>
-                            <input type="number" class="form-input" value="10" placeholder="Enter storage quota">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
-                                <span>Enable auto-cleanup of old files</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" style="accent-color: var(--primary-color);">
-                                <span>Compress uploaded images</span>
-                            </label>
-                        </div>
-                        
-                        <button class="btn btn-primary">Save Changes</button>
-                    </div>
-                </div>
-
+      <!-- Settings Tab -->
+      <div id="settingsTab" class="admin-tab-content hidden">
+        <div
+          class="grid"
+          style="grid-template-columns: 1fr 1fr; gap: var(--space-6)"
+        >
+          <!-- General Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">General Settings</h4>
+              <p class="card-subtitle">Basic system configuration</p>
             </div>
-        </div>
 
-        <!-- Security Tab -->
-        <div id="securityTab" class="admin-tab-content hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Security Settings</h4>
-                    <p class="card-subtitle">Manage security policies and access control</p>
-                </div>
-                
-                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-6);">
-                    <div class="space-y-4">
-                        <h5>Authentication</h5>
-                        
-                        <div class="form-group">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
-                                <span>Require strong passwords</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
-                                <span>Enable two-factor authentication</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Session timeout (minutes)</label>
-                            <input type="number" class="form-input" value="60">
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <h5>Access Control</h5>
-                        
-                        <div class="form-group">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" style="accent-color: var(--primary-color);">
-                                <span>Enable IP whitelist</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" checked style="accent-color: var(--primary-color);">
-                                <span>Log all user activities</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Max login attempts</label>
-                            <input type="number" class="form-input" value="5">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6">
-                    <button class="btn btn-primary">Update Security Settings</button>
-                </div>
+            <div class="space-y-4">
+              <div class="form-group">
+                <label class="form-label">Site Name</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  value="ISP Media"
+                  placeholder="Enter site name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Default Language</label>
+                <select class="form-input">
+                  <option>English</option>
+                  <option>Spanish</option>
+                  <option>French</option>
+                  <option>German</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-input">
+                  <option>UTC-5 (Eastern Time)</option>
+                  <option>UTC-8 (Pacific Time)</option>
+                  <option>UTC+0 (GMT)</option>
+                  <option>UTC+1 (Central European Time)</option>
+                </select>
+              </div>
+
+              <button class="btn btn-primary">Save Changes</button>
             </div>
-        </div>
+          </div>
 
-        <!-- Maintenance Tab -->
-        <div id="maintenanceTab" class="admin-tab-content hidden">
-            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-6);">
-                
-                <!-- System Maintenance -->
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">System Maintenance</h4>
-                        <p class="card-subtitle">Perform system maintenance tasks</p>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="maintenance-action">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h6>Clear Cache</h6>
-                                    <p class="text-sm text-muted">Clear system cache and temporary files</p>
-                                </div>
-                                <button class="btn btn-secondary btn-sm">Clear Now</button>
-                            </div>
-                        </div>
-                        
-                        <div class="maintenance-action">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h6>Database Optimization</h6>
-                                    <p class="text-sm text-muted">Optimize database performance</p>
-                                </div>
-                                <button class="btn btn-secondary btn-sm">Optimize</button>
-                            </div>
-                        </div>
-                        
-                        <div class="maintenance-action">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h6>Generate Backup</h6>
-                                    <p class="text-sm text-muted">Create a full system backup</p>
-                                </div>
-                                <button class="btn btn-primary btn-sm">Backup Now</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Information -->
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">System Information</h4>
-                        <p class="card-subtitle">Current system status and details</p>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">Server Status:</span>
-                            <span class="status-indicator active ml-2">Online</span>
-                        </div>
-                        
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">Version:</span>
-                            <span class="text-sm text-muted ml-2">ISP Media v2.1.0</span>
-                        </div>
-                        
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">Last Backup:</span>
-                            <span class="text-sm text-muted ml-2">2 hours ago</span>
-                        </div>
-                        
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">Uptime:</span>
-                            <span class="text-sm text-muted ml-2">15 days, 4 hours</span>
-                        </div>
-                        
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">CPU Usage:</span>
-                            <span class="text-sm text-muted ml-2">23%</span>
-                        </div>
-                        
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">Memory Usage:</span>
-                            <span class="text-sm text-muted ml-2">67% (5.2GB / 8GB)</span>
-                        </div>
-                        
-                        <div class="system-info-item">
-                            <span class="text-sm font-medium">Disk Space:</span>
-                            <span class="text-sm text-muted ml-2">24% (2.4TB / 10TB)</span>
-                        </div>
-                    </div>
-                </div>
-
+          <!-- Storage Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Storage Settings</h4>
+              <p class="card-subtitle">Configure storage limits and policies</p>
             </div>
-        </div>
 
+            <div class="space-y-4">
+              <div class="form-group">
+                <label class="form-label">Max File Size (MB)</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  value="100"
+                  placeholder="Enter max file size"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Storage Quota per User (GB)</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  value="10"
+                  placeholder="Enter storage quota"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: var(--primary-color)"
+                  />
+                  <span>Enable auto-cleanup of old files</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    style="accent-color: var(--primary-color)"
+                  />
+                  <span>Compress uploaded images</span>
+                </label>
+              </div>
+
+              <button class="btn btn-primary">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Tab -->
+      <div id="securityTab" class="admin-tab-content hidden">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Security Settings</h4>
+            <p class="card-subtitle">
+              Manage security policies and access control
+            </p>
+          </div>
+
+          <div
+            class="grid"
+            style="grid-template-columns: 1fr 1fr; gap: var(--space-6)"
+          >
+            <div class="space-y-4">
+              <h5>Authentication</h5>
+
+              <div class="form-group">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: var(--primary-color)"
+                  />
+                  <span>Require strong passwords</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: var(--primary-color)"
+                  />
+                  <span>Enable two-factor authentication</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Session timeout (minutes)</label>
+                <input type="number" class="form-input" value="60" />
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h5>Access Control</h5>
+
+              <div class="form-group">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    style="accent-color: var(--primary-color)"
+                  />
+                  <span>Enable IP whitelist</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: var(--primary-color)"
+                  />
+                  <span>Log all user activities</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Max login attempts</label>
+                <input type="number" class="form-input" value="5" />
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <button class="btn btn-primary">Update Security Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Tab -->
+      <div id="maintenanceTab" class="admin-tab-content hidden">
+        <div
+          class="grid"
+          style="grid-template-columns: 1fr 1fr; gap: var(--space-6)"
+        >
+          <!-- System Maintenance -->
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">System Maintenance</h4>
+              <p class="card-subtitle">Perform system maintenance tasks</p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="maintenance-action">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h6>Clear Cache</h6>
+                    <p class="text-sm text-muted">
+                      Clear system cache and temporary files
+                    </p>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">Clear Now</button>
+                </div>
+              </div>
+
+              <div class="maintenance-action">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h6>Database Optimization</h6>
+                    <p class="text-sm text-muted">
+                      Optimize database performance
+                    </p>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">Optimize</button>
+                </div>
+              </div>
+
+              <div class="maintenance-action">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h6>Generate Backup</h6>
+                    <p class="text-sm text-muted">
+                      Create a full system backup
+                    </p>
+                  </div>
+                  <button class="btn btn-primary btn-sm">Backup Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Information -->
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">System Information</h4>
+              <p class="card-subtitle">Current system status and details</p>
+            </div>
+
+            <div class="space-y-3">
+              <div class="system-info-item">
+                <span class="text-sm font-medium">Server Status:</span>
+                <span class="status-indicator active ml-2">Online</span>
+              </div>
+
+              <div class="system-info-item">
+                <span class="text-sm font-medium">Version:</span>
+                <span class="text-sm text-muted ml-2">ISP Media v2.1.0</span>
+              </div>
+
+              <div class="system-info-item">
+                <span class="text-sm font-medium">Last Backup:</span>
+                <span class="text-sm text-muted ml-2">2 hours ago</span>
+              </div>
+
+              <div class="system-info-item">
+                <span class="text-sm font-medium">Uptime:</span>
+                <span class="text-sm text-muted ml-2">15 days, 4 hours</span>
+              </div>
+
+              <div class="system-info-item">
+                <span class="text-sm font-medium">CPU Usage:</span>
+                <span class="text-sm text-muted ml-2">23%</span>
+              </div>
+
+              <div class="system-info-item">
+                <span class="text-sm font-medium">Memory Usage:</span>
+                <span class="text-sm text-muted ml-2">67% (5.2GB / 8GB)</span>
+              </div>
+
+              <div class="system-info-item">
+                <span class="text-sm font-medium">Disk Space:</span>
+                <span class="text-sm text-muted ml-2">24% (2.4TB / 10TB)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
-
-    <!-- Footer -->
-    <div id="footer-container"></div>
 
     <!-- Admin Styles -->
     <style>
+      .admin-tabs {
+        display: flex;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        padding: var(--space-1);
+        gap: var(--space-1);
+      }
+
+      .admin-tab {
+        flex: 1;
+        padding: var(--space-3) var(--space-4);
+        border: none;
+        background: transparent;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        color: var(--gray-600);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .admin-tab.active {
+        background: var(--white);
+        color: var(--gray-900);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .admin-tab-content {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .admin-table th {
+        text-align: left;
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--gray-200);
+        font-weight: 600;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+      }
+
+      .admin-table td {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: middle;
+      }
+
+      .admin-table tr:hover {
+        background: var(--bg-secondary);
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        color: var(--gray-900);
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .badge {
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .badge-primary {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+      }
+
+      .badge-secondary {
+        background: var(--info);
+        color: white;
+      }
+
+      .badge-gray {
+        background: var(--gray-200);
+        color: var(--gray-700);
+      }
+
+      .status-indicator {
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .status-indicator.active {
+        background: var(--success);
+        color: white;
+      }
+
+      .status-indicator.inactive {
+        background: var(--gray-400);
+        color: white;
+      }
+
+      .maintenance-action {
+        padding: var(--space-4);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+      }
+
+      .system-info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-2) 0;
+      }
+
+      .space-y-3 > * + * {
+        margin-top: var(--space-3);
+      }
+      .space-y-4 > * + * {
+        margin-top: var(--space-4);
+      }
+      .text-2xl {
+        font-size: 1.5rem;
+      }
+      .ml-2 {
+        margin-left: var(--space-2);
+      }
+
+      @media (max-width: 768px) {
         .admin-tabs {
-            display: flex;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-1);
-            gap: var(--space-1);
-        }
-
-        .admin-tab {
-            flex: 1;
-            padding: var(--space-3) var(--space-4);
-            border: none;
-            background: transparent;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            color: var(--gray-600);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .admin-tab.active {
-            background: var(--white);
-            color: var(--gray-900);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .admin-tab-content {
-            animation: fadeIn 0.3s ease-out;
+          flex-direction: column;
         }
 
         .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th {
-            text-align: left;
-            padding: var(--space-3) var(--space-4);
-            border-bottom: 1px solid var(--gray-200);
-            font-weight: 600;
-            color: var(--gray-700);
-            font-size: 0.875rem;
+          font-size: 0.875rem;
         }
 
         .admin-table td {
-            padding: var(--space-4);
-            border-bottom: 1px solid var(--gray-100);
-            vertical-align: middle;
+          padding: var(--space-2);
         }
-
-        .admin-table tr:hover {
-            background: var(--bg-secondary);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-color);
-            color: var(--gray-900);
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .badge {
-            padding: var(--space-1) var(--space-3);
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .badge-primary {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        .badge-secondary {
-            background: var(--info);
-            color: white;
-        }
-
-        .badge-gray {
-            background: var(--gray-200);
-            color: var(--gray-700);
-        }
-
-        .status-indicator {
-            padding: var(--space-1) var(--space-3);
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .status-indicator.active {
-            background: var(--success);
-            color: white;
-        }
-
-        .status-indicator.inactive {
-            background: var(--gray-400);
-            color: white;
-        }
-
-        .maintenance-action {
-            padding: var(--space-4);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-md);
-        }
-
-        .system-info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--space-2) 0;
-        }
-
-        .space-y-3 > * + * { margin-top: var(--space-3); }
-        .space-y-4 > * + * { margin-top: var(--space-4); }
-        .text-2xl { font-size: 1.5rem; }
-        .ml-2 { margin-left: var(--space-2); }
-
-        @media (max-width: 768px) {
-            .admin-tabs {
-                flex-direction: column;
-            }
-            
-            .admin-table {
-                font-size: 0.875rem;
-            }
-            
-            .admin-table td {
-                padding: var(--space-2);
-            }
-        }
+      }
     </style>
-
     <!-- Scripts -->
+    <script src="../../scripts/app.js"></script>
     <script>
-        // Load components
-        fetch('/components/navbar.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('navbar-container').innerHTML = html;
-            });
+      // Load components
+      fetch("/components/navbar.html")
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById("navbar-container").innerHTML = html;
+        });
 
-        fetch('/components/footer.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('footer-container').innerHTML = html;
-            });
+      // Admin tab switching
+      function switchAdminTab(tabName) {
+        // Remove active class from all tabs
+        document.querySelectorAll(".admin-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
 
-        // Admin tab switching
-        function switchAdminTab(tabName) {
-            // Remove active class from all tabs
-            document.querySelectorAll('.admin-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Hide all tab contents
-            document.querySelectorAll('.admin-tab-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-            
-            // Activate selected tab
-            event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.remove('hidden');
-        }
+        // Hide all tab contents
+        document.querySelectorAll(".admin-tab-content").forEach((content) => {
+          content.classList.add("hidden");
+        });
 
-        function openUserModal() {
-            alert('User creation modal would open here');
-        }
+        // Activate selected tab
+        event.target.classList.add("active");
+        document.getElementById(tabName + "Tab").classList.remove("hidden");
+      }
+
+      function openUserModal() {
+        alert("User creation modal would open here");
+      }
     </script>
-</body>
+  </body>
 </html>

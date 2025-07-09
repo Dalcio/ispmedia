@@ -1,17 +1,41 @@
 <nav class="navbar">
   <div class="container">
     <div class="navbar-content">
-      <a href="/" class="navbar-brand">ISP Media</a>
-      
+      <a href="/index.html" class="navbar-brand">ISP Media</a>
+
       <ul class="navbar-nav">
-        <li><a href="/" class="active">Home</a></li>
-        <li><a href="/app/dashboard/dashboard.html">Dashboard</a></li>
-        <li><a href="/app/files/file-manager.html">Files</a></li>
-        <li><a href="/app/admin/admin.html">Admin</a></li>
+        <li><a href="/index.html" data-page="home">Home</a></li>
+        <li>
+          <a
+            href="/app/home/home.html"
+            data-page="dashboard"
+            class="nav-protected"
+            >Dashboard</a
+          >
+        </li>
+        <li>
+          <a
+            href="/app/files/file-manager.html"
+            data-page="files"
+            class="nav-protected"
+            >Files</a
+          >
+        </li>
+        <li>
+          <a
+            href="/app/admin/admin.html"
+            data-page="admin"
+            class="nav-protected"
+            >Admin</a
+          >
+        </li>
       </ul>
-        <div class="flex items-center gap-3">
+
+      <div class="flex items-center gap-3" id="navActions">
         <button class="btn btn-ghost btn-sm">Settings</button>
-        <button class="btn btn-primary btn-sm" onclick="openAuthModal()">Login</button>
+        <button class="btn btn-primary btn-sm" onclick="openAuthModal()">
+          Login
+        </button>
       </div>
     </div>
   </div>

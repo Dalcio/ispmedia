@@ -1,99 +1,150 @@
 <!-- Authentication Modal with Glassmorphism -->
 <div id="authModal" class="modal-overlay hidden">
-    <div class="modal-content">
-        <div class="text-center mb-8">
-            <h2 class="mb-2">Welcome to ISP Media</h2>
-            <p class="text-muted">Sign in to access your workspace</p>
-        </div>
-
-        <!-- Auth Tabs -->
-        <div class="flex mb-6" style="background: var(--bg-secondary); border-radius: var(--radius-md); padding: var(--space-1);">
-            <button id="loginTab" class="auth-tab active" onclick="switchTab('login')">Sign In</button>
-            <button id="registerTab" class="auth-tab" onclick="switchTab('register')">Sign Up</button>
-        </div>
-
-        <!-- Login Form -->
-        <form id="loginForm" class="auth-form">
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" placeholder="Enter your email" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" placeholder="Enter your password" required>
-            </div>
-            
-            <div class="flex justify-between items-center mb-6">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" style="accent-color: var(--primary-color);">
-                    <span class="text-sm">Remember me</span>
-                </label>
-                <a href="#" class="text-sm text-primary">Forgot password?</a>
-            </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: var(--space-4);">Sign In</button>
-        </form>
-
-        <!-- Register Form -->
-        <form id="registerForm" class="auth-form hidden">
-            <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="form-input" placeholder="Enter your full name" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" placeholder="Enter your email" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" placeholder="Create a password" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Confirm Password</label>
-                <input type="password" class="form-input" placeholder="Confirm your password" required>
-            </div>
-            
-            <div class="mb-6">
-                <label class="flex items-start gap-2">
-                    <input type="checkbox" style="accent-color: var(--primary-color); margin-top: 2px;" required>
-                    <span class="text-sm">I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a></span>
-                </label>
-            </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: var(--space-4);">Create Account</button>
-        </form>
-
-        <!-- Social Login -->
-        <div class="text-center mb-6">
-            <div class="flex items-center gap-4 mb-4">
-                <div style="flex: 1; height: 1px; background: var(--gray-300);"></div>
-                <span class="text-sm text-muted">or continue with</span>
-                <div style="flex: 1; height: 1px; background: var(--gray-300);"></div>
-            </div>
-            
-            <div class="flex gap-3">
-                <button class="btn btn-secondary" style="flex: 1;">
-                    <span style="margin-right: var(--space-2);">🔍</span>
-                    Google
-                </button>
-                <button class="btn btn-secondary" style="flex: 1;">
-                    <span style="margin-right: var(--space-2);">📘</span>
-                    Facebook
-                </button>
-            </div>
-        </div>
-
-        <!-- Close Button -->
-        <button onclick="closeAuthModal()" class="btn btn-ghost" style="width: 100%;">Cancel</button>
+  <div class="modal-content">
+    <div class="text-center mb-8">
+      <h2 class="mb-2">Welcome to ISP Media</h2>
+      <p class="text-muted">Sign in to access your workspace</p>
     </div>
+
+    <!-- Auth Tabs -->
+    <div
+      class="flex mb-6"
+      style="
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: var(--space-1);
+      "
+    >
+      <button
+        id="loginTab"
+        class="auth-tab active"
+        onclick="switchTab('login')"
+      >
+        Sign In
+      </button>
+      <button id="registerTab" class="auth-tab" onclick="switchTab('register')">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-input"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-input"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      <div class="flex justify-between items-center mb-6">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" style="accent-color: var(--primary-color)" />
+          <span class="text-sm">Remember me</span>
+        </label>
+        <a href="#" class="text-sm text-primary">Forgot password?</a>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="width: 100%; margin-bottom: var(--space-4)"
+      >
+        Sign In
+      </button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="registerForm" class="auth-form hidden">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Enter your full name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-input"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-input"
+          placeholder="Create a password"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input
+          type="password"
+          class="form-input"
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
+
+      <div class="mb-6">
+        <label class="flex items-start gap-2">
+          <input
+            type="checkbox"
+            style="accent-color: var(--primary-color); margin-top: 2px"
+            required
+          />
+          <span class="text-sm"
+            >I agree to the
+            <a href="#" class="text-primary">Terms of Service</a> and
+            <a href="#" class="text-primary">Privacy Policy</a></span
+          >
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="width: 100%; margin-bottom: var(--space-4)"
+      >
+        Create Account
+      </button>
+    </form>
+
+    <!-- Close Button -->
+    <button
+      onclick="closeAuthModal()"
+      class="btn btn-ghost"
+      style="width: 100%"
+    >
+      Cancel
+    </button>
+  </div>
 </div>
 
 <style>
-.auth-tab {
+  .auth-tab {
     flex: 1;
     padding: var(--space-2) var(--space-4);
     border: none;
@@ -103,57 +154,67 @@
     color: var(--gray-600);
     cursor: pointer;
     transition: all var(--transition-fast);
-}
+  }
 
-.auth-tab.active {
+  .auth-tab.active {
     background: var(--white);
     color: var(--gray-900);
     box-shadow: var(--shadow-sm);
-}
+  }
 
-.auth-form {
+  .auth-form {
     animation: fadeIn 0.3s ease-out;
-}
+  }
 </style>
 
 <script>
-function switchTab(tab) {
+  function switchTab(tab) {
     // Update tab buttons
-    document.getElementById('loginTab').classList.toggle('active', tab === 'login');
-    document.getElementById('registerTab').classList.toggle('active', tab === 'register');
-    
+    document
+      .getElementById("loginTab")
+      .classList.toggle("active", tab === "login");
+    document
+      .getElementById("registerTab")
+      .classList.toggle("active", tab === "register");
+
     // Update forms
-    document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
-    document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
-}
+    document
+      .getElementById("loginForm")
+      .classList.toggle("hidden", tab !== "login");
+    document
+      .getElementById("registerForm")
+      .classList.toggle("hidden", tab !== "register");
+  }
 
-function openAuthModal() {
-    document.getElementById('authModal').classList.remove('hidden');
-}
+  function openAuthModal() {
+    document.getElementById("authModal").classList.remove("hidden");
+  }
 
-function closeAuthModal() {
-    document.getElementById('authModal').classList.add('hidden');
-}
+  function closeAuthModal() {
+    document.getElementById("authModal").classList.add("hidden");
+  }
 
-// Close modal on overlay click
-document.getElementById('authModal').addEventListener('click', function(e) {
+  // Close modal on overlay click
+  document.getElementById("authModal").addEventListener("click", function (e) {
     if (e.target === this) {
-        closeAuthModal();
+      closeAuthModal();
     }
-});
+  });
 
-// Form submissions
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+  // Form submissions
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
     // Handle login logic here
-    console.log('Login form submitted');
+    console.log("Login form submitted");
     closeAuthModal();
-});
+  });
 
-document.getElementById('registerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    // Handle registration logic here
-    console.log('Register form submitted');
-    closeAuthModal();
-});
+  document
+    .getElementById("registerForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      // Handle registration logic here
+      console.log("Register form submitted");
+      closeAuthModal();
+    });
 </script>
