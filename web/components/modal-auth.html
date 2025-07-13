@@ -1,0 +1,97 @@
+<div
+  class="modal fade"
+  id="modalAuth"
+  tabindex="-1"
+  aria-labelledby="modalAuthLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal p-4" style="border-radius: 18px">
+      <div class="modal-header border-0 pb-0">
+        <h5
+          class="modal-title w-100 text-center"
+          id="modalAuthLabel"
+          style="
+            font-family: 'Inter', 'Poppins', 'Open Sans', sans-serif;
+            font-weight: 700;
+          "
+        >
+          <svg
+            width="28"
+            height="28"
+            fill="none"
+            viewBox="0 0 24 24"
+            style="vertical-align: middle; margin-right: 8px"
+          >
+            <path
+              d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z"
+              stroke="#FDC500"
+              stroke-width="2"
+            />
+          </svg>
+          Entrar no ISPMedia
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Fechar"
+        ></button>
+      </div>
+      <div class="modal-body pt-2">
+        <form id="loginForm" autocomplete="off">
+          <div class="mb-3">
+            <label for="loginUsername" class="form-label">Usuário</label>
+            <input
+              type="text"
+              class="form-control"
+              id="loginUsername"
+              name="username"
+              placeholder="Seu usuário"
+              required
+              autofocus
+            />
+          </div>
+          <div class="mb-3">
+            <label for="loginPassword" class="form-label">Senha</label>
+            <input
+              type="password"
+              class="form-control"
+              id="loginPassword"
+              name="password"
+              placeholder="Sua senha"
+              required
+            />
+          </div>
+          <div
+            id="loginError"
+            class="text-danger mb-2"
+            style="display: none; font-size: 0.98rem"
+          ></div>
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            style="background: #fdc500; color: #222; font-weight: 600"
+          >
+            <svg
+              width="20"
+              height="20"
+              fill="none"
+              viewBox="0 0 24 24"
+              style="vertical-align: middle; margin-right: 6px"
+            >
+              <path
+                d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"
+                stroke="#222"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Entrar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
