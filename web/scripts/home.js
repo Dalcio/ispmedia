@@ -18,8 +18,7 @@ window.initHomePage = function () {
       if (!Session.isAuthenticated()) {
         showLoginModal();
       } else {
-        // abrir modal de upload futuramente
-        renderAlert("Upload disponível em breve!");
+        showUploadModal();
       }
     });
   }
@@ -69,6 +68,59 @@ function showLoginModal() {
     });
 }
 
+function showUploadModal() {
+  fetch("components/modal-upload.html")
+    .then((res) => res.text())
+    .then((html) => {
+      let modalDiv = document.createElement("div");
+      modalDiv.innerHTML = html;
+      document.body.appendChild(modalDiv);
+      const modal = new bootstrap.Modal(modalDiv.querySelector("#modalUpload"));
+      modal.show();
+      const form = modalDiv.querySelector("#uploadMusicForm");
+      const fileInput = modalDiv.querySelector("#musicFile");
+      const btnUpload = modalDiv.querySelector("#btnUpload");
+      const btnText = modalDiv.querySelector("#btnUploadText");
+      const btnSpinner = modalDiv.querySelector("#btnUploadSpinner");
+      const msg = modalDiv.querySelector("#uploadMessage");
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        msg.textContent = "";
+        const file = fileInput.files[0];
+        if (!file) {
+          msg.textContent = "Selecione um ficheiro.";
+          return;
+        }
+        if (!/\.(mp3|wav|ogg)$/i.test(file.name)) {
+          msg.textContent =
+            "Apenas ficheiros de áudio (.mp3, .wav, .ogg) são permitidos.";
+          return;
+        }
+        btnUpload.disabled = true;
+        btnText.style.display = "none";
+        btnSpinner.style.display = "inline-block";
+        try {
+          const result = await uploadMusic(file);
+          msg.textContent = result.message || "Upload realizado com sucesso!";
+          setTimeout(() => {
+            modal.hide();
+            renderAlert("Upload realizado com sucesso!", "success");
+            modalDiv.remove();
+          }, 1200);
+        } catch (err) {
+          msg.textContent = "Erro ao enviar. Tente novamente.";
+          btnUpload.disabled = false;
+          btnText.style.display = "";
+          btnSpinner.style.display = "none";
+        }
+      });
+      modalDiv.querySelector('[data-bs-dismiss="modal"]').onclick = () => {
+        modal.hide();
+        modalDiv.remove();
+      };
+    });
+}
+
 function updateNavbarAuth() {
   const user = Session.getUser();
   const nav = document.querySelector(".navbar-nav");
@@ -83,6 +135,9 @@ function updateNavbarAuth() {
         </span>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="#" id="uploadBtn">Upload</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="#" id="logoutBtn">Sair</a>
       </li>
     `;
@@ -90,6 +145,10 @@ function updateNavbarAuth() {
       e.preventDefault();
       Session.logout();
       updateNavbarAuth();
+    };
+    document.getElementById("uploadBtn").onclick = function (e) {
+      e.preventDefault();
+      showUploadModal();
     };
   } else {
     nav.innerHTML = `
