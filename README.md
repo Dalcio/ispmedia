@@ -1,6 +1,45 @@
-# ISPMedia
+# 🎵 ISPmedia - Plataforma de Streaming Musical
 
-A clean and simple Next.js application with App Router, Express backend, and Firebase integration.
+![ISPmedia Banner](https://img.shields.io/badge/ISPmedia-Streaming%20Platform-FDC500?style=for-the-badge&logo=music)
+
+**ISPmedia** é uma plataforma completa de streaming de mídia desenvolvida como projeto escolar, oferecendo uma experiência moderna de consumo musical com funcionalidades sociais integradas.
+
+## 🌟 Características Principais
+
+- 🎧 **Streaming de Música** - Reprodução de alta qualidade
+- 🎨 **Interface Moderna** - Design glassmorphism com tema dourado
+- 👥 **Funcionalidades Sociais** - Comunidade de artistas e ouvintes
+- 📱 **Responsivo** - Funciona perfeitamente em todos os dispositivos
+- 🔐 **Autenticação Segura** - Firebase Authentication
+- 📊 **Analytics** - Estatísticas para artistas
+- ⭐ **Sistema de Avaliações** - Críticas e ratings de música
+
+## 🚀 Início Rápido
+
+```bash
+# Clone o repositório
+git clone <url-do-repositorio>
+cd ispmedia
+
+# Instale as dependências
+npm run install:all
+
+# Configure as variáveis de ambiente
+cp .env.example .env.local
+# Edite .env.local com suas credenciais do Firebase
+
+# Execute em modo desenvolvimento
+npm run dev
+```
+
+Acesse `http://localhost:3000` para ver a aplicação rodando.
+
+## 📋 Pré-requisitos
+
+- Node.js 18.0+ 
+- npm 8.0+
+- Conta Firebase (Auth + Firestore + Storage)
+- Editor de código (VS Code recomendado)
 
 ## Project Structure
 

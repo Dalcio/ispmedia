@@ -1,36 +1,48 @@
 {
   "name": "ispmedia",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Plataforma de streaming de mídia com funcionalidades sociais",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "next dev --turbopack",
+    "dev:backend": "cd server && npm run dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "server": "tsx watch server/index.ts",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\""
+    "server:install": "cd server && npm install",
+    "install:all": "npm install && npm run server:install"
   },
   "dependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "firebase": "^12.0.0",
-    "next": "15.4.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "next": "15.4.2",
+    "typescript": "^5",
+    "tailwindcss": "^4",
+    "firebase": "^12.0.0",
+    "zustand": "^4.5.0",
+    "framer-motion": "^11.0.0",
+    "react-hot-toast": "^2.4.0",
+    "lucide-react": "^0.460.0",
+    "clsx": "^2.1.0",
+    "class-variance-authority": "^0.7.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@tailwindcss/postcss": "^4",
     "concurrently": "^9.2.0",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.2",
-    "tailwindcss": "^4",
-    "tsx": "^4.20.3",
-    "typescript": "^5"
-  }
+    "tsx": "^4.20.3"
+  },
+  "keywords": [
+    "streaming",
+    "music",
+    "nextjs",
+    "firebase",
+    "typescript"
+  ],
+  "author": "Projeto Escolar ISPmedia",
+  "license": "MIT"
 }

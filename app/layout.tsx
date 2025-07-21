@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({ 
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "ISPMedia",
-  description: "Media management platform",
+  title: "ISPmedia - Plataforma de Streaming Musical",
+  description: "Descubra, ouça e compartilhe música com a comunidade ISPmedia. Plataforma completa de streaming com funcionalidades sociais.",
+  keywords: ["música", "streaming", "playlist", "artistas", "álbuns"],
+  authors: [{ name: "Projeto Escolar ISPmedia" }],
+  openGraph: {
+    title: "ISPmedia - Plataforma de Streaming Musical",
+    description: "Descubra, ouça e compartilhe música com a comunidade ISPmedia.",
+    type: "website",
+    locale: "pt_BR",
+  },
 };
 
 export default function RootLayout({
@@ -24,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <AuthProvider>{children}</AuthProvider>
+    <html lang="pt-BR">
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <div className="min-h-screen bg-gradient-to-br from-dark to-dark-medium">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   );
