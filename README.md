@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ISPMedia
+
+A clean and simple Next.js application with App Router, Express backend, and Firebase integration.
+
+## Project Structure
+
+```
+├── app/                          # Next.js App Router
+│   ├── api/                      # Next.js API routes
+│   │   ├── auth/login/           # Authentication endpoints
+│   │   └── health/               # Health check endpoint
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx                # Root layout with providers
+│   └── page.tsx                  # Main page component
+│
+├── components/                   # React components
+│   ├── ui/                       # Reusable UI components
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Card.tsx
+│   │   └── index.ts
+│   ├── auth/                     # Authentication components
+│   │   └── LoginForm.tsx
+│   └── layout/                   # Layout components
+│       ├── Header.tsx
+│       ├── Layout.tsx
+│       └── index.ts
+│
+├── contexts/                     # React contexts
+│   └── AuthContext.tsx           # Firebase authentication context
+│
+├── hooks/                        # Custom React hooks
+│   └── useApi.ts                 # API call hook
+│
+├── lib/                          # Utility libraries
+│   ├── firebase.ts               # Firebase configuration
+│   ├── api.ts                    # API client
+│   └── utils.ts                  # Utility functions
+│
+├── server/                       # Express server
+│   ├── routes/                   # Express routes
+│   │   ├── auth.ts               # Authentication routes
+│   │   └── users.ts              # User management routes
+│   └── index.ts                  # Express server setup
+│
+├── types/                        # TypeScript type definitions
+│   └── index.ts                  # Common types
+│
+└── public/                       # Static assets
+```
+
+## Features
+
+- ✅ Next.js 15 with App Router
+- ✅ Firebase Authentication
+- ✅ Firestore Database
+- ✅ Firebase Storage
+- ✅ Express.js Custom Backend
+- ✅ TypeScript
+- ✅ Tailwind CSS
+- ✅ Component-based Architecture
+- ✅ Clean Project Structure
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up environment variables:**
+   Copy `.env.local` and configure your Firebase credentials if needed.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Run the development server:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm run dev
+   ```
 
-## Learn More
+4. **Run the Express server (optional):**
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm run server
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Run both Next.js and Express concurrently:**
+   ```bash
+   npm run dev:full
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Development
 
-## Deploy on Vercel
+- **Next.js app:** Runs on http://localhost:3000
+- **Express server:** Runs on http://localhost:3001
+- **Firebase:** Configured and ready to use
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Adding Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **New UI components:** Add to `components/ui/`
+2. **Feature components:** Create folders in `components/` (e.g., `components/dashboard/`)
+3. **API routes:** Add to `app/api/` for Next.js routes or `server/routes/` for Express
+4. **Types:** Add to `types/index.ts`
+5. **Utilities:** Add to `lib/utils.ts`
+
+## Architecture
+
+This project follows a clean, scalable architecture:
+
+- **SPA:** Single Page Application using Next.js App Router
+- **Authentication:** Firebase Auth with React Context
+- **Database:** Firestore for data persistence
+- **API:** Both Next.js API routes and Express server available
+- **Styling:** Tailwind CSS for utility-first styling
+- **Type Safety:** Full TypeScript support throughout
+
+The structure is designed to be intuitive and scalable, allowing for easy addition of new features while maintaining clean separation of concerns.
