@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Play, Search, Music, Users, TrendingUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { AuthModal } from '@/components/modals/auth-modal'
-import { SearchModal } from '@/components/modals/search-modal'
+import { useState } from "react";
+import { Play, Search, Music, Users, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { AuthModal } from "@/components/modals/auth-modal";
+import { SearchModal } from "@/components/modals/search-modal";
 
 export default function HomePage() {
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [searchModalOpen, setSearchModalOpen] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
@@ -18,7 +18,7 @@ export default function HomePage() {
           <Music className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold text-white">ISPmedia</h1>
         </div>
-        
+
         <div className="flex items-center space-x-4">
           <Button
             variant="ghost"
@@ -28,9 +28,7 @@ export default function HomePage() {
             <Search className="h-5 w-5 mr-2" />
             Buscar
           </Button>
-          <Button onClick={() => setAuthModalOpen(true)}>
-            Entrar
-          </Button>
+          <Button onClick={() => setAuthModalOpen(true)}>Entrar</Button>
         </div>
       </header>
 
@@ -70,16 +68,26 @@ export default function HomePage() {
       </main>
 
       {/* Modals */}
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
-      <SearchModal isOpen={searchModalOpen} onClose={() => setSearchModalOpen(false)} />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
+      <SearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+      />
     </div>
-  )
+  );
 }
 
-function FeatureCard({ icon: Icon, title, description }: {
-  icon: any
-  title: string
-  description: string
+function FeatureCard({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: any;
+  title: string;
+  description: string;
 }) {
   return (
     <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all">
@@ -87,5 +95,5 @@ function FeatureCard({ icon: Icon, title, description }: {
       <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
       <p className="text-white/70">{description}</p>
     </div>
-  )
+  );
 }
