@@ -49,7 +49,6 @@ ispmedia/
 ├── 📁 docs/                  # Documentation
 │   └── Ispmedia Planejamento.pdf
 ├── 📁 firebase/              # Firebase Configuration
-│   ├── admin.ts
 │   └── config.ts
 ├── 📁 lib/                   # Utilities
 │   └── utils.ts

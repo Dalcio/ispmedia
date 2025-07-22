@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/contexts/cursor-context";
+import { AuthProvider } from "@/contexts/auth-context";
 import CustomCursor from "@/components/ui/custom-cursor";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,17 +38,26 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
-  return (
+}>) {  return (
     <html lang="en" className="dark">
       <body
         suppressHydrationWarning={false}
         className={`${inter.variable} font-sans antialiased bg-dark text-white min-h-screen`}
       >
-        <CursorProvider>
-          <CustomCursor />
-          <div className="relative min-h-screen bg-gradient-dark">{children}</div>
-        </CursorProvider>
+        <AuthProvider>
+          <CursorProvider>
+            <CustomCursor />
+            <div className="relative min-h-screen bg-gradient-dark">{children}</div>
+            <Toaster 
+              position="top-center"
+              reverseOrder={false}
+              gutter={8}
+              containerStyle={{
+                top: 80,
+              }}
+            />
+          </CursorProvider>
+        </AuthProvider>
       </body>
     </html>
   );

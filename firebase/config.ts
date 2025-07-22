@@ -49,6 +49,10 @@ export const storage = getStorage(app);
 if (process.env.NODE_ENV === 'development') {
   console.log('✅ Firebase client SDK initialized successfully');
   console.log('🔥 Project ID:', firebaseConfig.projectId);
+  console.log('🔧 Environment variables:');
+  console.log('- API_KEY:', process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? '✅ Set' : '❌ Missing');
+  console.log('- AUTH_DOMAIN:', process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? '✅ Set' : '❌ Missing');
+  console.log('- PROJECT_ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? '✅ Set' : '❌ Missing');
 }
 
 export default app;

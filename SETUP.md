@@ -93,16 +93,9 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
 NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:xxxxxxxxx
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXX
 
-# Firebase Admin Configuration (API Routes)
-FIREBASE_PROJECT_ID=ispmedia-dev
-FIREBASE_PRIVATE_KEY_ID=xxxxxxxxxxxxx
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nxxxxx\n-----END PRIVATE KEY-----\n"
-FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@ispmedia-dev.iam.gserviceaccount.com
-FIREBASE_CLIENT_ID=123456789
-FIREBASE_STORAGE_BUCKET=ispmedia-dev.appspot.com
-
 # Environment
 NODE_ENV=development
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ```
 
 ## 🏃‍♂️ Executando o Projeto
@@ -175,8 +168,7 @@ pnpm lint           # Linting do código
 - **Tailwind CSS 3** (com glassmorphism)
 - **Framer Motion** (animações)
 - **Zustand** (gerenciamento de estado)
-- **Firebase SDK** (client-side)
-- **Firebase Admin SDK** (server-side API Routes)
+- **Firebase SDK** (client-side autenticação e Firestore)
 
 ### Firebase Services
 - **Authentication** (login/cadastro)

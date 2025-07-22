@@ -1,4 +1,6 @@
-import FirebaseTest from '@/components/firebase-test';
+"use client";
+
+import FirebaseTest from "@/components/firebase-test";
 
 export default function TestPage() {
   return (
