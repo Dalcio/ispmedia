@@ -2,5 +2,205 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@layer base {
+  :root {
+    --background: #0F0F0F;
+    --foreground: #FFFFFF;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-200;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-500 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary;
+  }
+
+  /* Selection colors */
+  ::selection {
+    @apply bg-primary text-dark;
+  }
+}
+
+@layer components {
+  /* Glass morphism utilities */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-nav {
+    background: rgba(15, 15, 15, 0.8);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(253, 197, 0, 0.2);
+  }
+
+  .glass-sidebar {
+    background: rgba(26, 26, 26, 0.9);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Button hover effects */
+  .btn-hover-lift {
+    @apply transition-all duration-200 hover:scale-105 hover:shadow-lg;
+  }
+
+  /* Audio visualizer animations */
+  .audio-bar {
+    @apply bg-primary rounded-full animate-pulse;
+    animation-duration: 1.5s;
+  }
+
+  .audio-bar:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .audio-bar:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .audio-bar:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .audio-bar:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+
+  /* Music player styles */
+  .player-controls {
+    @apply flex items-center justify-center space-x-4;
+  }
+
+  .play-button {
+    @apply w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-dark hover:scale-110 transition-transform shadow-primary;
+  }
+
+  .volume-slider {
+    @apply w-full h-1 bg-dark-300 rounded-lg appearance-none cursor-pointer;
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 bg-primary rounded-full cursor-pointer shadow-lg;
+  }
+
+  .progress-bar {
+    @apply w-full h-1 bg-dark-300 rounded-lg overflow-hidden cursor-pointer;
+  }
+
+  .progress-fill {
+    @apply h-full bg-gradient-primary transition-all duration-100;
+  }
+
+  /* Card hover animations */
+  .song-card {
+    @apply glass-card p-4 hover:scale-105 transition-all duration-300 cursor-pointer group;
+  }
+
+  .song-card:hover .play-overlay {
+    @apply opacity-100 scale-100;
+  }
+
+  .play-overlay {
+    @apply absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 scale-95 transition-all duration-200 rounded-2xl;
+  }
+
+  /* Loading animations */
+  .loading-dots {
+    @apply flex space-x-1;
+  }
+
+  .loading-dot {
+    @apply w-2 h-2 bg-primary rounded-full animate-bounce;
+  }
+
+  .loading-dot:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .loading-dot:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+
+  /* Custom form inputs */
+  .form-input {
+    @apply glass-card border border-glass-medium rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-200;
+  }
+
+  /* Responsive grid layouts */
+  .music-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4;
+  }
+
+  .playlist-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+}
+
 @layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Clip path utilities for custom shapes */
+  .clip-diagonal {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  }
+
+  /* Backdrop blur variants */
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+
+  /* Animation delays */
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animate-delay-500 {
+    animation-delay: 500ms;
+  }
 }
