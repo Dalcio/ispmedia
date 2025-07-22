@@ -36,24 +36,24 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-md"
         onClick={onClose}
       />
       
       {/* Modal Content */}
-      <div className={`relative w-full ${sizeClasses[size]} mx-4 bg-gradient-to-b from-black/90 to-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl`}>
+      <div className={`relative w-full ${sizeClasses[size]} mx-4 glass-card bg-white/95 dark:bg-black/95 rounded-3xl shadow-2xl overflow-hidden`}>
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
-            <h2 className="text-xl font-semibold text-white">{title}</h2>
+          <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-white/10">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
             <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="text-white/60 hover:text-white"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
             >
               <X className="h-5 w-5" />
             </Button>

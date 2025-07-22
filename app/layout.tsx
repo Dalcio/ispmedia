@@ -9,7 +9,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "ISPmedia - Stream Your World",
-  description: "A modern music streaming platform with social features, playlists, and artist discovery.",
+  description:
+    "A modern music streaming platform with social features, playlists, and artist discovery.",
   keywords: ["music", "streaming", "playlist", "artists", "songs", "audio"],
   authors: [{ name: "ISPmedia Team" }],
   creator: "ISPmedia",
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "ISPmedia - Stream Your World",
-    description: "A modern music streaming platform with social features, playlists, and artist discovery.",
+    description:
+      "A modern music streaming platform with social features, playlists, and artist discovery.",
     siteName: "ISPmedia",
   },
   twitter: {
     card: "summary_large_image",
     title: "ISPmedia - Stream Your World",
-    description: "A modern music streaming platform with social features, playlists, and artist discovery.",
+    description:
+      "A modern music streaming platform with social features, playlists, and artist discovery.",
   },
 };
 
@@ -35,11 +38,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
+        suppressHydrationWarning={false}
         className={`${inter.variable} font-sans antialiased bg-dark text-white min-h-screen`}
       >
-        <div className="relative min-h-screen bg-gradient-dark">
-          {children}
-        </div>
+        <div className="relative min-h-screen bg-gradient-dark">{children}</div>
       </body>
     </html>
   );
