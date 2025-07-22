@@ -87,11 +87,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {  const [que
             {results.songs.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-3">Músicas</h3>
-                <div className="space-y-2">
-                  {results.songs.map((song: any) => (
+                <div className="space-y-2">                  {results.songs.map((song: any) => (
                     <div
                       key={song.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer"
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 cursor-hover"
                     >
                       <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
                         🎵
@@ -110,11 +109,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {  const [que
             {results.artists.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-3">Artistas</h3>
-                <div className="space-y-2">
-                  {results.artists.map((artist: any) => (
+                <div className="space-y-2">                  {results.artists.map((artist: any) => (
                     <div
                       key={artist.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer"
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 cursor-hover"
                     >
                       <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
                         👤
@@ -133,11 +131,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {  const [que
             {results.albums.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-3">Álbuns</h3>
-                <div className="space-y-2">
-                  {results.albums.map((album: any) => (
+                <div className="space-y-2">                  {results.albums.map((album: any) => (
                     <div
                       key={album.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer"
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 cursor-hover"
                     >
                       <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
                         💿

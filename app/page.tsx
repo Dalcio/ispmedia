@@ -22,18 +22,16 @@ export default function HomePage() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               ISP<span className="text-gradient">media</span>
             </h1>
-          </div>
-
-          <div className="flex items-center space-x-4">
+          </div>          <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
               onClick={() => setSearchModalOpen(true)}
-              className="btn-ghost hidden sm:flex"
+              className="btn-ghost hidden sm:flex cursor-hover"
             >
               <Search className="h-5 w-5 mr-2" />
               Buscar música
             </Button>
-            <Button onClick={() => setAuthModalOpen(true)} className="btn-primary">
+            <Button onClick={() => setAuthModalOpen(true)} className="btn-primary cursor-hover">
               Entrar
             </Button>
           </div>
@@ -56,13 +54,11 @@ export default function HomePage() {
           
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             Descubra milhões de músicas, crie playlists incríveis e conecte-se com seus artistas favoritos em uma experiência única de streaming.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          </p>          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
               onClick={() => setAuthModalOpen(true)}
-              className="btn-primary text-lg px-8 py-4 rounded-xl"
+              className="btn-primary text-lg px-8 py-4 rounded-xl cursor-hover"
             >
               <Play className="h-6 w-6 mr-3" />
               Começar gratuitamente
@@ -71,7 +67,7 @@ export default function HomePage() {
               variant="outline" 
               size="lg"
               onClick={() => setSearchModalOpen(true)}
-              className="btn-secondary text-lg px-8 py-4 rounded-xl"
+              className="btn-secondary text-lg px-8 py-4 rounded-xl cursor-hover"
             >
               <Headphones className="h-6 w-6 mr-3" />
               Explorar música
@@ -120,11 +116,9 @@ export default function HomePage() {
               <div className="text-gray-600 dark:text-gray-300">Playlists criadas</div>
             </div>
           </div>
-        </div>
-
-        {/* CTA Section */}
+        </div>        {/* CTA Section */}
         <div className="text-center">
-          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer"
+          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition-all cursor-hover"
                onClick={() => setAuthModalOpen(true)}>
             <Heart className="h-5 w-5 mr-2" />
             Comece sua jornada musical hoje
@@ -157,7 +151,7 @@ function FeatureCard({
   accent: string;
 }) {
   return (
-    <div className="glass-card p-8 rounded-2xl group hover:scale-105 transition-all duration-300 relative overflow-hidden">
+    <div className="glass-card p-8 rounded-2xl group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-hover">
       {/* Background accent */}
       <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${accent} opacity-10 rounded-full -translate-y-8 translate-x-8`}></div>
       

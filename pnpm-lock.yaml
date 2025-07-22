@@ -21,7 +21,7 @@ importers:
         specifier: ^11.11.1
         version: 11.11.1
       framer-motion:
-        specifier: ^10.16.16
+        specifier: ^10.18.0
         version: 10.18.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       lucide-react:
         specifier: ^0.294.0

@@ -404,6 +404,184 @@ xl: 1280px;  /* Desktops */
 2xl: 1536px; /* Telas grandes */
 ```
 
+## 🎯 Cursor Personalizado
+
+O ISPmedia utiliza um cursor personalizado moderno e interativo, inspirado no estilo LG/WebOS, que substitui o cursor padrão apenas em dispositivos desktop para uma experiência mais elegante e envolvente.
+
+### Características do Cursor
+
+#### Estrutura Visual
+- **Inner Dot**: Ponto sólido pequeno (8px) que segue o movimento do mouse
+- **Outer Ring**: Anel semi-transparente (32px) com glassmorphism e blur
+- **Efeitos**: Animações suaves com transições de scale, opacidade e cor
+
+#### Variações de Estado
+```css
+/* Estado Padrão */
+Inner: 8px, cor branca, sombra suave
+Outer: 32px, border transparente, glassmorphism
+
+/* Estado Hover (elementos interativos) */
+Inner: escala 75%, cor primária (#FDC500)
+Outer: escala 150%, border primário, glow dourado
+
+/* Estado Click */
+Inner: escala 150%, animação rápida
+Outer: escala 75%, com efeito ripple
+
+/* Estado Text (inputs) */
+Inner: cor azul (#3B82F6)
+Outer: border azul, indicando modo de edição
+```
+
+### Classes de Cursor
+
+#### Classes Aplicáveis
+```html
+<!-- Para elementos que devem ativar hover no cursor -->
+<button class="cursor-hover">Botão Interativo</button>
+
+<!-- Para elementos especificamente clicáveis -->
+<div class="cursor-clickable" onclick="...">Card Clicável</div>
+
+<!-- Para campos de texto (aplicado automaticamente) -->
+<input type="text" /> <!-- cursor-text aplicado automaticamente -->
+```
+
+#### Elementos que recebem automaticamente
+O cursor reage automaticamente aos seguintes elementos:
+- `button`, `a`, `input`, `textarea`, `select`
+- Elementos com `role="button"`
+- Elementos com `tabindex` válido
+- Elementos com classes `.cursor-hover` ou `.cursor-clickable`
+
+### Implementação Técnica
+
+#### Estrutura do Componente
+```tsx
+// components/ui/custom-cursor.tsx
+- Detecta dispositivos móveis (desabilitado automaticamente)
+- Rastreamento suave com requestAnimationFrame
+- Estados reativos baseados em hover/click
+- Mix-blend-mode para integração visual
+- Z-index 9999 para ficar acima de todos os elementos
+```
+
+#### Contexto Global
+```tsx
+// contexts/cursor-context.tsx
+- Controle global de ativação/desativação
+- Hook useCursor() para controle manual
+- Hook useCursorHover() para aplicação fácil
+```
+
+#### Estilos CSS
+```css
+/* Ocultação do cursor padrão em desktop */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Classes utilitárias */
+.cursor-hover { /* Marcador para elementos interativos */ }
+.cursor-clickable { /* Marcador para elementos clicáveis */ }
+.cursor-text { /* Marcador para campos de texto */ }
+```
+
+### Uso e Boas Práticas
+
+#### Como Aplicar
+```html
+<!-- Botões (já aplicado automaticamente no componente Button) -->
+<Button className="cursor-hover">Ação</Button>
+
+<!-- Cards interativos -->
+<div class="glass-card cursor-hover" onclick="...">
+  Conteúdo clicável
+</div>
+
+<!-- Links customizados -->
+<span class="cursor-hover" role="button">
+  Link customizado
+</span>
+```
+
+#### Controle Programático
+```tsx
+// Usando o contexto para controle manual
+import { useCursor } from '@/contexts/cursor-context';
+
+function Component() {
+  const { setVariant, setIsEnabled } = useCursor();
+  
+  // Desabilitar cursor temporariamente
+  const handleSpecialAction = () => {
+    setIsEnabled(false);
+    // ... ação especial
+    setIsEnabled(true);
+  };
+  
+  // Usar hook de hover
+  const cursorProps = useCursorHover();
+  
+  return (
+    <div {...cursorProps}>
+      Elemento com hover manual
+    </div>
+  );
+}
+```
+
+#### Considerações de Performance
+- Usa `requestAnimationFrame` para movimento suave
+- Detecta automaticamente mobile/tablet para desabilitar
+- Mix-blend-mode para integração visual eficiente
+- Transições CSS otimizadas com `will-change`
+
+#### Adaptação Temática
+- Automaticamente adapta cores entre temas claro/escuro
+- Cor primária (#FDC500) mantida para consistência da marca
+- Contraste adequado em diferentes backgrounds
+
+### Exemplos de Uso
+
+#### Página de Dashboard
+```tsx
+function Dashboard() {
+  return (
+    <div className="dashboard">
+      {/* Navigation com cursor hover */}
+      <nav className="glass-nav">
+        <Button className="cursor-hover">Home</Button>
+        <Button className="cursor-hover">Playlists</Button>
+      </nav>
+      
+      {/* Cards de música com hover */}
+      <div className="music-grid">
+        {songs.map(song => (
+          <div key={song.id} className="glass-card cursor-hover">
+            <img src={song.cover} />
+            <h3>{song.title}</h3>
+          </div>
+        ))}
+      </div>
+      
+      {/* Form com detecção automática de texto */}
+      <form>
+        <Input placeholder="Buscar música..." /> {/* cursor-text automático */}
+        <Button type="submit">Buscar</Button> {/* cursor-hover automático */}
+      </form>
+    </div>
+  );
+}
+```
+
+---
+
+*O cursor personalizado eleva a experiência do usuário com interações visuais modernas e elegantes, mantendo a acessibilidade e performance.*
+
 ## ✅ Boas Práticas
 
 ### Acessibilidade

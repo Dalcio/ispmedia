@@ -68,12 +68,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       title="Entrar no ISPmedia"
       size="md"
     >
-      <div className="space-y-6">
-        {/* Mode Toggle */}
+      <div className="space-y-6">        {/* Mode Toggle */}
         <div className="flex bg-white/5 rounded-lg p-1">
           <button
             onClick={() => setMode("login")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all cursor-hover ${
               mode === "login"
                 ? "bg-primary text-black"
                 : "text-white/70 hover:text-white"
@@ -83,7 +82,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </button>
           <button
             onClick={() => setMode("register")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all cursor-hover ${
               mode === "register"
                 ? "bg-primary text-black"
                 : "text-white/70 hover:text-white"
@@ -109,8 +108,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
               value={formData.password}
               onChange={(e) => updateFormData("password", e.target.value)}
               required
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            />            <Button type="submit" className="w-full cursor-hover" disabled={isLoading}>
               {isLoading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
@@ -148,8 +146,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 updateFormData("confirmPassword", e.target.value)
               }
               required
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            />            <Button type="submit" className="w-full cursor-hover" disabled={isLoading}>
               {isLoading ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </form>
@@ -159,12 +156,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <div className="pt-4 border-t border-white/10">
           <p className="text-center text-white/60 text-sm mb-4">
             Ou continue com
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" disabled={isLoading}>
+          </p>          <div className="grid grid-cols-2 gap-3">
+            <Button variant="outline" disabled={isLoading} className="cursor-hover">
               Google
             </Button>
-            <Button variant="outline" disabled={isLoading}>
+            <Button variant="outline" disabled={isLoading} className="cursor-hover">
               GitHub
             </Button>
           </div>

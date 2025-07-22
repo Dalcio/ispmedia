@@ -48,12 +48,11 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
         {/* Header */}
         {title && (
           <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-white/10">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
-            <Button
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>            <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white cursor-hover"
             >
               <X className="h-5 w-5" />
             </Button>
