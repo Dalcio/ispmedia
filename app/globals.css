@@ -1,14 +1,14 @@
+/* Import Inter font */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
 @layer base {
   :root {
-    --background: #0F0F0F;
-    --foreground: #FFFFFF;
+    --background: #0f0f0f;
+    --foreground: #ffffff;
   }
 
   * {

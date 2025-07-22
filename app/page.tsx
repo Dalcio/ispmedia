@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Play, Search, Music, Users, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { AuthModal } from "@/components/modals/auth-modal";
 import { SearchModal } from "@/components/modals/search-modal";
 
