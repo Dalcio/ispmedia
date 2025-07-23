@@ -1,53 +1,52 @@
 # 🎵 ISPmedia Audio Player
 
-Um player de áudio moderno e responsivo desenvolvido para o ISPmedia, com interface glassmorphism e preparado para integração com Firebase Storage.
+## Modern Audio Player Component
 
-## 📋 Funcionalidades
+O player de áudio da ISPmedia foi completamente redesenhado para oferecer uma experiência moderna, responsiva e visualmente atraente.
 
-### ✅ Implementadas
+### ✨ Características Principais
 
-- **Controles Básicos**: Play, Pause, Stop
-- **Navegação**: Seek por clique na barra de progresso
-- **Volume**: Controle de volume com slider interativo
-- **Playlist**: Navegação entre múltiplas faixas
-- **Modos Avançados**: Repeat e Shuffle
-- **Interface Responsiva**: Adaptação automática para mobile/desktop
-- **Glassmorphism**: Efeito visual moderno com backdrop-blur
-- **Animações**: Transições suaves e feedback visual
-- **Dark Mode**: Suporte completo ao tema escuro
-- **Acessibilidade**: Tooltips e indicadores visuais
+#### 🎨 Design Visual
+- **Glassmorphism suave** com blur backdrop e gradientes
+- **Cor primária** `#FDC500` aplicada consistentemente  
+- **Visualizador de áudio** com barras animadas
+- **Gradientes premium** em botões e elementos
+- **Animações suaves** em todos os controles
 
-### 🚀 Preparado para Firebase
+#### 🎛️ Funcionalidades
 
-- Estrutura pronta para URLs do Firebase Storage
-- Interface para metadados de áudio
-- Sistema de loading e error handling
+##### Player Compacto (Mini Mode)
+- Exibição clara do nome da música e artista
+- Barra de progresso interativa no topo
+- Controles principais sempre visíveis:
+  - ▶️ Play/Pause com efeito glow quando tocando
+  - ⏮️ ⏭️ Pular faixas (desktop)
+  - 🔊 Controle de volume com slider (desktop)
+  - 🔼 Expandir para modo completo
 
-## 🎯 Uso Básico
+##### Player Expandido (Full Mode)
+- **Album art** grande com placeholder animado
+- **Botão de curtir** (coração) interativo
+- **Controles completos**:
+  - 🔀 Shuffle
+  - ⏮️ Anterior
+  - ▶️ Play/Pause (extra grande)
+  - ⏭️ Próximo
+  - 🔁 Repetir
+- **Barra de progresso** com thumb interativo
+- **Controle de volume** completo com indicador percentual
+- **Informações detalhadas** da faixa
 
-### Componente Principal
+#### ⌨️ Atalhos do Teclado
+- **Espaço**: Play/Pause
+- **Seta ←**: Retroceder 10 segundos
+- **Seta →**: Avançar 10 segundos
 
-```tsx
-import { AudioPlayer } from '@/components/player';
-
-// Uso simples
-<AudioPlayer />
-
-// Com track específico
-<AudioPlayer 
-  track={{
-    id: 'track-1',
-    title: 'Minha Música',
-    artist: 'Artista',
-    duration: 240,
-    url: 'https://exemplo.com/audio.mp3'
-  }}
-/>
-
-// Com playlist
-<AudioPlayer 
-  playlist={[
-    {
+#### 📱 Responsividade
+- **Mobile-first design**
+- **Controles adaptativos** por tamanho de tela
+- **Safe area** respeitada em dispositivos móveis
+- **Touch-friendly** para dispositivos móveis
       id: 'track-1',
       title: 'Música 1',
       artist: 'Artista 1',

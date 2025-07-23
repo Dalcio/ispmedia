@@ -10,113 +10,25 @@ import {
   Sparkles,
   Headphones,
   Heart,
-  User,
-  LogOut,
-  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthModal } from "@/components/modals/auth-modal";
 import { SearchModal } from "@/components/modals/search-modal";
-import { UploadMusicModal } from "@/components/modals/upload-music-modal";
+import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { useUploadModal } from "@/hooks/use-upload-modal";
-import { useUploadShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 export default function HomePage() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const { user, userProfile, signOut } = useAuth();
+  const { user, userProfile } = useAuth();
   const toast = useToast();
   const router = useRouter();
-  const {
-    isOpen: uploadModalOpen,
-    openModal: openUploadModal,
-    closeModal: closeUploadModal,
-  } = useUploadModal();
-
-  // Configurar atalhos de teclado
-  useUploadShortcuts(openUploadModal, !!user);
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast.success("Logout realizado com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao fazer logout");
-    }
-  };
-
-  const handleGoToDashboard = () => {
-    router.push("/dashboard");
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background-50 via-background-100 to-background-200 dark:from-background-900 dark:via-background-800 dark:to-background-900 theme-transition">
-      {/* Header with Glass Navigation */}
-      <header className="glass-nav sticky top-0 z-50 px-6 py-4">
-        <div className="container flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Music className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              ISP<span className="text-gradient">media</span>
-            </h1>
-          </div>{" "}
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              onClick={() => setSearchModalOpen(true)}
-              className="btn-ghost hidden sm:flex cursor-hover"
-            >
-              <Search className="h-5 w-5 mr-2" />
-              Buscar música
-            </Button>
-
-            {user ? (
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="ghost"
-                  onClick={openUploadModal}
-                  className="btn-ghost hidden sm:flex cursor-hover"
-                  title="Fazer upload de música (tecla U)"
-                >
-                  <Upload className="h-5 w-5 mr-2" />
-                  Upload
-                </Button>
-                <div className="hidden sm:flex items-center space-x-2">
-                  <User className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  <span className="text-gray-900 dark:text-white font-medium">
-                    {userProfile?.name?.split(" ")[0] || "Usuário"}
-                  </span>
-                </div>
-                <Button
-                  onClick={handleGoToDashboard}
-                  className="btn-primary cursor-hover"
-                >
-                  Dashboard
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleSignOut}
-                  className="cursor-hover"
-                >
-                  <LogOut className="h-5 w-5" />
-                </Button>
-              </div>
-            ) : (
-              <Button
-                onClick={() => setAuthModalOpen(true)}
-                className="btn-primary cursor-hover"
-              >
-                Entrar
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800">
+      {/* Header */}
+      <Header />
       {/* Hero Section */}
       <main className="container px-6 py-16">
         {/* Hero Content */}
@@ -134,34 +46,20 @@ export default function HomePage() {
           </p>{" "}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
-              size="lg"
-              onClick={
-                user ? handleGoToDashboard : () => setAuthModalOpen(true)
-              }
-              className="btn-primary text-lg px-8 py-4 rounded-xl cursor-hover"
+              onClick={() => setSearchModalOpen(true)}
+              className="btn-primary cursor-hover text-lg px-8 py-4 h-auto"
             >
-              <Play className="h-6 w-6 mr-3" />
-              {user ? "Ir para Dashboard" : "Começar gratuitamente"}
+              <Search className="h-6 w-6 mr-3" />
+              Explorar Música
             </Button>
-            {user ? (
+
+            {!user && (
               <Button
-                variant="outline"
-                size="lg"
-                onClick={openUploadModal}
-                className="btn-secondary text-lg px-8 py-4 rounded-xl cursor-hover"
+                onClick={() => setAuthModalOpen(true)}
+                variant="ghost"
+                className="cursor-hover text-lg px-8 py-4 h-auto"
               >
-                <Upload className="h-6 w-6 mr-3" />
-                Adicionar música
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => setSearchModalOpen(true)}
-                className="btn-secondary text-lg px-8 py-4 rounded-xl cursor-hover"
-              >
-                <Headphones className="h-6 w-6 mr-3" />
-                Explorar música
+                Criar Conta Grátis
               </Button>
             )}
           </div>
@@ -209,18 +107,29 @@ export default function HomePage() {
               <div className="text-4xl font-bold text-gradient mb-2">1M+</div>
               <div className="text-gray-600 dark:text-gray-300">
                 Playlists criadas
-              </div>
+              </div>{" "}
             </div>
           </div>
-        </div>{" "}
+        </div>
+
         {/* CTA Section */}
-        <div className="text-center">
-          <div
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition-all cursor-hover"
-            onClick={user ? handleGoToDashboard : () => setAuthModalOpen(true)}
-          >
-            <Heart className="h-5 w-5 mr-2" />
-            {user ? "Acessar Dashboard" : "Comece sua jornada musical hoje"}
+        <div className="mt-32 text-center">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 dark:text-neutral-200 mb-4">
+              Pronto para começar?
+            </h2>
+            <p className="text-xl text-neutral-600 dark:text-neutral-300 mb-8">
+              Junte-se à nossa comunidade e compartilhe sua música com o mundo.
+            </p>
+            {!user && (
+              <Button
+                onClick={() => setAuthModalOpen(true)}
+                className="btn-primary text-lg px-8 py-4 h-auto"
+              >
+                <Heart className="h-5 w-5 mr-2" />
+                Comece sua jornada musical hoje
+              </Button>
+            )}
           </div>
         </div>
       </main>{" "}
@@ -233,9 +142,6 @@ export default function HomePage() {
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
       />
-      {user && (
-        <UploadMusicModal isOpen={uploadModalOpen} onClose={closeUploadModal} />
-      )}
     </div>
   );
 }

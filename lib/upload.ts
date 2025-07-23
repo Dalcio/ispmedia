@@ -293,31 +293,6 @@ function getAudioDuration(file: File): Promise<number> {
 }
 
 /**
- * Formata o tamanho do arquivo em formato legível
- */
-export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 Bytes";
-
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-}
-
-/**
- * Formata a duração em formato MM:SS
- */
-export function formatDuration(seconds: number): string {
-  if (!seconds || isNaN(seconds)) return "0:00";
-
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-}
-
-/**
  * Valida se um arquivo é um arquivo de áudio válido
  */
 export function validateAudioFile(file: File): {
@@ -360,4 +335,29 @@ export function validateAudioFile(file: File): {
   }
 
   return { isValid: true };
+}
+
+/**
+ * Formata o tamanho do arquivo em bytes para uma string legível
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
+/**
+ * Formata a duração em segundos para MM:SS
+ */
+export function formatDuration(seconds: number): string {
+  if (!seconds || !isFinite(seconds)) return "0:00";
+
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
 }

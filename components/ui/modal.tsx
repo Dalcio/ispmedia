@@ -27,16 +27,15 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
   }, [isOpen])
 
   if (!isOpen) return null
-
   const sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
     xl: 'max-w-4xl'
-  }
+  };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" data-modal>
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-md"
@@ -44,7 +43,10 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
       />
       
       {/* Modal Content */}
-      <div className={`relative w-full ${sizeClasses[size]} mx-4 glass-card bg-white/95 dark:bg-black/95 rounded-3xl shadow-2xl overflow-hidden`}>
+      <div 
+        className={`relative w-full ${sizeClasses[size]} mx-4 glass-card bg-white/95 dark:bg-black/95 rounded-3xl shadow-2xl overflow-hidden modal-content`}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         {title && (
           <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-white/10">

@@ -86,3 +86,21 @@ export function useUploadShortcuts(
 
   useKeyboardShortcuts(shortcuts, { enabled });
 }
+
+/**
+ * Hook específico para atalhos do dashboard
+ */
+export function useDashboardShortcuts(
+  onOpenDashboard: () => void,
+  enabled: boolean = true
+) {
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      key: "d",
+      callback: onOpenDashboard,
+      description: "Abrir/fechar drawer do dashboard",
+    },
+  ];
+
+  useKeyboardShortcuts(shortcuts, { enabled });
+}

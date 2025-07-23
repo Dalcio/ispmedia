@@ -420,10 +420,244 @@
 
   .animate-delay-500 {
     animation-delay: 500ms;
-  }
-  /* Theme utilities */
+  }  /* Theme utilities */
   .theme-transition {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  /* Custom slider styles for audio player */
+  .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    outline: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .volume-slider:hover {
+    opacity: 1;
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Dark mode slider adjustments */
+  .dark .volume-slider {
+    background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--volume-progress, 0%), #374151 var(--volume-progress, 0%), #374151 100%);
+  }
+
+  .dark .volume-slider::-webkit-slider-thumb {
+    border-color: #1f2937;
+  }
+
+  .dark .volume-slider::-moz-range-thumb {
+    border-color: #1f2937;
+  }
+
+  /* Audio Player Animations */
+  @keyframes audioWave {
+    0%, 100% { 
+      transform: scaleY(1); 
+    }
+    50% { 
+      transform: scaleY(1.5); 
+    }
+  }
+
+  @keyframes audioWave2 {
+    0%, 100% { 
+      transform: scaleY(0.8); 
+    }
+    50% { 
+      transform: scaleY(1.8); 
+    }
+  }
+
+  @keyframes audioWave3 {
+    0%, 100% { 
+      transform: scaleY(1.2); 
+    }
+    50% { 
+      transform: scaleY(0.6); 
+    }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(253, 197, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(253, 197, 0, 0.8), 0 0 30px rgba(253, 197, 0, 0.4);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Player specific styles */
+  .audio-player-backdrop {
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  .audio-visualizer-bar {
+    animation: audioWave 0.6s ease-in-out infinite;
+  }
+
+  .audio-visualizer-bar:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .audio-visualizer-bar:nth-child(2) {
+    animation: audioWave2 0.8s ease-in-out infinite;
+    animation-delay: 0.1s;
+  }
+
+  .audio-visualizer-bar:nth-child(3) {
+    animation: audioWave3 0.7s ease-in-out infinite;
+    animation-delay: 0.2s;
+  }
+
+  .audio-visualizer-bar:nth-child(4) {
+    animation: audioWave 0.9s ease-in-out infinite;
+    animation-delay: 0.3s;
+  }
+
+  .audio-visualizer-bar:nth-child(5) {
+    animation: audioWave2 0.6s ease-in-out infinite;
+    animation-delay: 0.4s;
+  }
+
+  /* Playing button glow effect */
+  .play-button-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  /* Progress bar animations */
+  .progress-bar {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(253, 197, 0, 0.3),
+      transparent
+    );
+    animation: shine 2s ease-in-out infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+  /* Responsive improvements */
+  @media (max-width: 640px) {
+    .audio-player-mobile {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Ensure buttons don't get too small on mobile */
+    .audio-player-mobile button {
+      min-width: 44px;
+      min-height: 44px;
+    }
+    
+    /* Better spacing for mobile controls */
+    .audio-player-mobile .flex {
+      gap: 0.5rem;
+    }
+  }
+
+  /* Enhanced icon contrast */
+  .lucide {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  /* Button hover enhancements */
+  button:hover .lucide {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+  }
+
+  /* Custom button sizing for large displays */
+  @media (min-width: 640px) {
+    .w-13 {
+      width: 3.25rem;
+    }
+    .h-13 {
+      height: 3.25rem;
+    }
+    .w-22 {
+      width: 5.5rem;
+    }
+    .h-22 {
+      height: 5.5rem;
+    }
   }
 }
 
