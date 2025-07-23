@@ -12,13 +12,17 @@ import {
   Heart,
   User,
   LogOut,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthModal } from "@/components/modals/auth-modal";
 import { SearchModal } from "@/components/modals/search-modal";
+import { UploadMusicModal } from "@/components/modals/upload-music-modal";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useUploadModal } from "@/hooks/use-upload-modal";
+import { useUploadShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 export default function HomePage() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -26,6 +30,14 @@ export default function HomePage() {
   const { user, userProfile, signOut } = useAuth();
   const toast = useToast();
   const router = useRouter();
+  const {
+    isOpen: uploadModalOpen,
+    openModal: openUploadModal,
+    closeModal: closeUploadModal,
+  } = useUploadModal();
+
+  // Configurar atalhos de teclado
+  useUploadShortcuts(openUploadModal, !!user);
 
   const handleSignOut = async () => {
     try {
@@ -65,6 +77,15 @@ export default function HomePage() {
 
             {user ? (
               <div className="flex items-center space-x-3">
+                <Button
+                  variant="ghost"
+                  onClick={openUploadModal}
+                  className="btn-ghost hidden sm:flex cursor-hover"
+                  title="Fazer upload de música (tecla U)"
+                >
+                  <Upload className="h-5 w-5 mr-2" />
+                  Upload
+                </Button>
                 <div className="hidden sm:flex items-center space-x-2">
                   <User className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                   <span className="text-gray-900 dark:text-white font-medium">
@@ -96,7 +117,6 @@ export default function HomePage() {
           </div>
         </div>
       </header>
-
       {/* Hero Section */}
       <main className="container px-6 py-16">
         {/* Hero Content */}
@@ -123,15 +143,27 @@ export default function HomePage() {
               <Play className="h-6 w-6 mr-3" />
               {user ? "Ir para Dashboard" : "Começar gratuitamente"}
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setSearchModalOpen(true)}
-              className="btn-secondary text-lg px-8 py-4 rounded-xl cursor-hover"
-            >
-              <Headphones className="h-6 w-6 mr-3" />
-              Explorar música
-            </Button>
+            {user ? (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={openUploadModal}
+                className="btn-secondary text-lg px-8 py-4 rounded-xl cursor-hover"
+              >
+                <Upload className="h-6 w-6 mr-3" />
+                Adicionar música
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setSearchModalOpen(true)}
+                className="btn-secondary text-lg px-8 py-4 rounded-xl cursor-hover"
+              >
+                <Headphones className="h-6 w-6 mr-3" />
+                Explorar música
+              </Button>
+            )}
           </div>
         </div>
         {/* Features Grid */}
@@ -191,8 +223,7 @@ export default function HomePage() {
             {user ? "Acessar Dashboard" : "Comece sua jornada musical hoje"}
           </div>
         </div>
-      </main>
-
+      </main>{" "}
       {/* Modals */}
       <AuthModal
         isOpen={authModalOpen}
@@ -202,6 +233,9 @@ export default function HomePage() {
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
       />
+      {user && (
+        <UploadMusicModal isOpen={uploadModalOpen} onClose={closeUploadModal} />
+      )}
     </div>
   );
 }

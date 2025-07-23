@@ -1,0 +1,28 @@
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Rules for tracks folder
+    match /tracks/{userId}/{fileName} {
+      // Allow read access to all authenticated users
+      allow read: if request.auth != null;
+      
+      // Allow write access only to the owner of the file
+      allow write: if request.auth != null 
+                   && request.auth.uid == userId
+                   && request.resource.size < 50 * 1024 * 1024 // 50MB limit
+                   && request.resource.contentType.matches('audio/.*');
+      
+      // Allow delete access only to the owner of the file
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Fallback rule for other paths - deny by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

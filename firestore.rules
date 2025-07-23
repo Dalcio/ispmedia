@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can only access their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Tracks - More permissive rules for creation
+    match /tracks/{trackId} {
+      // Allow authenticated users to read all tracks
+      allow read: if request.auth != null;
+      
+      // Allow authenticated users to create tracks with proper data
+      allow create: if request.auth != null 
+                    && request.auth.uid == request.resource.data.createdBy
+                    && request.resource.data.keys().hasAll(['title', 'genre', 'createdBy', 'audioUrl'])
+                    && request.resource.data.title is string
+                    && request.resource.data.genre is string
+                    && request.resource.data.audioUrl is string;
+      
+      // Allow users to update/delete only their own tracks
+      allow update, delete: if request.auth != null 
+                            && request.auth.uid == resource.data.createdBy;
+    }
+    
+    // Playlists - Users can read all playlists but only write their own
+    match /playlists/{playlistId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null 
+                    && request.auth.uid == request.resource.data.createdBy;
+      allow update, delete: if request.auth != null 
+                            && request.auth.uid == resource.data.createdBy;
+    }
+    
+    // Default allow read for authenticated users (for general collections)
+    match /{document=**} {
+      allow read: if request.auth != null;
+    }
+  }
+}

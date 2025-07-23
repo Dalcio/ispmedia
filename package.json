@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check-firebase": "node scripts/check-firebase-config.js"
+    "check-firebase": "node scripts/check-firebase-config.js",
+    "check-firebase-setup": "node scripts/check-firebase-setup.js",
+    "deploy-firebase-rules": "node scripts/deploy-firebase-rules.js"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
@@ -29,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "eslint": "^9.31.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
