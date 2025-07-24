@@ -11,6 +11,7 @@ export interface UploadTrackParams {
 }
 
 export interface TrackDocument {
+  id?: string; // ID do documento
   title: string;
   genre: string;
   createdBy: string;
@@ -196,12 +197,12 @@ export async function uploadTrack({
     };
 
     console.log("💾 Criando documento no Firestore:", trackData);
-    onProgress?.(90, "Criando entrada no banco de dados...");
-
-    // Salvar documento no Firestore
+    onProgress?.(90, "Criando entrada no banco de dados...");    // Salvar documento no Firestore
+    let documentId: string;
     try {
       const docRef = await addDoc(collection(db, "tracks"), trackData);
-      console.log("✅ Documento criado com ID:", docRef.id);
+      documentId = docRef.id;
+      console.log("✅ Documento criado com ID:", documentId);
     } catch (firestoreError) {
       console.error("❌ Erro ao criar documento no Firestore:", firestoreError);
 
@@ -249,11 +250,10 @@ export async function uploadTrack({
     }
 
     onProgress?.(100, "Música adicionada com sucesso!");
-    console.log("🎉 Upload completado com sucesso!");
-
-    // Retornar documento criado
+    console.log("🎉 Upload completado com sucesso!");    // Retornar documento criado
     const finalTrackData: TrackDocument = {
       ...trackData,
+      id: documentId,
       duration,
       createdAt: new Date(), // Para retorno imediato, será substituído pelo timestamp do servidor
     };

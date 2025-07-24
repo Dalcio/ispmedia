@@ -4,11 +4,10 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
-import { useUploadModal } from "@/hooks/use-upload-modal";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { UserTrackList } from "@/components/drawers/UserTrackList";
-import { UserPlaylistList } from "@/components/drawers/UserPlaylistList";
+import { PlaylistSection } from "@/components/dashboard-tabs/playlists";
 import {
   X,
   Music,
@@ -26,7 +25,6 @@ interface DashboardDrawerProps {
 export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
   const { isOpen, activeSection, closeDrawer, setActiveSection } =
     useDashboardDrawer();
-  const { openModal: openUploadModal } = useUploadModal();
   const { user, signOut } = useAuth();
 
   // Atalhos de teclado
@@ -105,7 +103,7 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       case "tracks":
         return <UserTrackList />;
       case "playlists":
-        return <UserPlaylistList />;
+        return <PlaylistSection />;
       case "profile":
         return (
           <div className="text-center py-8">
@@ -200,10 +198,11 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
           <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">
             Ações Rápidas
           </h3>
-          <div className="space-y-2">
-            <Button
+          <div className="space-y-2">            <Button
               onClick={() => {
-                openUploadModal();
+                console.log('🎵 Botão upload clicado no dashboard');
+                const event = new CustomEvent('openUploadModal');
+                window.dispatchEvent(event);
                 closeDrawer();
               }}
               className="w-full justify-start gap-3 bg-primary-600 hover:bg-primary-700 text-white"

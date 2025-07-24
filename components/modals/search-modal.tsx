@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Search } from 'lucide-react'
+import { Search, Upload, Music } from 'lucide-react'
 import { Modal } from '@/components/ui/modal'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { debounce } from '@/lib/utils'
 
 interface SearchModalProps {
@@ -147,12 +148,30 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {  const [que
                   ))}
                 </div>
               </div>
-            )}
-
-            {/* No Results */}
+            )}            {/* No Results */}
             {results.songs.length === 0 && results.artists.length === 0 && results.albums.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-white/60">Nenhum resultado encontrado para "{query}"</p>
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-glass-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Music className="h-10 w-10 text-text-muted" />
+                </div>
+                <h3 className="text-xl font-medium text-text-primary mb-3">
+                  Nenhum resultado encontrado
+                </h3>
+                <p className="text-text-muted text-sm mb-6 max-w-sm mx-auto">
+                  Não encontramos músicas com "{query}". Que tal fazer upload de uma nova música?
+                </p>                <Button
+                  onClick={() => {
+                    console.log('🎵 Botão upload clicado no search');
+                    // Disparar evento para abrir modal de upload
+                    const event = new CustomEvent('openUploadModal');
+                    window.dispatchEvent(event);
+                    onClose(); // Fechar modal de search
+                  }}
+                  className="inline-flex items-center gap-2 py-3 px-6 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
+                >
+                  <Upload className="h-5 w-5" />
+                  Fazer upload de música
+                </Button>
               </div>
             )}
           </div>

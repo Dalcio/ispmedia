@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useGlobalAudio } from '@/contexts/global-audio-context';
 import { Button } from '@/components/ui/button';
+import { AddToPlaylistModal } from '@/components/modals/add-to-playlist-modal';
 import { AudioVisualizer } from './audio-visualizer';
 import { 
   Play, 
@@ -11,14 +12,14 @@ import {
   SkipBack, 
   SkipForward, 
   Volume2, 
-  VolumeX,
-  Music,
+  VolumeX,  Music,
   Repeat,
   Shuffle,
   Heart,
   MoreHorizontal,
   Maximize2,
-  Minimize2
+  Minimize2,
+  ListPlus
 } from 'lucide-react';
 
 export function GlobalAudioPlayer() {
@@ -27,8 +28,11 @@ export function GlobalAudioPlayer() {
   const [isLiked, setIsLiked] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
+  const [showAddToPlaylist, setShowAddToPlaylist] = useState(false);
+  const [showPlayerMenu, setShowPlayerMenu] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   
   const {
     currentTrack,
@@ -40,9 +44,20 @@ export function GlobalAudioPlayer() {
     seek,
     setVolume,
   } = useGlobalAudio();
-
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Fechar menu ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowPlayerMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Handle keyboard shortcuts
@@ -292,13 +307,32 @@ export function GlobalAudioPlayer() {
                     {Math.round(volume * 100)}%
                   </span>
                 </div>                <div className="flex items-center gap-3">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="w-10 h-10 rounded-xl text-neutral-600 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 shadow-sm border border-neutral-200/50 dark:border-neutral-700/50"
-                  >
-                    <MoreHorizontal className="h-5 w-5" />
-                  </Button>
+                  <div className="relative" ref={menuRef}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setShowPlayerMenu(!showPlayerMenu)}
+                      className="w-10 h-10 rounded-xl text-neutral-600 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 shadow-sm border border-neutral-200/50 dark:border-neutral-700/50"
+                    >
+                      <MoreHorizontal className="h-5 w-5" />
+                    </Button>
+                    
+                    {/* Menu dropdown */}
+                    {showPlayerMenu && (
+                      <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-lg z-50 py-2">
+                        <button
+                          onClick={() => {
+                            setShowAddToPlaylist(true);
+                            setShowPlayerMenu(false);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                        >
+                          <ListPlus className="h-4 w-4" />
+                          Adicionar à Playlist
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   
                   <Button
                     size="sm"
@@ -437,10 +471,23 @@ export function GlobalAudioPlayer() {
               </Button>
             </div>
           </div>
-        )}
-      </div>
+        )}      </div>
     </div>
   );
 
-  return createPortal(playerContent, document.body);
+  return (
+    <>
+      {createPortal(playerContent, document.body)}
+      
+      {/* Modal para adicionar à playlist */}
+      {showAddToPlaylist && currentTrack && (
+        <AddToPlaylistModal
+          isOpen={showAddToPlaylist}
+          onClose={() => setShowAddToPlaylist(false)}
+          trackId={currentTrack.id || ''}
+          trackTitle={currentTrack.title}
+        />
+      )}
+    </>
+  );
 }
