@@ -5,6 +5,7 @@ interface UseUploadModalReturn {
   openModal: () => void;
   closeModal: () => void;
   toggleModal: () => void;
+  openModalViaEvent: () => void;
 }
 
 /**
@@ -25,10 +26,16 @@ export function useUploadModal(): UseUploadModalReturn {
     setIsOpen((prev) => !prev);
   }, []);
 
+  const openModalViaEvent = () => {
+    const event = new CustomEvent("openUploadModal");
+    window.dispatchEvent(event);
+  };
+
   return {
     isOpen,
     openModal,
     closeModal,
     toggleModal,
+    openModalViaEvent,
   };
 }

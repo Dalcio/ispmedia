@@ -51,20 +51,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const audioPlayer = useGlobalAudio()
-
   // Resetar seleção quando resultados mudarem
   useEffect(() => {
     setSelectedIndex(0)
   }, [results])
-
-  // Resetar estado quando modal abre
-  useEffect(() => {
-    if (isOpen) {
-      setQuery('')
-      setResults({ tracks: [], artists: [] })
-      setSelectedIndex(0)
-    }
-  }, [isOpen])
 
   // Handlers de teclado para navegação
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -89,95 +79,76 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   // Função para buscar tracks no Firestore
   const searchTracks = async (searchQuery: string): Promise<TrackResult[]> => {
     try {
-      console.log('🎵 Buscando tracks para:', searchQuery)
       const tracksRef = collection(db, 'tracks')
       
-      // Tentar buscar todos os tracks primeiro para debug
-      const allTracksQuery = firestoreQuery(tracksRef, limit(50))
-      const allSnapshot = await getDocs(allTracksQuery)
+      // Buscar por título que começa com a query (case-insensitive)
+      const titleQuery = firestoreQuery(
+        tracksRef,
+        where('title', '>=', searchQuery),
+        where('title', '<=', searchQuery + '\uf8ff'),
+        orderBy('title'),
+        limit(10)
+      )
       
-      console.log('🎵 Total de tracks na coleção:', allSnapshot.size)
-      
-      if (allSnapshot.size === 0) {
-        console.log('⚠️ Nenhum track encontrado na coleção')
-        return []
-      }
-
-      // Buscar por título que contém a query (mais flexível)
+      const titleSnapshot = await getDocs(titleQuery)
       const tracks: TrackResult[] = []
       
-      allSnapshot.forEach((doc) => {
+      titleSnapshot.forEach((doc) => {
         const data = doc.data()
-        const title = (data.title || '').toLowerCase()
-        
-        // Busca mais flexível - se o título contém a query
-        if (title.includes(searchQuery.toLowerCase())) {
-          tracks.push({
-            id: doc.id,
-            title: data.title || '',
-            genre: data.genre || '',
-            audioUrl: data.audioUrl || '',
-            fileName: data.fileName || '',
-            fileSize: data.fileSize || 0,
-            duration: data.duration,
-            createdAt: data.createdAt,
-            mimeType: data.mimeType || '',
-            artistName: data.artistName,
-            userUid: data.userUid
-          })
-        }
+        tracks.push({
+          id: doc.id,
+          title: data.title || '',
+          genre: data.genre || '',
+          audioUrl: data.audioUrl || '',
+          fileName: data.fileName || '',
+          fileSize: data.fileSize || 0,
+          duration: data.duration,
+          createdAt: data.createdAt,
+          mimeType: data.mimeType || '',
+          artistName: data.artistName,
+          userUid: data.userUid
+        })
       })
       
-      console.log('🎵 Tracks encontradas:', tracks.length, tracks)
-      return tracks.slice(0, 10) // Limitar a 10 resultados
-      
+      return tracks
     } catch (error) {
-      console.error('❌ Erro ao buscar tracks:', error)
+      console.error('Erro ao buscar tracks:', error)
       return []
     }
   }
+
   // Função para buscar artistas (users) no Firestore
   const searchArtists = async (searchQuery: string): Promise<UserResult[]> => {
     try {
-      console.log('👤 Buscando artistas para:', searchQuery)
       const usersRef = collection(db, 'users')
       
-      // Tentar buscar todos os users primeiro para debug
-      const allUsersQuery = firestoreQuery(usersRef, limit(50))
-      const allSnapshot = await getDocs(allUsersQuery)
+      // Buscar por nome que começa com a query (case-insensitive)
+      const nameQuery = firestoreQuery(
+        usersRef,
+        where('name', '>=', searchQuery),
+        where('name', '<=', searchQuery + '\uf8ff'),
+        orderBy('name'),
+        limit(10)
+      )
       
-      console.log('👤 Total de users na coleção:', allSnapshot.size)
-      
-      if (allSnapshot.size === 0) {
-        console.log('⚠️ Nenhum user encontrado na coleção')
-        return []
-      }
-
-      // Buscar por nome que contém a query (mais flexível)
+      const nameSnapshot = await getDocs(nameQuery)
       const artists: UserResult[] = []
       
-      allSnapshot.forEach((doc) => {
+      nameSnapshot.forEach((doc) => {
         const data = doc.data()
-        const name = (data.name || '').toLowerCase()
-        
-        // Busca mais flexível - se o nome contém a query
-        if (name.includes(searchQuery.toLowerCase())) {
-          artists.push({
-            uid: doc.id,
-            name: data.name || '',
-            email: data.email || '',
-            profilePicture: data.profilePicture,
-            createdAt: data.createdAt,
-            tracksCount: data.tracksCount
-          })
-        }
+        artists.push({
+          uid: doc.id,
+          name: data.name || '',
+          email: data.email || '',
+          profilePicture: data.profilePicture,
+          createdAt: data.createdAt,
+          tracksCount: data.tracksCount
+        })
       })
       
-      console.log('👤 Artistas encontrados:', artists.length, artists)
-      return artists.slice(0, 10) // Limitar a 10 resultados
-      
+      return artists
     } catch (error) {
-      console.error('❌ Erro ao buscar artistas:', error)
+      console.error('Erro ao buscar artistas:', error)
       return []
     }
   }
@@ -187,60 +158,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       return
     }
 
-    console.log('🔍 Iniciando busca para:', searchQuery)
     setIsLoading(true)
     try {
       // Fazer a busca em paralelo otimizada
       const searchLower = searchQuery.toLowerCase().trim()
       
-      console.log('🔍 Buscando tracks e artistas...')
-        // Buscar simultaneamente tracks e artistas
+      // Buscar simultaneamente tracks e artistas
       const [tracks, artists] = await Promise.all([
         searchTracks(searchLower),
         searchArtists(searchQuery.trim()) // Manter case original para nomes
       ])
 
-      console.log('🔍 Resultados encontrados:', { 
-        tracks: tracks.length, 
-        artists: artists.length,
-        tracksData: tracks,
-        artistsData: artists
-      })
-
-      // Se não há dados reais, mostrar dados de exemplo para teste
-      if (tracks.length === 0 && artists.length === 0 && searchQuery.length > 0) {
-        console.log('📝 Adicionando dados de exemplo para teste')
-        const exampleTracks: TrackResult[] = [
-          {
-            id: 'example-1',
-            title: `Música exemplo com "${searchQuery}"`,
-            genre: 'Exemplo',
-            audioUrl: '#',
-            fileName: 'exemplo.mp3',
-            fileSize: 1024,
-            mimeType: 'audio/mpeg',
-            createdAt: new Date(),
-            artistName: 'Artista Exemplo'
-          }
-        ]
-        
-        const exampleArtists: UserResult[] = [
-          {
-            uid: 'example-artist-1',
-            name: `Artista ${searchQuery}`,
-            email: 'exemplo@exemplo.com',
-            createdAt: new Date(),
-            tracksCount: 5
-          }
-        ]
-        
-        setResults({ tracks: exampleTracks, artists: exampleArtists })
-        return
-      }
-
       setResults({ tracks, artists })
     } catch (error) {
-      console.error('❌ Erro na busca:', error)
+      console.error('Erro na busca:', error)
       setResults({ tracks: [], artists: [] })
     } finally {
       setIsLoading(false)
@@ -270,12 +201,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     // Fechar modal após iniciar reprodução
     onClose()
   }
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Buscar" size="lg">
       <div className="space-y-4">
-        {/* Search Input */}
-        <div className="relative">
+        {/* Search Input */}        <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
           <Input
             placeholder="Busque por músicas ou artistas…"
@@ -301,8 +230,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Tracks */}
             {results.tracks.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">Músicas</h3>
-                <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-white mb-3">Músicas</h3>                <div className="space-y-2">
                   {results.tracks.map((track, index) => (
                     <div
                       key={track.id}
@@ -339,8 +267,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Artists */}
             {results.artists.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">Artistas</h3>
-                <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-white mb-3">Artistas</h3>                <div className="space-y-2">
                   {results.artists.map((artist, index) => {
                     const globalIndex = results.tracks.length + index
                     return (
@@ -350,26 +277,24 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           selectedIndex === globalIndex ? 'bg-primary/20 ring-2 ring-primary/50' : 'hover:bg-white/5'
                         }`}
                       >
-                        <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
-                          {artist.profilePicture ? (
-                            <img 
-                              src={artist.profilePicture} 
-                              alt={artist.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-white text-lg font-semibold">
-                              {artist.name.charAt(0).toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-white font-medium">{artist.name}</p>
-                          <p className="text-white/60 text-sm">
-                            {artist.tracksCount ? `${artist.tracksCount} músicas` : 'Artista'}
-                          </p>
-                        </div>
+                      <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
+                        {artist.profilePicture ? (
+                          <img 
+                            src={artist.profilePicture} 
+                            alt={artist.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-white text-lg font-semibold">
+                            {artist.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
+                      <div className="flex-1">
+                        <p className="text-white font-medium">{artist.name}</p>
+                        <p className="text-white/60 text-sm">
+                          {artist.tracksCount ? `${artist.tracksCount} músicas` : 'Artista'}
+                        </p>                      </div>
                     )
                   })}
                 </div>
@@ -379,13 +304,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* No Results */}
             {results.tracks.length === 0 && results.artists.length === 0 && (
               <div className="text-center py-12">
-                <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Music className="h-10 w-10 text-white/60" />
+                <div className="w-20 h-20 bg-glass-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Music className="h-10 w-10 text-text-muted" />
                 </div>
-                <h3 className="text-xl font-medium text-white mb-3">
+                <h3 className="text-xl font-medium text-text-primary mb-3">
                   Nenhum resultado encontrado
                 </h3>
-                <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto">
+                <p className="text-text-muted text-sm mb-6 max-w-sm mx-auto">
                   Não encontramos músicas ou artistas com "{query}". Que tal fazer upload de uma nova música?
                 </p>
                 <Button

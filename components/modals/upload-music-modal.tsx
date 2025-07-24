@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { uploadTrack } from "@/lib/upload";
-import { PostUploadPlaylistSelector } from "./post-upload-playlist-selector";
 import { Music, Upload, X, FileAudio } from "lucide-react";
 
 interface UploadMusicModalProps {
@@ -63,13 +62,14 @@ const MUSIC_GENRES = [
 ];
 
 export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
-  console.log('🎵 UploadMusicModal renderizado, isOpen:', isOpen);
-  
+  console.log("🎵 UploadMusicModal renderizado, isOpen:", isOpen);
+
   const [formData, setFormData] = useState<FormData>({
     title: "",
     genre: "",
     audioFile: null,
-  });  const [errors, setErrors] = useState<Record<string, string>>({});
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [uploadProgress, setUploadProgress] = useState<UploadProgress>({
     percentage: 0,
     status: "idle",
@@ -78,7 +78,8 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
-  const toast = useToast();  const resetForm = () => {
+  const toast = useToast();
+  const resetForm = () => {
     setFormData({
       title: "",
       genre: "",
@@ -222,19 +223,21 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
             status: percentage === 100 ? "processing" : "uploading",
           }));
         },
-      });      setUploadProgress({
+      });
+      setUploadProgress({
         percentage: 100,
         status: "success",
         message: "Upload concluído com sucesso!",
-      });      console.log("✅ Upload finalizado com sucesso!");
+      });
+      console.log("✅ Upload finalizado com sucesso!");
       toast.success(`"${formData.title}" foi adicionado à sua biblioteca!`);
 
       // Disparar evento para abrir o PostUploadPlaylistSelector
-      const event = new CustomEvent('openPostUploadSelector', {
+      const event = new CustomEvent("openPostUploadSelector", {
         detail: {
           trackId: result.id,
-          trackTitle: formData.title.trim()
-        }
+          trackTitle: formData.title.trim(),
+        },
       });
       window.dispatchEvent(event);
 
@@ -520,7 +523,8 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
                 <Music className="h-4 w-4" />
                 Adicionar Música
               </div>
-            )}          </Button>
+            )}{" "}
+          </Button>
         </div>
       </form>
     </Modal>

@@ -104,3 +104,27 @@ export function useDashboardShortcuts(
 
   useKeyboardShortcuts(shortcuts, { enabled });
 }
+
+/**
+ * Hook específico para atalhos de busca
+ */
+export function useSearchShortcuts(
+  onOpenSearch: () => void,
+  enabled: boolean = true
+) {
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      key: "/",
+      callback: onOpenSearch,
+      description: "Abrir modal de busca",
+    },
+    {
+      key: "s",
+      ctrlKey: true,
+      callback: onOpenSearch,
+      description: "Abrir modal de busca (Ctrl+S)",
+    },
+  ];
+
+  useKeyboardShortcuts(shortcuts, { enabled });
+}

@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import {
-  Play,
   Search,
   Music,
   Users,
   TrendingUp,
   Sparkles,
-  Headphones,
   Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,15 +14,12 @@ import { AuthModal } from "@/components/modals/auth-modal";
 import { SearchModal } from "@/components/modals/search-modal";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const { user, userProfile } = useAuth();
-  const toast = useToast();
-  const router = useRouter();
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800">
       {/* Header */}
