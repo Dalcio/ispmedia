@@ -1,26 +1,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs, doc, updateDoc, arrayRemove } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  arrayRemove,
+} from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
 import { useToast } from "@/hooks/use-toast";
 import { TrackSelectorModal } from "./track-selector-modal";
 import { Button } from "@/components/ui/button";
-import { 
-  ListMusic, 
-  Music, 
-  Lock, 
-  Globe, 
-  Edit, 
-  Trash2, 
-  ChevronDown, 
+import {
+  ListMusic,
+  Music,
+  Lock,
+  Globe,
+  Edit,
+  Trash2,
+  ChevronDown,
   ChevronRight,
   Play,
   Clock,
   Calendar,
   Plus,
-  X
+  X,
 } from "lucide-react";
 
 interface Track {
@@ -40,7 +48,7 @@ interface Playlist {
   id: string;
   title: string;
   description?: string;
-  visibility: 'public' | 'private';
+  visibility: "public" | "private";
   tracks: string[];
   createdBy: string;
   createdAt: any;
@@ -55,12 +63,12 @@ interface PlaylistItemProps {
   onDelete: () => void;
 }
 
-export function PlaylistItem({ 
-  playlist, 
-  isExpanded, 
-  onToggleExpand, 
-  onEdit, 
-  onDelete 
+export function PlaylistItem({
+  playlist,
+  isExpanded,
+  onToggleExpand,
+  onEdit,
+  onDelete,
 }: PlaylistItemProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loadingTracks, setLoadingTracks] = useState(false);
@@ -74,26 +82,41 @@ export function PlaylistItem({
       loadPlaylistTracks();
     }
   }, [isExpanded, playlist.tracks]);
-
   const loadPlaylistTracks = async () => {
     if (playlist.tracks.length === 0) return;
-    
+
+    console.log(
+      "🎵 PlaylistItem: Loading tracks for playlist:",
+      playlist.title
+    );
+    console.log("🎵 PlaylistItem: Track IDs in playlist:", playlist.tracks);
+
     setLoadingTracks(true);
     try {
       const tracksQuery = query(
         collection(db, "tracks"),
         where("__name__", "in", playlist.tracks.slice(0, 10)) // Limitar a 10 para performance
       );
-      
+
       const snapshot = await getDocs(tracksQuery);
-      const tracksData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Track[];
-      
+      console.log(
+        "🎵 PlaylistItem: Found tracks in database:",
+        snapshot.docs.length
+      );
+
+      const tracksData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        console.log("🎵 PlaylistItem: Track loaded:", doc.id, data.title);
+        return {
+          id: doc.id,
+          ...data,
+        };
+      }) as Track[];
+
       setTracks(tracksData);
+      console.log("🎵 PlaylistItem: Total tracks loaded:", tracksData.length);
     } catch (error) {
-      console.error("Error loading playlist tracks:", error);
+      console.error("🎵 PlaylistItem: Error loading playlist tracks:", error);
     } finally {
       setLoadingTracks(false);
     }
@@ -101,7 +124,7 @@ export function PlaylistItem({
 
   const formatDate = (timestamp: any) => {
     if (!timestamp) return "Data desconhecida";
-    
+
     try {
       const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
       return date.toLocaleDateString("pt-BR", {
@@ -115,10 +138,10 @@ export function PlaylistItem({
   };
 
   const formatDuration = (seconds: number) => {
-    if (!seconds || !isFinite(seconds)) return '0:00';
+    if (!seconds || !isFinite(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const getTotalDuration = () => {
@@ -133,12 +156,12 @@ export function PlaylistItem({
       const playlistRef = doc(db, "playlists", playlist.id);
       await updateDoc(playlistRef, {
         tracks: arrayRemove(trackId),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
 
       // Atualizar estado local
-      setTracks(prev => prev.filter(track => track.id !== trackId));
-      
+      setTracks((prev) => prev.filter((track) => track.id !== trackId));
+
       success(`"${trackTitle}" removida da playlist`);
     } catch (error) {
       console.error("Error removing track from playlist:", error);
@@ -167,7 +190,7 @@ export function PlaylistItem({
                 {playlist.title}
               </h4>
               <div className="flex items-center gap-1">
-                {playlist.visibility === 'public' ? (
+                {playlist.visibility === "public" ? (
                   <div title="Pública">
                     <Globe className="h-3 w-3 text-success-500" />
                   </div>
@@ -217,7 +240,7 @@ export function PlaylistItem({
                 <ChevronRight className="h-4 w-4" />
               )}
             </Button>
-            
+
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
               <Button
                 size="sm"
@@ -227,7 +250,7 @@ export function PlaylistItem({
               >
                 <Edit className="h-4 w-4" />
               </Button>
-              
+
               <Button
                 size="sm"
                 variant="ghost"
@@ -239,9 +262,12 @@ export function PlaylistItem({
             </div>
           </div>
         </div>
-      </div>      {/* Lista de faixas expandida */}
+      </div>{" "}
+      {/* Lista de faixas expandida */}
       {isExpanded && (
-        <div className="border-t border-glass-200 bg-glass-50">          {loadingTracks ? (
+        <div className="border-t border-glass-200 bg-glass-50">
+          {" "}
+          {loadingTracks ? (
             <div className="p-4 space-y-3">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex items-center gap-3 animate-pulse">
@@ -292,7 +318,7 @@ export function PlaylistItem({
                     <div className="w-8 h-8 bg-glass-200 rounded flex items-center justify-center text-xs text-text-muted">
                       {index + 1}
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <h5 className="text-sm font-medium text-text-primary truncate">
                         {track.title}
@@ -301,13 +327,13 @@ export function PlaylistItem({
                         {track.artist || track.genre}
                       </p>
                     </div>
-                    
+
                     {track.duration && (
                       <span className="text-xs text-text-muted">
                         {formatDuration(track.duration)}
                       </span>
                     )}
-                    
+
                     <div className="opacity-0 group-hover/track:opacity-100 transition-opacity flex items-center gap-1">
                       <Button
                         size="sm"
@@ -317,7 +343,7 @@ export function PlaylistItem({
                       >
                         <Play className="h-3 w-3" />
                       </Button>
-                      
+
                       <Button
                         size="sm"
                         variant="ghost"
@@ -329,7 +355,7 @@ export function PlaylistItem({
                     </div>
                   </div>
                 ))}
-                
+
                 {playlist.tracks.length > tracks.length && (
                   <div className="text-center pt-2">
                     <p className="text-xs text-text-muted">
@@ -342,7 +368,6 @@ export function PlaylistItem({
           )}
         </div>
       )}
-      
       {/* Modal de seleção de músicas */}
       <TrackSelectorModal
         isOpen={showTrackSelector}
