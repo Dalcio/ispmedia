@@ -313,7 +313,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       createdAt: track.createdAt,
       mimeType: track.mimeType,
     };
-
     audioPlayer.playTrack(audioTrack);
     // Fechar modal após iniciar reprodução
     onClose();

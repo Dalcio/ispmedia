@@ -43,18 +43,8 @@ export function TrackSelectorModal({
     const filtered = allTracks.filter(
       (track) => !existingTrackIds.includes(track.id)
     );
-    // Reduce logging to prevent spam
-    if (Math.random() < 0.1) {
-      // Only log 10% of the time
-      console.log("🎵 TrackSelector: Available tracks:", filtered.length);
-      console.log(
-        "🎵 TrackSelector: Total tracks from context:",
-        allTracks.length
-      );
-      console.log("🎵 TrackSelector: Existing track IDs:", existingTrackIds);
-    }
     return filtered;
-  }, [allTracks, existingTrackIds]);
+  }, [allTracks, existingTrackIds?.length, existingTrackIds?.join(",")]);
 
   // Filter tracks based on search term
   const filteredTracks = useMemo(() => {
@@ -70,9 +60,6 @@ export function TrackSelectorModal({
         track.genre.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    console.log(
-      `🔍 TrackSelector: Search "${searchTerm}" found ${filtered.length} tracks`
-    );
     return filtered;
   }, [availableTracks, searchTerm]);
 

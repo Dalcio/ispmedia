@@ -25,6 +25,8 @@ interface Track {
   mimeType: string;
 }
 
+export type { Track };
+
 interface TracksContextType {
   tracks: Track[];
   loading: boolean;
@@ -57,26 +59,54 @@ export function TracksProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onSnapshot(
       tracksQuery,
       (snapshot) => {
-        console.log(
-          "🎵 TracksContext: Snapshot received, docs:",
-          snapshot.docs.length
-        );
+        // Avoid updates from local writes
+        if (snapshot.metadata.hasPendingWrites) {
+          return;
+        }
 
         const tracksData = snapshot.docs.map((doc) => {
           const data = doc.data();
-          console.log("🎵 TracksContext: Track data:", {
-            id: doc.id,
-            title: data.title,
-            createdBy: data.createdBy,
-          });
           return {
             id: doc.id,
             ...data,
           };
-        }) as Track[];
+        }) as Track[]; // Only update if data actually changed
+        setTracks((prevTracks) => {
+          // Quick length check first
+          if (prevTracks.length !== tracksData.length) {
+            return tracksData;
+          }
 
-        console.log("🎵 TracksContext: Tracks loaded:", tracksData.length);
-        setTracks(tracksData);
+          // If same length, check if IDs are the same
+          const prevIds = prevTracks.map((t) => t.id).sort();
+          const newIds = tracksData.map((t) => t.id).sort();
+
+          // Compare arrays element by element
+          for (let i = 0; i < prevIds.length; i++) {
+            if (prevIds[i] !== newIds[i]) {
+              return tracksData;
+            }
+          }
+
+          // If IDs are the same, check if any track content changed
+          for (let i = 0; i < prevTracks.length; i++) {
+            const prevTrack = prevTracks[i];
+            const newTrack = tracksData.find((t) => t.id === prevTrack.id);
+
+            if (
+              !newTrack ||
+              prevTrack.title !== newTrack.title ||
+              prevTrack.artist !== newTrack.artist ||
+              prevTrack.audioUrl !== newTrack.audioUrl
+            ) {
+              return tracksData;
+            }
+          }
+
+          // Data is identical, keep same reference
+          return prevTracks;
+        });
+
         setLoading(false);
       },
       (error) => {
@@ -84,15 +114,16 @@ export function TracksProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     );
-
     return () => {
-      console.log("🎵 TracksContext: Cleaning up listener");
+      console.log(
+        "🎵 TracksContext: Cleaning up listener for user:",
+        user?.uid
+      );
       unsubscribe();
     };
-  }, [user]);
+  }, [user?.uid]); // Use stable dependency
 
   const refreshTracks = () => {
-    console.log("🎵 TracksContext: Manual refresh requested");
     setLoading(true);
     // O useEffect já vai recriar o listener automaticamente
   };
