@@ -4,6 +4,7 @@ import { UserAvatarButton } from "@/components/layout/user-avatar-button";
 import { Button } from "@/components/ui/button";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
 import { useUploadModal } from "@/hooks/use-upload-modal";
+import { useCommandPalette } from "@/hooks/use-command-palette";
 import { useAuth } from "@/contexts/auth-context";
 import { Music, Upload, LayoutDashboard } from "lucide-react";
 
@@ -15,6 +16,7 @@ export function Header({ className = "" }: HeaderProps) {
   const { user } = useAuth();
   const { openDrawer } = useDashboardDrawer();
   const { openModalViaEvent } = useUploadModal();
+  const { openPalette } = useCommandPalette();
 
   return (
     <>
@@ -48,9 +50,9 @@ export function Header({ className = "" }: HeaderProps) {
                       <Upload className="w-4 h-4" />
                       Upload
                     </Button>
-                  </div>
+                  </div>{" "}
                   {/* User Avatar with Dropdown */}
-                  <UserAvatarButton />
+                  <UserAvatarButton onOpenCommandPalette={openPalette} />
                 </>
               ) : (
                 <div className="flex items-center gap-2">

@@ -11,17 +11,20 @@ import {
   UserIcon,
   Settings,
   LogOut,
+  Command,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 interface UserAvatarButtonProps {
   className?: string;
   showDropdown?: boolean;
+  onOpenCommandPalette?: () => void;
 }
 
 export function UserAvatarButton({
   className = "",
   showDropdown = true,
+  onOpenCommandPalette,
 }: UserAvatarButtonProps) {
   const { user, signOut } = useAuth();
   const { openDrawer } = useDashboardDrawer();
@@ -153,6 +156,22 @@ export function UserAvatarButton({
           </div>{" "}
           {/* Menu Items */}
           <div className="py-1 px-1">
+            {onOpenCommandPalette && (
+              <button
+                onClick={() => {
+                  onOpenCommandPalette();
+                  setIsDropdownOpen(false);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-primary/10 transition-colors rounded-md"
+              >
+                <Command className="w-4 h-4" />
+                Painel de Comandos
+                <span className="ml-auto text-xs text-neutral-500 font-mono">
+                  ⌘K
+                </span>
+              </button>
+            )}
+
             <button
               onClick={handleOpenTracks}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-primary/10 transition-colors rounded-md"
