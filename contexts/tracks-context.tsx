@@ -23,6 +23,7 @@ interface Track {
   duration?: number;
   createdAt: any;
   mimeType: string;
+  playCount?: number;
 }
 
 export type { Track };

@@ -3,7 +3,15 @@
 import { useAuth } from "@/contexts/auth-context";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
 import { Button } from "@/components/ui/button";
-import { User, ChevronDown } from "lucide-react";
+import {
+  User,
+  ChevronDown,
+  Music,
+  ListMusic,
+  UserIcon,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 interface UserAvatarButtonProps {
@@ -62,11 +70,17 @@ export function UserAvatarButton({
       openDrawer();
     }
   };
-
-  const handleOpenDashboard = () => {
-    openDrawer();
+  const handleOpenDashboard = (
+    section: "tracks" | "playlists" | "profile" | "settings" = "tracks"
+  ) => {
+    openDrawer(section);
     setIsDropdownOpen(false);
   };
+
+  const handleOpenTracks = () => handleOpenDashboard("tracks");
+  const handleOpenPlaylists = () => handleOpenDashboard("playlists");
+  const handleOpenProfile = () => handleOpenDashboard("profile");
+  const handleOpenSettings = () => handleOpenDashboard("settings");
 
   const handleSignOut = () => {
     signOut();
@@ -109,13 +123,12 @@ export function UserAvatarButton({
             />
           </>
         )}
-      </Button>
-
+      </Button>{" "}
       {/* Dropdown Menu */}
       {showDropdown && isDropdownOpen && (
-        <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 py-2 z-50">
+        <div className="absolute top-full right-0 mt-2 w-64 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-xl rounded-lg shadow-lg border border-neutral-200/50 dark:border-neutral-700/50 py-2 z-50">
           {/* User Info */}
-          <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
+          <div className="px-4 py-3 border-b border-neutral-200/50 dark:border-neutral-700/50">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                 {user.photoURL ? (
@@ -137,35 +150,48 @@ export function UserAvatarButton({
                 </p>
               </div>
             </div>
-          </div>
-
+          </div>{" "}
           {/* Menu Items */}
-          <div className="py-1">
+          <div className="py-1 px-1">
             <button
-              onClick={handleOpenDashboard}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+              onClick={handleOpenTracks}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-primary/10 transition-colors rounded-md"
             >
-              <User className="w-4 h-4" />
-              Dashboard
+              <Music className="w-4 h-4" />
+              Minhas Músicas
             </button>
 
             <button
-              onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              onClick={handleOpenPlaylists}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-primary/10 transition-colors rounded-md"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
+              <ListMusic className="w-4 h-4" />
+              Minhas Playlists
+            </button>
+
+            <button
+              onClick={handleOpenProfile}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-primary/10 transition-colors rounded-md"
+            >
+              <UserIcon className="w-4 h-4" />
+              Meu Perfil
+            </button>
+
+            <button
+              onClick={handleOpenSettings}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-primary/10 transition-colors rounded-md"
+            >
+              <Settings className="w-4 h-4" />
+              Configurações
+            </button>
+
+            <div className="border-t border-neutral-200/50 dark:border-neutral-700/50 my-1 mx-2"></div>
+
+            <button
+              onClick={handleSignOut}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-md"
+            >
+              <LogOut className="w-4 h-4" />
               Sair da Conta
             </button>
           </div>

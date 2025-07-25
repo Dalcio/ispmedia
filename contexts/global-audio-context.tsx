@@ -8,6 +8,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { incrementPlayCount } from "@/lib/track-stats";
 
 interface Track {
   id: string;
@@ -157,6 +158,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.load();
       audioRef.current.play().catch(console.error);
     }
+
+    // Increment play count when track starts playing
+    incrementPlayCount(track.id);
   };
 
   const playNext = () => {
@@ -174,7 +178,6 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       playTrackDirectly(prevTrack);
     }
   };
-
   const playTrackDirectly = (track: Track) => {
     const audioTrack: AudioTrack = {
       id: track.id,
@@ -192,6 +195,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.load();
       audioRef.current.play().catch(console.error);
     }
+
+    // Increment play count when track starts playing
+    incrementPlayCount(track.id);
   };
 
   const pause = () => {

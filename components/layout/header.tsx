@@ -37,6 +37,7 @@ export function Header({ className = "" }: HeaderProps) {
             <div className="flex items-center gap-4">
               {user ? (
                 <>
+                  {" "}
                   {/* Quick Actions */}
                   <div className="hidden sm:flex items-center gap-2">
                     <Button
@@ -47,17 +48,7 @@ export function Header({ className = "" }: HeaderProps) {
                       <Upload className="w-4 h-4" />
                       Upload
                     </Button>
-                    <Button
-                      onClick={() => openDrawer()}
-                      variant="ghost"
-                      size="sm"
-                      className="inline-flex items-center gap-2"
-                    >
-                      <LayoutDashboard className="w-4 h-4" />
-                      Dashboard
-                    </Button>
                   </div>
-
                   {/* User Avatar with Dropdown */}
                   <UserAvatarButton />
                 </>

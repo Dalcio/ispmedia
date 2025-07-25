@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { UserTrackList } from "@/components/drawers/UserTrackList";
 import { PlaylistSection } from "@/components/dashboard-tabs/playlists";
+import { ProfileSection } from "@/components/dashboard-tabs/profile";
 import {
   X,
   Music,
@@ -45,11 +46,12 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const drawer = document.getElementById("dashboard-drawer");
-      
+
       // Don't close if clicking on a modal or other overlay
-      const isModalContent = target.closest('[role="dialog"]') || 
-                            target.closest('.modal-content') ||
-                            target.closest('[data-modal]');
+      const isModalContent =
+        target.closest('[role="dialog"]') ||
+        target.closest(".modal-content") ||
+        target.closest("[data-modal]");
 
       if (drawer && !drawer.contains(target) && !isModalContent) {
         closeDrawer();
@@ -98,22 +100,15 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       icon: Settings,
       description: "Preferências da conta",
     },
-  ];  const renderContent = () => {
+  ];
+  const renderContent = () => {
     switch (activeSection) {
       case "tracks":
         return <UserTrackList />;
       case "playlists":
         return <PlaylistSection />;
       case "profile":
-        return (
-          <div className="text-center py-8">
-            <User className="w-12 h-12 mx-auto mb-4 text-neutral-400" />
-            <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-              Perfil do Usuário
-            </h3>
-            <p className="text-neutral-500">Seção em desenvolvimento...</p>
-          </div>
-        );
+        return <ProfileSection />;
       case "settings":
         return (
           <div className="text-center py-8">
@@ -167,7 +162,6 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
             <X className="w-5 h-5" />
           </Button>
         </div>
-
         {/* Navigation */}
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
           <div className="grid grid-cols-2 gap-2">
@@ -192,16 +186,17 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
             })}
           </div>
         </div>
-
         {/* Quick Actions */}
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
           <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">
             Ações Rápidas
           </h3>
-          <div className="space-y-2">            <Button
+          <div className="space-y-2">
+            {" "}
+            <Button
               onClick={() => {
-                console.log('🎵 Botão upload clicado no dashboard');
-                const event = new CustomEvent('openUploadModal');
+                console.log("🎵 Botão upload clicado no dashboard");
+                const event = new CustomEvent("openUploadModal");
                 window.dispatchEvent(event);
                 closeDrawer();
               }}
@@ -211,26 +206,9 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
               Fazer Upload de Música
             </Button>
           </div>
-        </div>
-
+        </div>{" "}
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">{renderContent()}</div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
-          {" "}
-          <Button
-            onClick={() => {
-              signOut();
-              closeDrawer();
-            }}
-            variant="ghost"
-            className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
-          >
-            <LogOut className="w-4 h-4" />
-            Sair da Conta
-          </Button>
-        </div>
       </div>
     </>,
     document.body

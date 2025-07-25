@@ -31,3 +31,15 @@ export const useDashboardDrawer = create<DashboardDrawerStore>((set) => ({
     set({ activeSection: section });
   },
 }));
+
+/**
+ * Hook de conveniência para usar o dashboard
+ */
+export const useDashboard = () => {
+  const { openDrawer, setActiveSection } = useDashboardDrawer();
+
+  return {
+    openDrawer,
+    setActiveTab: setActiveSection,
+  };
+};
