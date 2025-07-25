@@ -61,7 +61,6 @@ export default function RootLayout({
         suppressHydrationWarning={false}
         className={`${inter.variable} font-sans antialiased bg-dark text-white min-h-screen`}
       >
-        {" "}
         <AuthProvider>
           <TracksProvider>
             <GlobalAudioProvider>

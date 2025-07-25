@@ -523,7 +523,7 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
                 <Music className="h-4 w-4" />
                 Adicionar Música
               </div>
-            )}{" "}
+            )}
           </Button>
         </div>
       </form>

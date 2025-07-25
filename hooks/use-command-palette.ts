@@ -17,10 +17,16 @@ export function useCommandPalette() {
     setIsOpen((prev) => !prev);
   }, []);
 
+  const openCommandPalette = useCallback(() => {
+    const event = new CustomEvent("openCommandPalette");
+    window.dispatchEvent(event);
+  }, []);
+
   return {
     isOpen,
     openPalette,
     closePalette,
     togglePalette,
+    openCommandPalette,
   };
 }

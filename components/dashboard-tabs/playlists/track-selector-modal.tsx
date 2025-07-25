@@ -140,7 +140,7 @@ export function TrackSelectorModal({
             </div>
           ) : filteredTracks.length === 0 ? (
             <div className="text-center py-8">
-              <Music className="w-12 h-12 mx-auto mb-4 text-text-muted" />{" "}
+              <Music className="w-12 h-12 mx-auto mb-4 text-text-muted" />
               <p className="text-text-muted mb-2">
                 {searchTerm
                   ? `Nenhuma música encontrada para "${searchTerm}"`
@@ -171,7 +171,6 @@ export function TrackSelectorModal({
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  {" "}
                   <h4 className="font-medium text-text-primary truncate">
                     {track.title}
                   </h4>
@@ -199,13 +198,13 @@ export function TrackSelectorModal({
                 </div>
               </div>
             ))
-          )}{" "}
-        </div>{" "}
+          )}
+        </div>
         {/* Debug info - only in development */}
         {process.env.NODE_ENV === "development" && (
           <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded space-y-1">
             <div>
-              Debug: Total tracks: {allTracks.length} | Available:{" "}
+              Debug: Total tracks: {allTracks.length} | Available:
               {availableTracks.length} | Filtered: {filteredTracks.length} |
               Loading: {loading.toString()}
             </div>

@@ -194,7 +194,7 @@ export function PlaylistItem({
               <div className="flex items-center gap-1">
                 <Music className="h-3 w-3" />
                 <span>{playlist.tracks.length} músicas</span>
-              </div>{" "}
+              </div>
               {isExpanded && playlistTracks.length > 0 && (
                 <div className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
@@ -206,7 +206,7 @@ export function PlaylistItem({
                 <span>{formatDate(playlist.createdAt)}</span>
               </div>
             </div>
-          </div>{" "}
+          </div>
           {/* Ações */}
           <div className="flex items-center gap-2">
             {/* Botão Play Playlist */}
@@ -256,11 +256,10 @@ export function PlaylistItem({
             </div>
           </div>
         </div>
-      </div>{" "}
+      </div>
       {/* Lista de faixas expandida */}
       {isExpanded && (
         <div className="border-t border-glass-200 bg-glass-50">
-          {" "}
           {tracksLoading ? (
             <div className="p-4 space-y-3">
               {[...Array(3)].map((_, i) => (
@@ -363,7 +362,7 @@ export function PlaylistItem({
                 {playlist.tracks.length > playlistTracks.length && (
                   <div className="text-center pt-2">
                     <p className="text-xs text-text-muted">
-                      e mais {playlist.tracks.length - playlistTracks.length}{" "}
+                      e mais {playlist.tracks.length - playlistTracks.length}
                       músicas...
                     </p>
                   </div>

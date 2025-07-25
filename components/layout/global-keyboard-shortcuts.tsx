@@ -88,6 +88,10 @@ export function GlobalKeyboardShortcuts() {
       }
     };
 
+    window.addEventListener("openCommandPalette", () => {
+      openPalette();
+    });
+
     window.addEventListener(
       "openPostUploadSelector",
       handlePostUpload as EventListener
@@ -102,6 +106,9 @@ export function GlobalKeyboardShortcuts() {
       );
       window.removeEventListener("openUploadModal", handleOpenUpload);
       document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("openCommandPalette", () => {
+        openPalette();
+      });
     };
   }, [openModal, enabled, openPalette]);
 
@@ -138,7 +145,7 @@ export function GlobalKeyboardShortcuts() {
   return (
     <>
       {/* Modal de Upload integrado com o hook */}
-      <UploadMusicModal isOpen={isOpen} onClose={closeModal} />{" "}
+      <UploadMusicModal isOpen={isOpen} onClose={closeModal} />
       {/* Modal de Busca */}
       <SearchModal
         isOpen={isSearchOpen}

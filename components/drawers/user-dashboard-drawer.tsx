@@ -192,7 +192,6 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
             Ações Rápidas
           </h3>
           <div className="space-y-2">
-            {" "}
             <Button
               onClick={() => {
                 console.log("🎵 Botão upload clicado no dashboard");
@@ -206,7 +205,7 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
               Fazer Upload de Música
             </Button>
           </div>
-        </div>{" "}
+        </div>
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">{renderContent()}</div>
       </div>

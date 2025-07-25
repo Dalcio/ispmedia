@@ -191,7 +191,7 @@ export function GlobalAudioPlayer() {
                       <div className="absolute inset-0 rounded-xl bg-primary-500/20 animate-pulse" />
                     </div>
                   )}
-                </div>{" "}
+                </div>
                 {/* Track Details */}
                 <div className="flex-1 min-w-0">
                   <h4 className="font-semibold text-neutral-900 dark:text-white truncate text-sm sm:text-base leading-tight">
@@ -213,10 +213,9 @@ export function GlobalAudioPlayer() {
                     <span>{formatTime(duration)}</span>
                   </div>
                 </div>
-              </div>{" "}
+              </div>
               {/* Main Controls */}
               <div className="flex items-center gap-2 sm:gap-3">
-                {" "}
                 {/* Previous/Skip */}
                 <Button
                   size="sm"
@@ -250,7 +249,7 @@ export function GlobalAudioPlayer() {
                       fill="currentColor"
                     />
                   )}
-                </Button>{" "}
+                </Button>
                 {/* Next/Skip */}
                 <Button
                   size="sm"
@@ -294,7 +293,7 @@ export function GlobalAudioPlayer() {
                       style={{ left: `${volume * 100}%`, marginLeft: "-8px" }}
                     />
                   </div>
-                </div>{" "}
+                </div>
                 {/* Expand Button */}
                 <Button
                   size="sm"
@@ -321,7 +320,6 @@ export function GlobalAudioPlayer() {
               </div>
 
               <div className="flex items-center gap-4">
-                {" "}
                 {/* Volume Control in Top Right */}
                 <div className="flex items-center gap-4">
                   <Button
@@ -355,7 +353,7 @@ export function GlobalAudioPlayer() {
                   <span className="text-sm text-neutral-700 dark:text-neutral-300 w-12 text-right font-mono font-medium">
                     {Math.round(volume * 100)}%
                   </span>
-                </div>{" "}
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="relative" ref={menuRef}>
                     <Button
@@ -457,7 +455,7 @@ export function GlobalAudioPlayer() {
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
-            </div>{" "}
+            </div>
             {/* Main Controls */}
             <div className="flex items-center justify-center gap-6 sm:gap-8 mb-6">
               {/* Shuffle */}
@@ -526,7 +524,7 @@ export function GlobalAudioPlayer() {
               </Button>
             </div>
           </div>
-        )}{" "}
+        )}
       </div>
     </div>
   );

@@ -126,7 +126,7 @@ export function UserAvatarButton({
             />
           </>
         )}
-      </Button>{" "}
+      </Button>
       {/* Dropdown Menu */}
       {showDropdown && isDropdownOpen && (
         <div className="absolute top-full right-0 mt-2 w-64 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-xl rounded-lg shadow-lg border border-neutral-200/50 dark:border-neutral-700/50 py-2 z-50">
@@ -153,7 +153,7 @@ export function UserAvatarButton({
                 </p>
               </div>
             </div>
-          </div>{" "}
+          </div>
           {/* Menu Items */}
           <div className="py-1 px-1">
             {onOpenCommandPalette && (

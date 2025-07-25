@@ -207,7 +207,6 @@ export default function FirebaseTest() {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        {" "}
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
           🔥 Teste de Conexão Firebase
         </h2>
@@ -318,7 +317,7 @@ export default function FirebaseTest() {
               </p>
             </div>
           )}
-        </div>{" "}
+        </div>
         {/* Test Buttons */}
         <div className="flex flex-wrap gap-3 mb-6">
           <button
@@ -366,7 +365,7 @@ export default function FirebaseTest() {
               </div>
             ))
           )}
-        </div>{" "}
+        </div>
         {/* Instructions */}
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
@@ -374,7 +373,7 @@ export default function FirebaseTest() {
           </h3>
           <ol className="list-decimal list-inside space-y-1 text-blue-800 dark:text-blue-200 text-sm">
             <li>
-              Acesse:{" "}
+              Acesse:
               <a
                 href="https://console.firebase.google.com/project/ispmedia-70af7/authentication"
                 target="_blank"
@@ -385,14 +384,14 @@ export default function FirebaseTest() {
               </a>
             </li>
             <li>
-              Clique em <strong>"Get started"</strong> →{" "}
+              Clique em <strong>"Get started"</strong> →
               <strong>"Sign-in method"</strong>
             </li>
             <li>
               Ative <strong>"Anonymous"</strong> authentication
             </li>
             <li>
-              Acesse:{" "}
+              Acesse:
               <a
                 href="https://console.firebase.google.com/project/ispmedia-70af7/firestore"
                 target="_blank"
@@ -403,7 +402,7 @@ export default function FirebaseTest() {
               </a>
             </li>
             <li>
-              Clique em <strong>"Create database"</strong> →{" "}
+              Clique em <strong>"Create database"</strong> →
               <strong>"Test mode"</strong>
             </li>
             <li>Selecione uma região (ex: us-central1)</li>

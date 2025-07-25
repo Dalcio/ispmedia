@@ -180,7 +180,7 @@ export function ProfileSection({ className = "" }: ProfileSectionProps) {
           {user.displayName || userProfile?.name || "Usuário"}
         </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Membro desde{" "}
+          Membro desde
           {formatDate(userProfile?.createdAt || user.metadata.creationTime)}
         </p>
       </div>

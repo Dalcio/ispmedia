@@ -224,7 +224,7 @@ export function UserTrackList({
       <div className="text-center py-8">
         <div className="w-16 h-16 bg-glass-200 rounded-full flex items-center justify-center mx-auto mb-4">
           <Music className="h-8 w-8 text-text-muted" />
-        </div>{" "}
+        </div>
         <h3 className="text-lg font-medium text-text-primary mb-2">
           No tracks uploaded
         </h3>
@@ -273,7 +273,7 @@ export function UserTrackList({
                 <span className="truncate">{track.fileName}</span>
               </div>
             </div>
-          </div>{" "}
+          </div>
           {/* Ações */}
           <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Button
@@ -330,7 +330,7 @@ export function UserTrackList({
             </Button>
           </div>
         </div>
-      ))}{" "}
+      ))}
       {tracks.length > 0 && (
         <div className="text-center pt-2">
           <p className="text-xs text-text-muted">

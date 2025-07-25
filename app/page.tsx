@@ -38,7 +38,7 @@ export default function HomePage() {
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             Descubra milhões de músicas, crie playlists incríveis e conecte-se
             com seus artistas favoritos em uma experiência única de streaming.
-          </p>{" "}
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               onClick={() => setSearchModalOpen(true)}
@@ -102,7 +102,7 @@ export default function HomePage() {
               <div className="text-4xl font-bold text-gradient mb-2">1M+</div>
               <div className="text-gray-600 dark:text-gray-300">
                 Playlists criadas
-              </div>{" "}
+              </div>
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function HomePage() {
             )}
           </div>
         </div>
-      </main>{" "}
+      </main>
       {/* Modals */}
       <AuthModal
         isOpen={authModalOpen}
