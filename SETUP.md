@@ -5,6 +5,7 @@
 Antes de iniciar, certifique-se de ter instalado em sua máquina:
 
 ### Software Necessário
+
 - **Node.js** (versão 18 ou superior) - [Download](https://nodejs.org/)
 - **pnpm** (gerenciador de pacotes recomendado)
 - **Git** (para controle de versão)
@@ -12,6 +13,7 @@ Antes de iniciar, certifique-se de ter instalado em sua máquina:
 - **Conta Google** (para acessar Firebase Console)
 
 ### Instalação dos Pré-requisitos
+
 ```bash
 # Instalar pnpm globalmente
 npm install -g pnpm
@@ -74,11 +76,13 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ## 🔥 Configuração do Firebase
 
 ### 1. Acessar Firebase Console
+
 1. Acesse [https://console.firebase.google.com](https://console.firebase.google.com)
 2. Faça login com sua conta Google
 3. Clique em "Adicionar projeto" ou "Create a project"
 
 ### 2. Criar Projeto Firebase
+
 1. **Nome do projeto**: `ISPmedia` (ou nome de sua escolha)
 2. **Google Analytics**: Pode desabilitar para este projeto
 3. Clique em "Criar projeto"
@@ -87,12 +91,15 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ### 3. Configurar Firebase Authentication
 
 #### 3.1. Ativar Authentication
+
 1. No menu lateral, clique em **"Authentication"**
 2. Clique em **"Começar"** ou **"Get started"**
 3. Vá para a aba **"Sign-in method"**
 
 #### 3.2. Configurar Métodos de Login
+
 1. **Email/Password**:
+
    - Clique em "Email/Password"
    - **Ative** a primeira opção
    - **Desative** "Email link" (não necessário)
@@ -107,6 +114,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ### 4. Configurar Firestore Database
 
 #### 4.1. Criar Banco de Dados
+
 1. No menu lateral, clique em **"Firestore Database"**
 2. Clique em **"Criar banco de dados"**
 3. **Modo de segurança**: Selecione **"Começar no modo de teste"**
@@ -115,6 +123,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 5. Clique em "Concluído"
 
 #### 4.2. Estrutura de Coleções Esperada
+
 O aplicativo criará automaticamente as seguintes coleções:
 
 ```
@@ -129,6 +138,7 @@ firestore/
 ### 5. Configurar Firebase Storage
 
 #### 5.1. Ativar Storage
+
 1. No menu lateral, clique em **"Storage"**
 2. Clique em **"Começar"** ou **"Get started"**
 3. **Regras de segurança**: Aceite as regras padrão (modo teste)
@@ -136,6 +146,7 @@ firestore/
 5. Clique em "Concluído"
 
 #### 5.2. Estrutura de Pastas
+
 O aplicativo organizará os arquivos assim:
 
 ```
@@ -148,12 +159,14 @@ storage/
 ### 6. Obter Credenciais do Firebase
 
 #### 6.1. Configurar Web App
+
 1. Na página principal do projeto, clique no ícone **"</> Web"**
 2. **Nome do app**: `ISPmedia Web`
 3. **NÃO** marque "Configure também o Firebase Hosting"
 4. Clique em "Registrar app"
 
 #### 6.2. Copiar Configuração
+
 Você verá uma tela com código JavaScript similar a este:
 
 ```javascript
@@ -163,11 +176,12 @@ const firebaseConfig = {
   projectId: "your-project-id",
   storageBucket: "your-project.appspot.com",
   messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef123456789"
+  appId: "1:123456789012:web:abcdef123456789",
 };
 ```
 
 #### 6.3. Atualizar .env.local
+
 Copie os valores da configuração para seu arquivo `.env.local`:
 
 ```env
@@ -182,6 +196,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:abcdef123456789
 ### 7. Configurar Service Account (Opcional - Para API Routes)
 
 #### 7.1. Gerar Chave Privada
+
 1. Vá em **"Configurações do projeto"** (ícone de engrenagem)
 2. Clique na aba **"Contas de serviço"**
 3. Clique em **"Gerar nova chave privada"**
@@ -190,6 +205,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:abcdef123456789
 6. **Guarde o arquivo JSON baixado com segurança**
 
 #### 7.2. Extrair Informações
+
 Abra o arquivo JSON baixado e copie as informações para `.env.local`:
 
 ```env
@@ -209,6 +225,7 @@ FIREBASE_CLIENT_ID=123456789012345678901
 ### 1. Regras do Firestore
 
 #### 1.1. Para Desenvolvimento
+
 1. No Firebase Console, vá em **"Firestore Database"**
 2. Clique na aba **"Regras"**
 3. Cole o seguinte código:
@@ -227,13 +244,13 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == resource.data.createdBy;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
-      
+
       // Comentários das tracks
       match /comments/{commentId} {
         allow read: if request.auth != null;
         allow create: if request.auth != null && request.auth.uid == resource.data.userId;
-        allow update, delete: if request.auth != null && 
-          (request.auth.uid == resource.data.userId || 
+        allow update, delete: if request.auth != null &&
+          (request.auth.uid == resource.data.userId ||
            request.auth.uid == get(/databases/$(database)/documents/tracks/$(trackId)).data.createdBy);
       }
     }
@@ -255,11 +272,13 @@ service cloud.firestore {
 4. Clique em **"Publicar"**
 
 #### 1.2. Para Produção
+
 Quando estiver pronto para produção, revise as regras para serem mais restritivas.
 
 ### 2. Regras do Storage
 
 #### 2.1. Configurar Regras
+
 1. No Firebase Console, vá em **"Storage"**
 2. Clique na aba **"Regras"**
 3. Cole o seguinte código:
@@ -271,7 +290,7 @@ service firebase.storage {
     // Tracks: usuário só pode fazer upload na sua pasta
     match /tracks/{userId}/{fileName} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null 
+      allow write: if request.auth != null
                    && request.auth.uid == userId
                    && request.resource.size < 50 * 1024 * 1024  // 50MB max
                    && request.resource.contentType.matches('audio/.*');
@@ -288,6 +307,7 @@ service firebase.storage {
 ## 🔧 Implantação das Configurações
 
 ### 1. Login no Firebase CLI
+
 ```bash
 # Fazer login no Firebase
 firebase login
@@ -297,6 +317,7 @@ firebase projects:list
 ```
 
 ### 2. Inicializar Firebase no Projeto
+
 ```bash
 # Na pasta raiz do projeto
 firebase init
@@ -308,11 +329,12 @@ firebase init
 ```
 
 ### 3. Implantar Regras
+
 ```bash
 # Implantar regras do Firestore
 firebase deploy --only firestore:rules
 
-# Implantar regras do Storage  
+# Implantar regras do Storage
 firebase deploy --only storage:rules
 
 # Ou implantar tudo de uma vez
@@ -324,6 +346,7 @@ npm run deploy-firebase-rules
 ## 🏃 Início do Projeto
 
 ### 1. Verificar Configuração
+
 ```bash
 # Verificar se Firebase está configurado corretamente
 npm run check-firebase-setup
@@ -333,6 +356,7 @@ npm run check-firebase
 ```
 
 ### 2. Iniciar Servidor de Desenvolvimento
+
 ```bash
 # Iniciar o projeto
 pnpm dev
@@ -342,7 +366,9 @@ npm run dev
 ```
 
 ### 3. Acessar Aplicação
+
 Abra seu navegador e acesse:
+
 - **URL**: http://localhost:3000
 - **Porta padrão**: 3000
 - **Hot reload**: Ativado automaticamente
@@ -354,6 +380,7 @@ Abra seu navegador e acesse:
 ### Coleções e Documentos
 
 #### Users Collection
+
 ```typescript
 // Caminho: users/{userId}
 interface User {
@@ -367,24 +394,26 @@ interface User {
 ```
 
 #### Tracks Collection
+
 ```typescript
 // Caminho: tracks/{trackId}
 interface Track {
   id: string;
   title: string;
   genre: string;
-  createdBy: string;        // UID do usuário
+  createdBy: string; // UID do usuário
   createdAt: Timestamp;
-  audioUrl: string;         // URL do Firebase Storage
+  audioUrl: string; // URL do Firebase Storage
   fileName: string;
   fileSize: number;
-  duration?: number;        // Em segundos
+  duration?: number; // Em segundos
   mimeType: string;
-  playCount: number;        // Contador de reproduções
+  playCount: number; // Contador de reproduções
 }
 ```
 
 #### Comments Subcollection
+
 ```typescript
 // Caminho: tracks/{trackId}/comments/{commentId}
 interface Comment {
@@ -395,32 +424,34 @@ interface Comment {
   trackId: string;
   content: string;
   timestamp: Timestamp;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
 }
 ```
 
 #### Playlists Collection
+
 ```typescript
 // Caminho: playlists/{playlistId}
 interface Playlist {
   id: string;
   title: string;
   description?: string;
-  visibility: 'public' | 'private';
-  tracks: string[];         // Array de IDs das tracks
-  createdBy: string;        // UID do usuário
+  visibility: "public" | "private";
+  tracks: string[]; // Array de IDs das tracks
+  createdBy: string; // UID do usuário
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
 ```
 
 #### Activities Collection
+
 ```typescript
 // Caminho: atividades/{activityId}
 interface Activity {
   id: string;
   userId: string;
-  tipo: 'reproducao' | 'upload' | 'pausa' | 'pulo' | 'curtida';
+  tipo: "reproducao" | "upload" | "pausa" | "pulo" | "curtida";
   trackId?: string;
   detalhes?: any;
   timestamp: Timestamp;
@@ -432,8 +463,10 @@ interface Activity {
 ## 🚨 Erros Comuns e Soluções
 
 ### 1. Erro: "Firebase API key not found"
+
 **Problema**: Variáveis de ambiente não configuradas
 **Solução**:
+
 ```bash
 # Verificar se .env.local existe e tem as variáveis corretas
 cat .env.local
@@ -443,15 +476,19 @@ pnpm dev
 ```
 
 ### 2. Erro: "FirebaseError: Missing or insufficient permissions"
+
 **Problema**: Regras do Firestore muito restritivas ou usuário não autenticado
 **Solução**:
+
 - Fazer login na aplicação
 - Verificar se as regras foram implantadas corretamente
 - Verificar se o usuário tem permissão para a operação
 
 ### 3. Erro: "storage/unauthorized" no upload
+
 **Problema**: Regras do Storage não configuradas ou usuário sem permissão
 **Solução**:
+
 ```bash
 # Implantar regras do Storage
 firebase deploy --only storage:rules
@@ -461,8 +498,10 @@ firebase deploy --only storage:rules
 ```
 
 ### 4. Erro: "Firebase project not found"
+
 **Problema**: Projeto não configurado corretamente
 **Solução**:
+
 ```bash
 # Verificar se está no projeto correto
 firebase use --list
@@ -472,8 +511,10 @@ firebase use your-project-id
 ```
 
 ### 5. Erro de CORS no desenvolvimento
+
 **Problema**: Regras de CORS do Firebase
 **Solução**:
+
 - Verificar se domínio localhost está autorizado no Firebase Console
 - Verificar se as regras de Storage estão corretas
 
@@ -482,12 +523,14 @@ firebase use your-project-id
 ## 📋 Checklist de Configuração
 
 ### ✅ Pré-requisitos
+
 - [ ] Node.js 18+ instalado
 - [ ] pnpm instalado
 - [ ] Firebase CLI instalado
 - [ ] Conta Google ativa
 
 ### ✅ Firebase Console
+
 - [ ] Projeto Firebase criado
 - [ ] Authentication configurado (Email/Password)
 - [ ] Firestore Database criado (modo teste)
@@ -496,17 +539,20 @@ firebase use your-project-id
 - [ ] Credenciais copiadas
 
 ### ✅ Projeto Local
+
 - [ ] Repositório clonado
 - [ ] Dependências instaladas (`pnpm install`)
 - [ ] Arquivo `.env.local` criado com todas as variáveis
 - [ ] Firebase CLI logado (`firebase login`)
 
 ### ✅ Regras de Segurança
+
 - [ ] Regras do Firestore implantadas
 - [ ] Regras do Storage implantadas
 - [ ] Regras testadas e funcionando
 
 ### ✅ Teste Final
+
 - [ ] Aplicação iniciada (`pnpm dev`)
 - [ ] Página carrega em http://localhost:3000
 - [ ] Login funciona
@@ -519,6 +565,7 @@ firebase use your-project-id
 ## 📞 Suporte e Resolução de Problemas
 
 ### Logs Úteis
+
 ```bash
 # Verificar logs do Firebase
 firebase functions:log
@@ -532,6 +579,7 @@ firebase storage:rules:list
 ```
 
 ### Comandos de Debug
+
 ```bash
 # Limpar cache do Next.js
 rm -rf .next
@@ -545,6 +593,7 @@ firebase firestore:rules:list
 ```
 
 ### Recursos de Ajuda
+
 - **Documentação Firebase**: https://firebase.google.com/docs
 - **Next.js Docs**: https://nextjs.org/docs
 - **GitHub Issues**: Para problemas específicos do projeto
@@ -557,17 +606,20 @@ firebase firestore:rules:list
 Após a configuração completa:
 
 1. **Testar Funcionalidades**:
+
    - Criar conta de usuário
    - Fazer upload de música
    - Criar playlist
    - Testar comentários
 
 2. **Personalização**:
+
    - Ajustar cores no `tailwind.config.ts`
    - Modificar textos em `app/page.tsx`
    - Adicionar próprias músicas de teste
 
 3. **Deploy para Produção**:
+
    - Configurar Vercel ou Netlify
    - Atualizar regras para modo produção
    - Configurar domínio personalizado
@@ -581,20 +633,23 @@ Após a configuração completa:
 
 **🎵 Configuração completa! Seu ISPmedia está pronto para uso.**
 
-*Guia criado para garantir uma configuração suave e sem erros*
+_Guia criado para garantir uma configuração suave e sem erros_
 
 #### 3.3. Configurar Firestore Database
+
 1. Vá em **Firestore Database**
 2. Clique em "Criar banco de dados"
 3. Escolha modo de **teste** (para desenvolvimento)
 4. Selecione uma localização próxima
 
 #### 3.4. Configurar Storage
+
 1. Vá em **Storage**
 2. Clique em "Começar"
 3. Aceite as regras padrão (modo teste)
 
 #### 3.5. Obter Credenciais Web
+
 1. Vá em **Configurações do projeto** (ícone de engrenagem)
 2. Na aba **Geral**, role até "Seus apps"
 3. Clique em "Adicionar app" → Web (ícone </> )
@@ -602,6 +657,7 @@ Após a configuração completa:
 5. **Copie as credenciais do Firebase** (você precisará delas)
 
 #### 3.6. Configurar Service Account (API Routes)
+
 1. Vá em **Configurações do projeto** → **Contas de serviço**
 2. Clique em "Gerar nova chave privada"
 3. Baixe o arquivo JSON
@@ -610,12 +666,14 @@ Após a configuração completa:
 ### 4. Configurar Variáveis de Ambiente
 
 #### 4.1. Copiar arquivo de exemplo
+
 ```bash
 # Na pasta raiz, copie o arquivo de exemplo
 cp .env.example .env.local
 ```
 
 #### 4.2. Editar .env.local
+
 Edite `.env.local` com suas credenciais do Firebase:
 
 ```env
@@ -636,14 +694,17 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ## 🏃‍♂️ Executando o Projeto
 
 ### Desenvolvimento
+
 ```bash
 # Na pasta raiz
 pnpm dev
 ```
+
 🌐 Acesse: http://localhost:3000
 🔗 API: http://localhost:3000/api
 
 ### Verificar se está funcionando
+
 - Frontend: http://localhost:3000
 - API Health Check: http://localhost:3000/api/health
 
@@ -697,6 +758,7 @@ pnpm lint           # Linting do código
 ## 🎨 Tecnologias Utilizadas
 
 ### Full-Stack (Next.js)
+
 - **Next.js 15** (App Router + API Routes)
 - **React 19**
 - **TypeScript 5**
@@ -706,6 +768,7 @@ pnpm lint           # Linting do código
 - **Firebase SDK** (client-side autenticação e Firestore)
 
 ### Firebase Services
+
 - **Authentication** (login/cadastro)
 - **Firestore** (banco de dados NoSQL)
 - **Storage** (arquivos de áudio e imagens)
@@ -714,38 +777,47 @@ pnpm lint           # Linting do código
 ## 🛠️ API Endpoints
 
 ### Autenticação
+
 - `POST /api/auth/verify` - Verificar token
 
 ### Usuários
+
 - `GET /api/users/profile` - Obter perfil
 - `PUT /api/users/profile` - Atualizar perfil
 
 ### Músicas
+
 - `GET /api/songs` - Listar músicas
 - `POST /api/songs` - Upload de música (artistas)
 
 ### Playlists
+
 - `GET /api/playlists` - Listar playlists
 - `POST /api/playlists` - Criar playlist
 
 ### Artistas
+
 - `GET /api/artists` - Listar artistas
 
 ### Críticas
+
 - `GET /api/reviews` - Listar críticas
 - `POST /api/reviews` - Criar crítica
 
 ### Sistema
+
 - `GET /api/health` - Health check
 
 ## 🎭 Identidade Visual
 
 ### Cores Principais
+
 - **Primária:** `#FDC500` (Dourado ISPmedia)
 - **Fundo:** `#0F0F0F` (Preto profundo)
 - **Superfície:** Glassmorphism com `rgba(255, 255, 255, 0.05)`
 
 ### Design System
+
 - **Glassmorphism moderado** para cards e modais
 - **Animações fluidas** com Framer Motion
 - **Typography:** Inter (clean e moderno)
@@ -754,6 +826,7 @@ pnpm lint           # Linting do código
 ## 🚨 Solução de Problemas
 
 ### Erro: "Cannot find module"
+
 ```bash
 # Limpar cache e reinstalar
 rm -rf node_modules package-lock.json
@@ -761,16 +834,19 @@ pnpm install
 ```
 
 ### Erro: Firebase permissions
+
 - Verifique se as regras do Firestore estão em modo teste
 - Confirme se as credenciais estão corretas no .env.local
 
 ### Erro: Port already in use
+
 ```bash
 # Matar processo na porta
 npx kill-port 3000
 ```
 
 ### Build Error: TypeScript
+
 ```bash
 # Verificar tipos
 pnpm build
@@ -788,6 +864,7 @@ pnpm build
 ## 📞 Suporte
 
 Se encontrar problemas:
+
 1. Verifique se todas as dependências estão instaladas
 2. Confirme as configurações do Firebase
 3. Verifique os logs do console para erros específicos

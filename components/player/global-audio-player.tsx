@@ -24,14 +24,16 @@ import {
   ListPlus,
 } from "lucide-react";
 
-export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useState(false);
+export function GlobalAudioPlayer() {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [showAddToPlaylist, setShowAddToPlaylist] = useState(false);
   const [showPlayerMenu, setShowPlayerMenu] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);  const {
+  const menuRef = useRef<HTMLDivElement>(null);
+  const {
     currentTrack,
     isPlaying,
     currentTime,
@@ -175,7 +177,8 @@ export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useSt
                     />
                   ) : (
                     <div className="relative w-full h-full flex items-center justify-center">
-                      <Music className="h-6 w-6 sm:h-7 sm:w-7 text-primary-600 dark:text-primary-400" />                      {/* Audio visualizer overlay */}
+                      <Music className="h-6 w-6 sm:h-7 sm:w-7 text-primary-600 dark:text-primary-400" />{" "}
+                      {/* Audio visualizer overlay */}
                       <div className="absolute bottom-1 left-1 right-1">
                         <AudioVisualizer
                           isPlaying={isPlaying}
@@ -451,17 +454,17 @@ export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useSt
                   style={{ left: `${progressPercentage}%`, marginLeft: "-8px" }}
                 />
               </div>
-
               <div className="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 font-mono">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
-              </div>            </div>
-            
+              </div>{" "}
+            </div>
+
             {/* Audio Waves - Prominent display */}
             <div className="mb-8 flex justify-center">
               <AudioWaves isPlaying={isPlaying} className="px-4" />
             </div>
-            
+
             {/* Main Controls */}
             <div className="flex items-center justify-center gap-6 sm:gap-8 mb-6">
               {/* Shuffle */}
@@ -476,7 +479,8 @@ export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useSt
                 }`}
               >
                 <Shuffle className="h-6 w-6" />
-              </Button>              {/* Previous */}
+              </Button>{" "}
+              {/* Previous */}
               <Button
                 size="lg"
                 variant="ghost"
@@ -486,7 +490,6 @@ export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useSt
               >
                 <SkipBack className="h-7 w-7" fill="currentColor" />
               </Button>
-
               {/* Play/Pause */}
               <Button
                 size="lg"
@@ -504,7 +507,8 @@ export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useSt
                     fill="currentColor"
                   />
                 )}
-              </Button>              {/* Next */}
+              </Button>{" "}
+              {/* Next */}
               <Button
                 size="lg"
                 variant="ghost"
@@ -514,7 +518,6 @@ export function GlobalAudioPlayer() {  const [isExpanded, setIsExpanded] = useSt
               >
                 <SkipForward className="h-7 w-7" fill="currentColor" />
               </Button>
-
               {/* Repeat */}
               <Button
                 size="lg"
