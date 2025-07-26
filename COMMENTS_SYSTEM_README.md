@@ -3,6 +3,7 @@
 ## ✅ Implementação Concluída
 
 ### Backend
+
 - **API Route**: `/api/comments/route.ts`
   - `POST /api/comments` - Criar novo comentário
   - `GET /api/comments?trackId=xxx` - Buscar comentários de uma música
@@ -10,12 +11,14 @@
   - Armazenamento: `tracks/{trackId}/comments` no Firestore
 
 ### Frontend
+
 - **Hook**: `use-comments.ts` - Gerencia estado e operações de comentários
 - **Componente**: `TrackComments` - Interface para visualizar e adicionar comentários
 - **Modal**: `TrackDetailsModal` - Modal com tabs para detalhes e comentários
 - **Integração**: Botão "Detalhes" na lista de músicas do usuário
 
 ### Funcionalidades
+
 - ✅ Adicionar comentários em tempo real
 - ✅ Validação de entrada (mínimo 3 caracteres, máximo 500)
 - ✅ Contador de caracteres visual
@@ -26,12 +29,14 @@
 - ✅ Feedback visual para usuário
 
 ### Melhorias Implementadas
+
 - ❌ **Removido**: Botão "Repeat" da lista de tracks (pertence ao player)
 - ✅ **UI Atualizada**: Seguindo padrão de cores e design do projeto
 - ✅ **Validação Melhorada**: Mais rigorosa para prevenir comentários vazios
 - ✅ **Debug**: Logs adicionados para facilitar troubleshooting
 
 ### Como Usar
+
 1. Acesse a dashboard do usuário
 2. Clique em "Detalhes" em qualquer música
 3. Navegue para a tab "Comentários"
@@ -39,6 +44,7 @@
 5. Clique em "Comentar" para enviar
 
 ### Estrutura de Dados
+
 ```typescript
 interface Comment {
   id: string;
@@ -52,6 +58,7 @@ interface Comment {
 ```
 
 ### Padrão de UI Seguido
+
 - Cores: `primary-500`, `glass-*`, `text-*`, `border-*`
 - Bordas: `rounded-xl`
 - Efeitos: `backdrop-blur-sm`, `shadow-primary`
@@ -59,6 +66,7 @@ interface Comment {
 - Animações: `transition-all duration-200`
 
 ### Próximos Passos (Não Implementados)
+
 - [ ] Sistema de moderação de comentários
 - [ ] Notificações de novos comentários
 - [ ] Likes/dislikes em comentários

@@ -52,9 +52,11 @@ export function UserTrackList({
   onPlayTrack,
 }: UserTrackListProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [loading, setLoading] = useState(true);  const [deletingTrackId, setDeletingTrackId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [deletingTrackId, setDeletingTrackId] = useState<string | null>(null);
   const [editingTrack, setEditingTrack] = useState<Track | null>(null);
-  const [showEditModal, setShowEditModal] = useState(false);  const [detailsTrack, setDetailsTrack] = useState<Track | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [detailsTrack, setDetailsTrack] = useState<Track | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const { user } = useAuth();
@@ -162,7 +164,8 @@ export function UserTrackList({
     setEditingTrack(track);
     setShowEditModal(true);
     onEditTrack?.(track);
-  };  const handleTrackUpdated = (updatedTrack: Track) => {
+  };
+  const handleTrackUpdated = (updatedTrack: Track) => {
     setTracks((prev) =>
       prev.map((t) => (t.id === updatedTrack.id ? updatedTrack : t))
     );
@@ -278,7 +281,8 @@ export function UserTrackList({
               className="flex items-center gap-1 text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
             >
               <Play className="h-4 w-4" />
-              <span className="text-xs">Play</span>            </Button>
+              <span className="text-xs">Play</span>{" "}
+            </Button>
 
             <Button
               size="sm"
@@ -325,7 +329,8 @@ export function UserTrackList({
             {tracks.length} {tracks.length === 1 ? "track" : "tracks"} uploaded
           </p>
         </div>
-      )}      {/* Edit Track Modal */}
+      )}{" "}
+      {/* Edit Track Modal */}
       <EditTrackModal
         isOpen={showEditModal}
         onClose={() => {
@@ -335,7 +340,6 @@ export function UserTrackList({
         track={editingTrack}
         onTrackUpdated={handleTrackUpdated}
       />
-
       {/* Track Details Modal */}
       <TrackDetailsModal
         isOpen={showDetailsModal}

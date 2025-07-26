@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useComments, type Comment } from '@/hooks/use-comments';
-import { useAuth } from '@/contexts/auth-context';
-import { Send, MessageCircle, User } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useState } from "react";
+import { useComments, type Comment } from "@/hooks/use-comments";
+import { useAuth } from "@/contexts/auth-context";
+import { Send, MessageCircle, User } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface TrackCommentsProps {
   trackId: string;
   className?: string;
 }
 
-export function TrackComments({ trackId, className = '' }: TrackCommentsProps) {
+export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
   const { comments, loading, submitting, addComment } = useComments(trackId);
   const { user } = useAuth();
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [focused, setFocused] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const success = await addComment({ content: newComment });
     if (success) {
-      setNewComment('');
+      setNewComment("");
       setFocused(false);
     }
   };
@@ -31,36 +31,37 @@ export function TrackComments({ trackId, className = '' }: TrackCommentsProps) {
   const formatTimestamp = (timestamp: any) => {
     try {
       let date: Date;
-      
+
       if (timestamp?.toDate) {
         date = timestamp.toDate();
       } else if (timestamp instanceof Date) {
         date = timestamp;
-      } else if (typeof timestamp === 'string') {
+      } else if (typeof timestamp === "string") {
         date = new Date(timestamp);
       } else {
-        return 'Agora';
+        return "Agora";
       }
 
-      return formatDistanceToNow(date, { 
-        addSuffix: true, 
-        locale: ptBR 
+      return formatDistanceToNow(date, {
+        addSuffix: true,
+        locale: ptBR,
       });
     } catch (error) {
-      return 'Agora';
+      return "Agora";
     }
   };
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(n => n[0])
+      .split(" ")
+      .map((n) => n[0])
       .slice(0, 2)
-      .join('')
+      .join("")
       .toUpperCase();
   };
 
-  const isCommentValid = newComment.trim().length > 0 && newComment.length <= 500;
+  const isCommentValid =
+    newComment.trim().length > 0 && newComment.length <= 500;
   const characterCount = newComment.length;
   const maxLength = 500;
 
@@ -85,22 +86,24 @@ export function TrackComments({ trackId, className = '' }: TrackCommentsProps) {
               onBlur={() => setFocused(false)}
               placeholder="Adicione um comentário..."
               className={`w-full p-3 rounded-xl bg-glass-100 border transition-all duration-200 resize-none ${
-                focused 
-                  ? 'border-primary-500/50 bg-glass-200' 
-                  : 'border-border-light hover:border-border-medium'
+                focused
+                  ? "border-primary-500/50 bg-glass-200"
+                  : "border-border-light hover:border-border-medium"
               } text-text-primary placeholder-text-placeholder focus:outline-none focus:ring-2 focus:ring-primary-500/30 backdrop-blur-sm`}
               rows={focused ? 3 : 2}
               maxLength={maxLength}
             />
-            
+
             {/* Contador de caracteres */}
-            <div className={`absolute bottom-2 right-2 text-xs transition-colors ${
-              characterCount > maxLength * 0.8 
-                ? characterCount >= maxLength 
-                  ? 'text-error-500' 
-                  : 'text-warning-500'
-                : 'text-text-muted'
-            }`}>
+            <div
+              className={`absolute bottom-2 right-2 text-xs transition-colors ${
+                characterCount > maxLength * 0.8
+                  ? characterCount >= maxLength
+                    ? "text-error-500"
+                    : "text-warning-500"
+                  : "text-text-muted"
+              }`}
+            >
               {characterCount}/{maxLength}
             </div>
           </div>
@@ -109,24 +112,26 @@ export function TrackComments({ trackId, className = '' }: TrackCommentsProps) {
           <div className="flex items-center justify-between">
             <div className="text-xs text-text-muted">
               {newComment.trim().length === 0 && focused && (
-                <span className="text-error-500">O comentário não pode estar vazio</span>
+                <span className="text-error-500">
+                  O comentário não pode estar vazio
+                </span>
               )}
               {newComment.length > maxLength && (
                 <span className="text-error-500">Comentário muito longo</span>
               )}
             </div>
-            
+
             <button
               type="submit"
               disabled={!isCommentValid || submitting}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isCommentValid && !submitting
-                  ? 'bg-primary-500 hover:bg-primary-600 text-dark-900 shadow-primary'
-                  : 'bg-glass-200 text-text-disabled cursor-not-allowed border border-border-subtle'
+                  ? "bg-primary-500 hover:bg-primary-600 text-dark-900 shadow-primary"
+                  : "bg-glass-200 text-text-disabled cursor-not-allowed border border-border-subtle"
               }`}
             >
               <Send className="w-4 h-4" />
-              {submitting ? 'Enviando...' : 'Comentar'}
+              {submitting ? "Enviando..." : "Comentar"}
             </button>
           </div>
         </form>
@@ -145,9 +150,9 @@ export function TrackComments({ trackId, className = '' }: TrackCommentsProps) {
           </div>
         ) : (
           comments.map((comment) => (
-            <CommentItem 
-              key={comment.id} 
-              comment={comment} 
+            <CommentItem
+              key={comment.id}
+              comment={comment}
               formatTimestamp={formatTimestamp}
               getInitials={getInitials}
             />
@@ -164,7 +169,11 @@ interface CommentItemProps {
   getInitials: (name: string) => string;
 }
 
-function CommentItem({ comment, formatTimestamp, getInitials }: CommentItemProps) {
+function CommentItem({
+  comment,
+  formatTimestamp,
+  getInitials,
+}: CommentItemProps) {
   return (
     <div className="flex gap-3 p-3 rounded-xl bg-glass-100 border border-border-subtle hover:bg-glass-200 transition-all duration-200 backdrop-blur-sm">
       {/* Avatar */}
@@ -184,7 +193,7 @@ function CommentItem({ comment, formatTimestamp, getInitials }: CommentItemProps
             {formatTimestamp(comment.timestamp)}
           </span>
         </div>
-        
+
         <p className="text-sm text-text-paragraph leading-relaxed break-words">
           {comment.content}
         </p>
