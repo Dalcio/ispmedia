@@ -1,6 +1,7 @@
 import { storage, db } from "@/firebase/config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { atividadeService } from "./atividade-service";
 
 export interface UploadTrackParams {
   title: string;
@@ -197,7 +198,7 @@ export async function uploadTrack({
     };
 
     console.log("💾 Criando documento no Firestore:", trackData);
-    onProgress?.(90, "Criando entrada no banco de dados...");    // Salvar documento no Firestore
+    onProgress?.(90, "Criando entrada no banco de dados..."); // Salvar documento no Firestore
     let documentId: string;
     try {
       const docRef = await addDoc(collection(db, "tracks"), trackData);
@@ -236,21 +237,29 @@ export async function uploadTrack({
       console.log("🎵 Duração do áudio obtida:", duration);
     } catch (error) {
       console.warn("⚠️ Não foi possível obter duração do áudio:", error);
-    }
-
-    // Se conseguiu obter a duração, atualizar o documento
+    } // Se conseguiu obter a duração, atualizar o documento
     if (duration) {
       try {
         const { updateDoc, doc } = await import("firebase/firestore");
-        await updateDoc(doc(db, "tracks", "document-id"), { duration });
+        await updateDoc(doc(db, "tracks", documentId), { duration });
         console.log("✅ Duração atualizada no documento");
       } catch (error) {
         console.warn("⚠️ Não foi possível atualizar duração:", error);
       }
     }
-
     onProgress?.(100, "Música adicionada com sucesso!");
-    console.log("🎉 Upload completado com sucesso!");    // Retornar documento criado
+    console.log("🎉 Upload completado com sucesso!");
+
+    // Registrar atividade de upload
+    try {
+      await atividadeService.registrarUpload(userId, documentId);
+      console.log("✅ Atividade de upload registrada");
+    } catch (error) {
+      console.warn("⚠️ Não foi possível registrar atividade de upload:", error);
+      // Não falhar o upload por causa da atividade
+    }
+
+    // Retornar documento criado
     const finalTrackData: TrackDocument = {
       ...trackData,
       id: documentId,

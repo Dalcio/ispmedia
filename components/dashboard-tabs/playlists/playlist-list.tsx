@@ -161,14 +161,16 @@ export function PlaylistList({ className = "" }: PlaylistListProps) {
         </div>
         <h3 className="text-xl font-medium text-text-primary mb-3">
           Nenhuma playlist criada ainda.
-        </h3>        <p className="text-text-muted text-sm mb-6 max-w-sm mx-auto">
+        </h3>{" "}
+        <p className="text-text-muted text-sm mb-6 max-w-sm mx-auto">
           Organize suas músicas favoritas criando playlists personalizadas
-        </p>        <div className="space-y-3">
+        </p>{" "}
+        <div className="space-y-3">
           <Button
             onClick={() => {
-              console.log('🎵 Botão criar playlist clicado');
+              console.log("🎵 Botão criar playlist clicado");
               // Vamos disparar um evento para abrir o modal de criação
-              const event = new CustomEvent('openPlaylistModal');
+              const event = new CustomEvent("openPlaylistModal");
               window.dispatchEvent(event);
             }}
             className="inline-flex items-center gap-2 py-3 px-6 bg-glass-100 hover:bg-glass-200 backdrop-blur-sm border border-glass-200 rounded-xl text-text-primary font-semibold transition-all duration-200 hover:shadow-lg"
@@ -176,11 +178,11 @@ export function PlaylistList({ className = "" }: PlaylistListProps) {
             <Plus className="h-5 w-5" />
             Criar nova playlist
           </Button>
-          
+
           <Button
             onClick={() => {
-              console.log('🎵 Botão teste upload clicado');
-              const event = new CustomEvent('openUploadModal');
+              console.log("🎵 Botão teste upload clicado");
+              const event = new CustomEvent("openUploadModal");
               window.dispatchEvent(event);
             }}
             className="inline-flex items-center gap-2 py-3 px-6 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
@@ -211,7 +213,7 @@ export function PlaylistList({ className = "" }: PlaylistListProps) {
       {playlists.length > 0 && (
         <div className="text-center pt-2">
           <p className="text-xs text-text-muted">
-            {playlists.length}{" "}
+            {playlists.length}
             {playlists.length === 1 ? "playlist" : "playlists"}
           </p>
         </div>

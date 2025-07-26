@@ -2,24 +2,34 @@
 
 import { useState, useEffect } from "react";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
+import { useUploadModal as useUploadModalContext } from "@/contexts/upload-context";
 import { useUploadModal } from "@/hooks/use-upload-modal";
+import { useCommandPalette } from "@/hooks/use-command-palette";
 import {
   useDashboardShortcuts,
   useUploadShortcuts,
   useSearchShortcuts,
 } from "@/hooks/use-keyboard-shortcuts";
 import { useAuth } from "@/contexts/auth-context";
-import { UploadMusicModal } from "@/components/modals/upload-music-modal";
 import { PostUploadPlaylistSelector } from "@/components/modals/post-upload-playlist-selector";
 import { SearchModal } from "@/components/modals/search-modal";
+import { PlaylistModal } from "@/components/modals/playlist-modal";
+import { CommandPalette } from "@/components/modals/command-palette";
 
 export function GlobalKeyboardShortcuts() {
   console.log("🎵 GlobalKeyboardShortcuts renderizado");
 
   const { user } = useAuth();
   const { openDrawer } = useDashboardDrawer();
+  const { openUploadModal } = useUploadModalContext();
   const { isOpen, openModal, closeModal } = useUploadModal();
+  const {
+    isOpen: isCommandPaletteOpen,
+    openPalette,
+    closePalette,
+  } = useCommandPalette();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
 
   console.log("🎵 Upload modal state:", { isOpen });
 
@@ -36,7 +46,7 @@ export function GlobalKeyboardShortcuts() {
   }, enabled);
 
   useUploadShortcuts(() => {
-    if (enabled) openModal();
+    if (enabled) openUploadModal();
   }, enabled);
 
   useSearchShortcuts(() => {
@@ -56,12 +66,19 @@ export function GlobalKeyboardShortcuts() {
       console.log("🎵 Evento openUploadModal recebido");
       openModal();
     };
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
         event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement
       ) {
+        return;
+      }
+
+      // Atalho para o painel de comandos (Ctrl+K ou Cmd+K)
+      if (event.key === "k" && (event.ctrlKey || event.metaKey) && enabled) {
+        event.preventDefault();
+        console.log("🎵 Atalho Ctrl/Cmd+K pressionado");
+        openPalette();
         return;
       }
 
@@ -71,6 +88,10 @@ export function GlobalKeyboardShortcuts() {
         openModal();
       }
     };
+
+    window.addEventListener("openCommandPalette", () => {
+      openPalette();
+    });
 
     window.addEventListener(
       "openPostUploadSelector",
@@ -86,20 +107,64 @@ export function GlobalKeyboardShortcuts() {
       );
       window.removeEventListener("openUploadModal", handleOpenUpload);
       document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("openCommandPalette", () => {
+        openPalette();
+      });
     };
-  }, [openModal, enabled]);
+  }, [openUploadModal, enabled, openPalette]);
+  // Funções para o painel de comandos
+  const handleOpenUploadModal = () => {
+    openUploadModal();
+  };
 
+  const handleOpenPlaylistModal = () => {
+    setIsPlaylistModalOpen(true);
+  };
+
+  const handleOpenDashboard = () => {
+    openDrawer();
+  };
+
+  const handleOpenSearch = () => {
+    setIsSearchOpen(true);
+  };
+
+  const handleCloseAllModals = () => {
+    closeModal();
+    setIsSearchOpen(false);
+    setIsPlaylistModalOpen(false);
+    closePalette();
+  };
+
+  const handleOpenProfile = () => {
+    // Aqui você pode implementar a navegação para o perfil
+    // Por exemplo, usando router.push('/profile') se estiver usando Next.js router
+    console.log("Navegar para perfil");
+  };
   return (
     <>
-      {/* Modal de Upload integrado com o hook */}
-      <UploadMusicModal isOpen={isOpen} onClose={closeModal} />
-
       {/* Modal de Busca */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
       />
-
+      {/* Modal de Playlist */}
+      <PlaylistModal
+        isOpen={isPlaylistModalOpen}
+        onClose={() => setIsPlaylistModalOpen(false)}
+        mode="create"
+      />
+      {/* Painel de Comandos */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={closePalette}
+        onOpenUploadModal={handleOpenUploadModal}
+        onOpenPlaylistModal={handleOpenPlaylistModal}
+        onOpenDashboard={handleOpenDashboard}
+        onOpenSearch={handleOpenSearch}
+        onCloseAllModals={handleCloseAllModals}
+        onOpenProfile={handleOpenProfile}
+      />
       {/* Modal de seleção de playlist pós-upload */}
       {showPostUploadSelector && uploadedTrackData && (
         <PostUploadPlaylistSelector

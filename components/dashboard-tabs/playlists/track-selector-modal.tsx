@@ -1,27 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { collection, query, where, onSnapshot, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { useState, useEffect, useMemo } from "react";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/firebase/config";
-import { useAuth } from "@/contexts/auth-context";
+import { useTracks } from "@/contexts/tracks-context";
 import { useToast } from "@/hooks/use-toast";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Music, Plus, Search } from "lucide-react";
-
-interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  genre: string;
-  audioUrl: string;
-  fileName: string;
-  fileSize: number;
-  duration?: number;
-  createdAt: any;
-  mimeType: string;
-}
 
 interface TrackSelectorModalProps {
   isOpen: boolean;
@@ -36,63 +23,50 @@ export function TrackSelectorModal({
   onClose,
   playlistId,
   playlistTitle,
-  existingTrackIds
+  existingTrackIds,
 }: TrackSelectorModalProps) {
-  const { user } = useAuth();
+  const { tracks: allTracks, loading } = useTracks();
   const { success, error: showError } = useToast();
-  
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
-  const [loading, setLoading] = useState(true);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);
 
+  // Reset search and selection when modal opens/closes
   useEffect(() => {
-    if (!user || !isOpen) {
-      setLoading(false);
-      return;
+    if (!isOpen) {
+      setSearchTerm("");
+      setSelectedTracks([]);
+    }
+  }, [isOpen]); // Filter tracks that are not already in the playlist
+  const availableTracks = useMemo(() => {
+    const filtered = allTracks.filter(
+      (track) => !existingTrackIds.includes(track.id)
+    );
+    return filtered;
+  }, [allTracks, existingTrackIds?.length, existingTrackIds?.join(",")]);
+
+  // Filter tracks based on search term
+  const filteredTracks = useMemo(() => {
+    if (searchTerm.trim() === "") {
+      return availableTracks;
     }
 
-    const tracksQuery = query(
-      collection(db, "tracks"),
-      where("createdBy", "==", user.uid)
+    const filtered = availableTracks.filter(
+      (track) =>
+        track.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (track.artist &&
+          track.artist.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        track.genre.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const unsubscribe = onSnapshot(tracksQuery, (snapshot) => {
-      const tracksData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Track[];
-
-      // Filtrar tracks que já estão na playlist
-      const availableTracks = tracksData.filter(track => !existingTrackIds.includes(track.id));
-      
-      setTracks(availableTracks);
-      setFilteredTracks(availableTracks);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user, isOpen, existingTrackIds]);
-
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredTracks(tracks);
-    } else {
-      const filtered = tracks.filter(track =>
-        track.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        track.artist.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        track.genre.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredTracks(filtered);
-    }
-  }, [searchTerm, tracks]);
+    return filtered;
+  }, [availableTracks, searchTerm]);
 
   const handleToggleTrack = (trackId: string) => {
-    setSelectedTracks(prev => 
-      prev.includes(trackId) 
-        ? prev.filter(id => id !== trackId)
+    setSelectedTracks((prev) =>
+      prev.includes(trackId)
+        ? prev.filter((id) => id !== trackId)
         : [...prev, trackId]
     );
   };
@@ -108,10 +82,12 @@ export function TrackSelectorModal({
       const playlistRef = doc(db, "playlists", playlistId);
       await updateDoc(playlistRef, {
         tracks: arrayUnion(...selectedTracks),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
 
-      success(`${selectedTracks.length} música(s) adicionada(s) à playlist "${playlistTitle}"`);
+      success(
+        `${selectedTracks.length} música(s) adicionada(s) à playlist "${playlistTitle}"`
+      );
       onClose();
     } catch (error) {
       console.error("Error adding tracks to playlist:", error);
@@ -122,13 +98,14 @@ export function TrackSelectorModal({
   };
 
   const formatDuration = (seconds: number) => {
-    if (!seconds || !isFinite(seconds)) return '0:00';
+    if (!seconds || !isFinite(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  return (    <Modal
+  return (
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
       title={`Adicionar músicas à "${playlistTitle}"`}
@@ -144,13 +121,15 @@ export function TrackSelectorModal({
             className="pl-10"
           />
         </div>
-
         {/* Lista de músicas */}
         <div className="max-h-96 overflow-y-auto space-y-2">
           {loading ? (
             <div className="space-y-3">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
+                <div
+                  key={i}
+                  className="flex items-center gap-3 p-3 animate-pulse"
+                >
                   <div className="w-10 h-10 bg-glass-200 rounded-lg" />
                   <div className="flex-1">
                     <div className="h-4 bg-glass-200 rounded w-3/4 mb-1" />
@@ -162,9 +141,19 @@ export function TrackSelectorModal({
           ) : filteredTracks.length === 0 ? (
             <div className="text-center py-8">
               <Music className="w-12 h-12 mx-auto mb-4 text-text-muted" />
-              <p className="text-text-muted">
-                {searchTerm ? "Nenhuma música encontrada" : "Todas as suas músicas já estão nesta playlist"}
+              <p className="text-text-muted mb-2">
+                {searchTerm
+                  ? `Nenhuma música encontrada para "${searchTerm}"`
+                  : availableTracks.length === 0
+                  ? "Você ainda não tem músicas enviadas"
+                  : "Todas as suas músicas já estão nesta playlist"}
               </p>
+              {availableTracks.length === 0 && allTracks.length === 0 && (
+                <p className="text-text-muted text-sm">
+                  Envie algumas músicas primeiro para poder adicioná-las às
+                  playlists
+                </p>
+              )}
             </div>
           ) : (
             filteredTracks.map((track) => (
@@ -180,27 +169,29 @@ export function TrackSelectorModal({
                 <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Music className="h-5 w-5 text-primary-500" />
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-text-primary truncate">
                     {track.title}
                   </h4>
                   <p className="text-sm text-text-muted truncate">
-                    {track.artist} • {track.genre}
+                    {track.artist || "Artista"} • {track.genre}
                   </p>
                 </div>
-                
+
                 {track.duration && (
                   <span className="text-xs text-text-muted">
                     {formatDuration(track.duration)}
                   </span>
                 )}
-                
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                  selectedTracks.includes(track.id)
-                    ? "bg-primary-500 border-primary-500"
-                    : "border-glass-300"
-                }`}>
+
+                <div
+                  className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                    selectedTracks.includes(track.id)
+                      ? "bg-primary-500 border-primary-500"
+                      : "border-glass-300"
+                  }`}
+                >
                   {selectedTracks.includes(track.id) && (
                     <Plus className="h-3 w-3 text-white" />
                   )}
@@ -209,13 +200,29 @@ export function TrackSelectorModal({
             ))
           )}
         </div>
-
+        {/* Debug info - only in development */}
+        {process.env.NODE_ENV === "development" && (
+          <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded space-y-1">
+            <div>
+              Debug: Total tracks: {allTracks.length} | Available:
+              {availableTracks.length} | Filtered: {filteredTracks.length} |
+              Loading: {loading.toString()}
+            </div>
+            <div>All track IDs: {allTracks.map((t) => t.id).join(", ")}</div>
+            <div>Existing track IDs: {existingTrackIds.join(", ")}</div>
+            {allTracks.length > 0 && (
+              <div>
+                Sample track: {allTracks[0].title} (ID: {allTracks[0].id})
+              </div>
+            )}
+          </div>
+        )}
         {/* Ações */}
         <div className="flex items-center justify-between pt-4 border-t border-glass-200">
           <p className="text-sm text-text-muted">
             {selectedTracks.length} música(s) selecionada(s)
           </p>
-          
+
           <div className="flex gap-3">
             <Button variant="ghost" onClick={onClose}>
               Cancelar
@@ -225,7 +232,13 @@ export function TrackSelectorModal({
               disabled={selectedTracks.length === 0 || adding}
               className="bg-primary-500 hover:bg-primary-600 text-white"
             >
-              {adding ? "Adicionando..." : `Adicionar ${selectedTracks.length > 0 ? `(${selectedTracks.length})` : ""}`}
+              {adding
+                ? "Adicionando..."
+                : `Adicionar ${
+                    selectedTracks.length > 0
+                      ? `(${selectedTracks.length})`
+                      : ""
+                  }`}
             </Button>
           </div>
         </div>

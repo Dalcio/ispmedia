@@ -8,6 +8,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { UserTrackList } from "@/components/drawers/UserTrackList";
 import { PlaylistSection } from "@/components/dashboard-tabs/playlists";
+import { ProfileSection } from "@/components/dashboard-tabs/profile";
+import { ActivitySection } from "@/components/dashboard-tabs/activity";
 import {
   X,
   Music,
@@ -16,6 +18,7 @@ import {
   Settings,
   Upload,
   LogOut,
+  Activity,
 } from "lucide-react";
 
 interface DashboardDrawerProps {
@@ -45,11 +48,12 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const drawer = document.getElementById("dashboard-drawer");
-      
+
       // Don't close if clicking on a modal or other overlay
-      const isModalContent = target.closest('[role="dialog"]') || 
-                            target.closest('.modal-content') ||
-                            target.closest('[data-modal]');
+      const isModalContent =
+        target.closest('[role="dialog"]') ||
+        target.closest(".modal-content") ||
+        target.closest("[data-modal]");
 
       if (drawer && !drawer.contains(target) && !isModalContent) {
         closeDrawer();
@@ -72,7 +76,6 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-
   const navigationItems = [
     {
       id: "tracks" as const,
@@ -87,6 +90,12 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       description: "Organize suas playlists",
     },
     {
+      id: "activity" as const,
+      label: "Atividades",
+      icon: Activity,
+      description: "Histórico de reprodução",
+    },
+    {
       id: "profile" as const,
       label: "Perfil",
       icon: User,
@@ -98,22 +107,17 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       icon: Settings,
       description: "Preferências da conta",
     },
-  ];  const renderContent = () => {
+  ];
+  const renderContent = () => {
     switch (activeSection) {
       case "tracks":
         return <UserTrackList />;
       case "playlists":
         return <PlaylistSection />;
+      case "activity":
+        return <ActivitySection />;
       case "profile":
-        return (
-          <div className="text-center py-8">
-            <User className="w-12 h-12 mx-auto mb-4 text-neutral-400" />
-            <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-              Perfil do Usuário
-            </h3>
-            <p className="text-neutral-500">Seção em desenvolvimento...</p>
-          </div>
-        );
+        return <ProfileSection />;
       case "settings":
         return (
           <div className="text-center py-8">
@@ -166,12 +170,32 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
           >
             <X className="w-5 h-5" />
           </Button>
-        </div>
-
+        </div>{" "}
         {/* Navigation */}
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
-          <div className="grid grid-cols-2 gap-2">
-            {navigationItems.map((item) => {
+          <div className="grid grid-cols-3 gap-2">
+            {navigationItems.slice(0, 3).map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 border border-primary-200 dark:border-primary-700"
+                      : "bg-neutral-50 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-transparent"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-xs font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            {navigationItems.slice(3).map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
 
@@ -192,16 +216,16 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
             })}
           </div>
         </div>
-
         {/* Quick Actions */}
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
           <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">
             Ações Rápidas
           </h3>
-          <div className="space-y-2">            <Button
+          <div className="space-y-2">
+            <Button
               onClick={() => {
-                console.log('🎵 Botão upload clicado no dashboard');
-                const event = new CustomEvent('openUploadModal');
+                console.log("🎵 Botão upload clicado no dashboard");
+                const event = new CustomEvent("openUploadModal");
                 window.dispatchEvent(event);
                 closeDrawer();
               }}
@@ -212,25 +236,8 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
             </Button>
           </div>
         </div>
-
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">{renderContent()}</div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
-          {" "}
-          <Button
-            onClick={() => {
-              signOut();
-              closeDrawer();
-            }}
-            variant="ghost"
-            className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
-          >
-            <LogOut className="w-4 h-4" />
-            Sair da Conta
-          </Button>
-        </div>
       </div>
     </>,
     document.body

@@ -49,13 +49,16 @@ interface UserTrackListProps {
 export function UserTrackList({
   onEditTrack,
   onPlayTrack,
-}: UserTrackListProps) {  const [tracks, setTracks] = useState<Track[]>([]);
+}: UserTrackListProps) {
+  const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingTrackId, setDeletingTrackId] = useState<string | null>(null);
   const [editingTrack, setEditingTrack] = useState<Track | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [repeatingTracks, setRepeatingTracks] = useState<Set<string>>(new Set());
-  
+  const [repeatingTracks, setRepeatingTracks] = useState<Set<string>>(
+    new Set()
+  );
+
   const { user } = useAuth();
   const toast = useToast();
   const { playTrack } = useGlobalAudio();
@@ -103,11 +106,18 @@ export function UserTrackList({
         console.log(`Loaded ${userTracks.length} tracks for user ${user.uid}`);
         setTracks(userTracks);
         setLoading(false);
-      },      (error) => {
-        console.error("Error loading tracks:", error);        // Only show error toast for actual errors, not for empty results
+      },
+      (error) => {
+        console.error("Error loading tracks:", error); // Only show error toast for actual errors, not for empty results
         if (error.code === "failed-precondition") {
-          toast.error("Database indexing in progress. Please wait a few minutes and refresh.");
-        } else if (error.code !== 'permission-denied' && error.message && !error.message.includes('No such document')) {
+          toast.error(
+            "Database indexing in progress. Please wait a few minutes and refresh."
+          );
+        } else if (
+          error.code !== "permission-denied" &&
+          error.message &&
+          !error.message.includes("No such document")
+        ) {
           toast.error("Failed to load your music tracks");
         }
         setLoading(false);
@@ -134,7 +144,7 @@ export function UserTrackList({
       await deleteObject(storageRef);
 
       // Deletar documento do Firestore
-      await deleteDoc(doc(db, "tracks", track.id));      // Update local list
+      await deleteDoc(doc(db, "tracks", track.id)); // Update local list
       setTracks((prev) => prev.filter((t) => t.id !== track.id));
 
       toast.success(`"${track.title}" was successfully removed`);
@@ -143,10 +153,10 @@ export function UserTrackList({
       toast.error("Failed to delete track. Please try again.");
     } finally {
       setDeletingTrackId(null);
-    }  };
-
+    }
+  };
   const handlePlayTrack = (track: Track) => {
-    playTrack(track);
+    playTrack(track, tracks, "Minhas Músicas");
     onPlayTrack?.(track);
   };
 
@@ -156,11 +166,13 @@ export function UserTrackList({
     onEditTrack?.(track);
   };
   const handleTrackUpdated = (updatedTrack: Track) => {
-    setTracks(prev => prev.map(t => t.id === updatedTrack.id ? updatedTrack : t));
+    setTracks((prev) =>
+      prev.map((t) => (t.id === updatedTrack.id ? updatedTrack : t))
+    );
   };
 
   const handleToggleRepeat = (trackId: string) => {
-    setRepeatingTracks(prev => {
+    setRepeatingTracks((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(trackId)) {
         newSet.delete(trackId);
@@ -212,7 +224,8 @@ export function UserTrackList({
       <div className="text-center py-8">
         <div className="w-16 h-16 bg-glass-200 rounded-full flex items-center justify-center mx-auto mb-4">
           <Music className="h-8 w-8 text-text-muted" />
-        </div>        <h3 className="text-lg font-medium text-text-primary mb-2">
+        </div>
+        <h3 className="text-lg font-medium text-text-primary mb-2">
           No tracks uploaded
         </h3>
         <p className="text-text-muted text-sm mb-4">
@@ -260,7 +273,8 @@ export function UserTrackList({
                 <span className="truncate">{track.fileName}</span>
               </div>
             </div>
-          </div>          {/* Ações */}
+          </div>
+          {/* Ações */}
           <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Button
               size="sm"
@@ -278,13 +292,13 @@ export function UserTrackList({
               onClick={() => handleToggleRepeat(track.id)}
               className={`flex items-center gap-1 transition-all duration-200 ${
                 repeatingTracks.has(track.id)
-                  ? 'text-primary-500 bg-primary-500/10 hover:bg-primary-500/20'
-                  : 'text-text-muted hover:text-primary-500 hover:bg-primary-500/10'
+                  ? "text-primary-500 bg-primary-500/10 hover:bg-primary-500/20"
+                  : "text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
               }`}
             >
               <Repeat className="h-4 w-4" />
               <span className="text-xs">
-                {repeatingTracks.has(track.id) ? 'Repeating' : 'Repeat'}
+                {repeatingTracks.has(track.id) ? "Repeating" : "Repeat"}
               </span>
             </Button>
 
@@ -316,14 +330,14 @@ export function UserTrackList({
             </Button>
           </div>
         </div>
-      ))}      {tracks.length > 0 && (
+      ))}
+      {tracks.length > 0 && (
         <div className="text-center pt-2">
           <p className="text-xs text-text-muted">
             {tracks.length} {tracks.length === 1 ? "track" : "tracks"} uploaded
           </p>
         </div>
       )}
-
       {/* Edit Track Modal */}
       <EditTrackModal
         isOpen={showEditModal}
