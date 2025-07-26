@@ -2,10 +2,11 @@
 
 import { UserAvatarButton } from "@/components/layout/user-avatar-button";
 import { Button } from "@/components/ui/button";
-import { useUploadModal } from "@/hooks/use-upload-modal";
+import { useUploadModal } from "@/contexts/upload-context";
 import { useCommandPalette } from "@/hooks/use-command-palette";
+import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
 import { useAuth } from "@/contexts/auth-context";
-import { Music, Upload, BarChart3 } from "lucide-react";
+import { Music, Upload, BarChart3, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
 interface HeaderProps {
@@ -14,8 +15,9 @@ interface HeaderProps {
 
 export function Header({ className = "" }: HeaderProps) {
   const { user } = useAuth();
-  const { openModalViaEvent } = useUploadModal();
+  const { openUploadModal } = useUploadModal();
   const { openCommandPalette: openPalette } = useCommandPalette();
+  const { openDrawer } = useDashboardDrawer();
 
   return (
     <>
@@ -45,20 +47,40 @@ export function Header({ className = "" }: HeaderProps) {
                   Diagramas
                 </Link>
               </nav>
-            </div>
+            </div>{" "}
             {/* Actions */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {user ? (
                 <>
+                  {/* Mobile Dashboard Button */}
+                  <Button
+                    onClick={() => openDrawer("tracks")}
+                    size="sm"
+                    variant="ghost"
+                    className="sm:hidden inline-flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                  </Button>
+
                   {/* Quick Actions */}
                   <div className="hidden sm:flex items-center gap-2">
+                    {" "}
                     <Button
-                      onClick={openModalViaEvent}
+                      onClick={() => openUploadModal()}
                       size="sm"
                       className="inline-flex items-center gap-2"
                     >
                       <Upload className="w-4 h-4" />
                       Upload
+                    </Button>
+                    <Button
+                      onClick={() => openDrawer("tracks")}
+                      size="sm"
+                      variant="ghost"
+                      className="inline-flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Dashboard
                     </Button>
                   </div>
                   {/* User Avatar with Dropdown */}

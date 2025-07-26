@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Music, Upload, X, FileAudio } from "lucide-react";
 interface UploadMusicModalProps {
   isOpen: boolean;
   onClose: () => void;
+  preSelectedFile?: File | null;
 }
 
 interface FormData {
@@ -61,7 +62,11 @@ const MUSIC_GENRES = [
   "Outro",
 ];
 
-export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
+export function UploadMusicModal({
+  isOpen,
+  onClose,
+  preSelectedFile,
+}: UploadMusicModalProps) {
   console.log("🎵 UploadMusicModal renderizado, isOpen:", isOpen);
 
   const [formData, setFormData] = useState<FormData>({
@@ -75,10 +80,21 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
     status: "idle",
     message: "",
   });
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const toast = useToast();
+
+  // Handle pre-selected file
+  useEffect(() => {
+    if (preSelectedFile && isOpen) {
+      console.log("🎵 Pre-selected file:", preSelectedFile.name);
+      setFormData((prev) => ({ ...prev, audioFile: preSelectedFile }));
+      setErrors((prev) => ({ ...prev, audioFile: "" }));
+    }
+  }, [preSelectedFile, isOpen]);
   const resetForm = () => {
     setFormData({
       title: "",
@@ -137,26 +153,86 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const allowedTypes = ["audio/mpeg", "audio/wav", "audio/mp3"];
-      const fileType = file.type;
+      processFile(file);
+    }
+  };
 
-      if (
-        !allowedTypes.includes(fileType) &&
-        !file.name.toLowerCase().endsWith(".mp3")
-      ) {
-        setErrors((prev) => ({
-          ...prev,
-          audioFile: "Apenas arquivos MP3 e WAV são permitidos",
-        }));
-        return;
+  const processFile = (file: File) => {
+    const allowedTypes = ["audio/mpeg", "audio/wav", "audio/mp3"];
+    const fileType = file.type;
+
+    if (
+      !allowedTypes.includes(fileType) &&
+      !file.name.toLowerCase().endsWith(".mp3")
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        audioFile: "Apenas arquivos MP3 e WAV são permitidos",
+      }));
+      return;
+    }
+
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      setErrors((prev) => ({
+        ...prev,
+        audioFile: "Arquivo deve ter no máximo 50MB",
+      }));
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, audioFile: file }));
+    setErrors((prev) => ({ ...prev, audioFile: "" }));
+  };
+  // Drag and drop handlers with improved event handling
+  const dragCounter = useRef(0);
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isUploading) {
+      dragCounter.current++;
+      if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+        setIsDragOver(true);
       }
+    }
+  };
 
-      setFormData((prev) => ({ ...prev, audioFile: file }));
-      setErrors((prev) => ({ ...prev, audioFile: "" }));
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isUploading) {
+      dragCounter.current--;
+      if (dragCounter.current === 0) {
+        setIsDragOver(false);
+      }
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = "copy";
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    dragCounter.current = 0;
+    setIsDragOver(false);
+
+    if (isUploading) return;
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      processFile(files[0]);
     }
   };
 
@@ -289,11 +365,18 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
       toast.error(errorMessage);
     }
   };
-
   const isUploading =
     uploadProgress.status === "uploading" ||
     uploadProgress.status === "processing";
   const isSuccess = uploadProgress.status === "success";
+
+  // Reset drag counter when component unmounts or when uploading starts
+  useEffect(() => {
+    if (isUploading) {
+      dragCounter.current = 0;
+      setIsDragOver(false);
+    }
+  }, [isUploading]);
 
   return (
     <Modal
@@ -388,15 +471,21 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
               onChange={handleFileChange}
               disabled={isUploading}
               className="hidden"
-            />
-
+            />{" "}
             <div
+              ref={dropZoneRef}
               onClick={() => !isUploading && fileInputRef.current?.click()}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
               className={`
-                w-full border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200 cursor-pointer
+                w-full border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200 cursor-pointer relative
                 ${
                   formData.audioFile
                     ? "border-primary-500 bg-primary-500/5"
+                    : isDragOver
+                    ? "border-primary-400 bg-primary-400/10 scale-[1.02]"
                     : "border-border-medium hover:border-primary-500/50 bg-glass-100"
                 }
                 ${errors.audioFile ? "border-error-500 bg-error-500/5" : ""}
@@ -407,8 +496,26 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
                 }
               `}
             >
+              {/* Invisible drag overlay that covers the entire area */}
+              <div
+                className="absolute inset-0 z-10"
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                style={{
+                  pointerEvents:
+                    isDragOver || !formData.audioFile ? "all" : "none",
+                }}
+              />
+
+              {/* Drag overlay visual feedback */}
+              {isDragOver && !formData.audioFile && (
+                <div className="absolute inset-2 border-2 border-dashed border-primary-400/50 rounded-lg animate-pulse pointer-events-none z-20" />
+              )}
+
               {formData.audioFile ? (
-                <div className="space-y-3">
+                <div className="space-y-3 relative z-0">
                   <div className="flex items-center justify-center">
                     <FileAudio className="h-12 w-12 text-primary-500" />
                   </div>
@@ -432,7 +539,7 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
                           fileInputRef.current.value = "";
                         }
                       }}
-                      className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
+                      className="text-text-muted hover:text-error-500 hover:bg-error-500/10 relative z-30"
                     >
                       <X className="h-4 w-4 mr-1" />
                       Remover
@@ -440,13 +547,23 @@ export function UploadMusicModal({ isOpen, onClose }: UploadMusicModalProps) {
                   )}
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 relative z-0">
                   <div className="flex items-center justify-center">
-                    <Upload className="h-12 w-12 text-text-muted" />
+                    <Upload
+                      className={`h-12 w-12 transition-colors duration-200 ${
+                        isDragOver ? "text-primary-400" : "text-text-muted"
+                      }`}
+                    />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-text-primary font-medium">
-                      Clique para selecionar um arquivo
+                    <p
+                      className={`font-medium transition-colors duration-200 ${
+                        isDragOver ? "text-primary-400" : "text-text-primary"
+                      }`}
+                    >
+                      {isDragOver
+                        ? "Solte o arquivo aqui"
+                        : "Clique para selecionar ou arraste um arquivo"}
                     </p>
                     <p className="text-sm text-text-muted">
                       MP3 ou WAV • Máximo 50MB

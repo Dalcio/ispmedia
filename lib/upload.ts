@@ -1,6 +1,7 @@
 import { storage, db } from "@/firebase/config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { atividadeService } from "./atividade-service";
 
 export interface UploadTrackParams {
   title: string;
@@ -246,9 +247,19 @@ export async function uploadTrack({
         console.warn("⚠️ Não foi possível atualizar duração:", error);
       }
     }
-
     onProgress?.(100, "Música adicionada com sucesso!");
-    console.log("🎉 Upload completado com sucesso!"); // Retornar documento criado
+    console.log("🎉 Upload completado com sucesso!");
+
+    // Registrar atividade de upload
+    try {
+      await atividadeService.registrarUpload(userId, documentId);
+      console.log("✅ Atividade de upload registrada");
+    } catch (error) {
+      console.warn("⚠️ Não foi possível registrar atividade de upload:", error);
+      // Não falhar o upload por causa da atividade
+    }
+
+    // Retornar documento criado
     const finalTrackData: TrackDocument = {
       ...trackData,
       id: documentId,

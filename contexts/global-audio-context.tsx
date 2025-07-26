@@ -8,7 +8,10 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+
 import { incrementPlayCount } from "@/lib/track-stats";
+import { useAtividade } from "@/hooks/use-atividade";
+import { useAuth } from "@/contexts/auth-context";
 
 interface Track {
   id: string;
@@ -67,6 +70,9 @@ const GlobalAudioContext = createContext<GlobalAudioContextType | undefined>(
 );
 
 export function GlobalAudioProvider({ children }: { children: ReactNode }) {
+  // Activity and Auth hooks
+  const { user } = useAuth();
+  const { registrarReproducao, registrarPausa, registrarPulo } = useAtividade();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
@@ -161,6 +167,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
 
     // Increment play count when track starts playing
     incrementPlayCount(track.id);
+    // Register activity: play
+    if (user) {
+      registrarReproducao(user.uid, track.id).catch(() => {});
+    }
   };
 
   const playNext = () => {
@@ -168,6 +178,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       const nextTrack = currentPlaylist[currentTrackIndex + 1];
       setCurrentTrackIndex(currentTrackIndex + 1);
       playTrackDirectly(nextTrack);
+      // Register activity: skip (pulo)
+      if (user && currentTrack) {
+        registrarPulo(user.uid, currentTrack.id).catch(() => {});
+      }
     }
   };
 
@@ -176,6 +190,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       const prevTrack = currentPlaylist[currentTrackIndex - 1];
       setCurrentTrackIndex(currentTrackIndex - 1);
       playTrackDirectly(prevTrack);
+      // Register activity: skip (pulo)
+      if (user && currentTrack) {
+        registrarPulo(user.uid, currentTrack.id).catch(() => {});
+      }
     }
   };
   const playTrackDirectly = (track: Track) => {
@@ -198,11 +216,19 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
 
     // Increment play count when track starts playing
     incrementPlayCount(track.id);
+    // Register activity: play
+    if (user) {
+      registrarReproducao(user.uid, track.id).catch(() => {});
+    }
   };
 
   const pause = () => {
     if (audioRef.current) {
       audioRef.current.pause();
+      // Register activity: pause
+      if (user && currentTrack) {
+        registrarPausa(user.uid, currentTrack.id).catch(() => {});
+      }
     }
   };
 

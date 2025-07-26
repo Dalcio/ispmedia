@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
+import { useUploadModal as useUploadModalContext } from "@/contexts/upload-context";
 import { useUploadModal } from "@/hooks/use-upload-modal";
 import { useCommandPalette } from "@/hooks/use-command-palette";
 import {
@@ -10,7 +11,6 @@ import {
   useSearchShortcuts,
 } from "@/hooks/use-keyboard-shortcuts";
 import { useAuth } from "@/contexts/auth-context";
-import { UploadMusicModal } from "@/components/modals/upload-music-modal";
 import { PostUploadPlaylistSelector } from "@/components/modals/post-upload-playlist-selector";
 import { SearchModal } from "@/components/modals/search-modal";
 import { PlaylistModal } from "@/components/modals/playlist-modal";
@@ -21,6 +21,7 @@ export function GlobalKeyboardShortcuts() {
 
   const { user } = useAuth();
   const { openDrawer } = useDashboardDrawer();
+  const { openUploadModal } = useUploadModalContext();
   const { isOpen, openModal, closeModal } = useUploadModal();
   const {
     isOpen: isCommandPaletteOpen,
@@ -45,7 +46,7 @@ export function GlobalKeyboardShortcuts() {
   }, enabled);
 
   useUploadShortcuts(() => {
-    if (enabled) openModal();
+    if (enabled) openUploadModal();
   }, enabled);
 
   useSearchShortcuts(() => {
@@ -110,11 +111,10 @@ export function GlobalKeyboardShortcuts() {
         openPalette();
       });
     };
-  }, [openModal, enabled, openPalette]);
-
+  }, [openUploadModal, enabled, openPalette]);
   // Funções para o painel de comandos
   const handleOpenUploadModal = () => {
-    openModal();
+    openUploadModal();
   };
 
   const handleOpenPlaylistModal = () => {
@@ -141,11 +141,8 @@ export function GlobalKeyboardShortcuts() {
     // Por exemplo, usando router.push('/profile') se estiver usando Next.js router
     console.log("Navegar para perfil");
   };
-
   return (
     <>
-      {/* Modal de Upload integrado com o hook */}
-      <UploadMusicModal isOpen={isOpen} onClose={closeModal} />
       {/* Modal de Busca */}
       <SearchModal
         isOpen={isSearchOpen}

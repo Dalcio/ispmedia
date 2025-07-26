@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { UserTrackList } from "@/components/drawers/UserTrackList";
 import { PlaylistSection } from "@/components/dashboard-tabs/playlists";
 import { ProfileSection } from "@/components/dashboard-tabs/profile";
+import { ActivitySection } from "@/components/dashboard-tabs/activity";
 import {
   X,
   Music,
@@ -17,6 +18,7 @@ import {
   Settings,
   Upload,
   LogOut,
+  Activity,
 } from "lucide-react";
 
 interface DashboardDrawerProps {
@@ -74,7 +76,6 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-
   const navigationItems = [
     {
       id: "tracks" as const,
@@ -87,6 +88,12 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       label: "Minhas Playlists",
       icon: ListMusic,
       description: "Organize suas playlists",
+    },
+    {
+      id: "activity" as const,
+      label: "Atividades",
+      icon: Activity,
+      description: "Histórico de reprodução",
     },
     {
       id: "profile" as const,
@@ -107,6 +114,8 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
         return <UserTrackList />;
       case "playlists":
         return <PlaylistSection />;
+      case "activity":
+        return <ActivitySection />;
       case "profile":
         return <ProfileSection />;
       case "settings":
@@ -161,11 +170,32 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
           >
             <X className="w-5 h-5" />
           </Button>
-        </div>
+        </div>{" "}
         {/* Navigation */}
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
-          <div className="grid grid-cols-2 gap-2">
-            {navigationItems.map((item) => {
+          <div className="grid grid-cols-3 gap-2">
+            {navigationItems.slice(0, 3).map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 border border-primary-200 dark:border-primary-700"
+                      : "bg-neutral-50 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-transparent"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-xs font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            {navigationItems.slice(3).map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
 
