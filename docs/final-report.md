@@ -1,5 +1,13 @@
 # 🎵 Relatório Final do Projeto ISPmedia
 
+**Estudante:** Dálcio Macuete Garcia
+**Número:** 20170796
+**Email:** 20170796@isptec.co.ao
+**Docente:** Bongo Cahisso
+**Projeto:** Plataforma de Streaming de Música - ISPmedia
+**Link da Aplicação:** https://isp-media.vercel.app
+**Repositório GitHub:** https://github.com/Dalcio/ispmedia
+
 ## 📋 Índice
 
 1. [Introdução](#introdução)
@@ -325,39 +333,3 @@ O ISPmedia demonstra como tecnologias modernas podem ser combinadas para criar e
 - **Setup Guide**: `/docs/setup.md`
 - **Arquitetura**: `ARCHITECTURE.md`
 - **Style Guide**: `STYLE_GUIDE.md`
-
-### Prompts de Desenvolvimento Utilizados
-
-Durante o desenvolvimento, foram utilizados prompts específicos para:
-
-1. **Arquitetura Inicial**: "Reestruturar projeto para SPA com modais"
-2. **Design System**: "Implementar glassmorphism com paleta #FDC500"
-3. **Player Global**: "Criar player fixo com dois modos de visualização"
-4. **Firebase Integration**: "Integrar upload, autenticação e tempo real"
-5. **Dashboard Drawer**: "Sistema de navegação lateral com abas"
-6. **Sistema de Comentários**: "Comentários moderáveis em tempo real"
-7. **Sistema de Atividades**: "Tracking automático de ações do usuário"
-
-### Estatísticas do Projeto
-
-- **Linhas de Código**: ~15.000 linhas
-- **Componentes**: 50+ componentes modulares
-- **APIs**: 8 endpoints funcionais
-- **Tempo de Desenvolvimento**: Iterativo e ágil
-- **Tecnologias**: 10+ tecnologias integradas
-
-### Screenshots
-
-_(Screenshots seriam inseridos aqui em uma implementação real)_
-
-- Dashboard principal
-- Player expandido
-- Sistema de upload
-- Interface de moderação
-- Mobile responsivo
-
----
-
-**🎵 Desenvolvido com excelência técnica para o projeto ISPmedia**
-
-_Relatório gerado automaticamente com base na análise completa do código-fonte_
