@@ -1,16 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-  limit,
-} from "firebase/firestore";
-import { ref, listAll, getMetadata } from "firebase/storage";
-import { db, storage } from "@/firebase/config";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { useTracks } from "@/contexts/tracks-context";
 import { Button } from "@/components/ui/button";
