@@ -6,6 +6,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { GlobalAudioProvider } from "@/contexts/global-audio-context";
 import { TracksProvider } from "@/contexts/tracks-context";
 import { UploadProvider } from "@/contexts/upload-context";
+import { ThemeProvider } from "@/contexts/theme-context";
 import CustomCursor from "@/components/ui/custom-cursor";
 import { DashboardDrawer } from "@/components/drawers/user-dashboard-drawer";
 import { GlobalKeyboardShortcuts } from "@/components/layout/global-keyboard-shortcuts";
@@ -55,40 +56,39 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" className="dark">
-      <body
+}>) {  return (
+    <html lang="en">      <body
         suppressHydrationWarning={false}
-        className={`${inter.variable} font-sans antialiased bg-dark text-white min-h-screen`}
+        className={`${inter.variable} font-sans antialiased min-h-screen transition-colors duration-300`}
       >
         {" "}
-        <AuthProvider>
-          <TracksProvider>
-            <GlobalAudioProvider>
-              <UploadProvider>
-                <CursorProvider>
-                  <CustomCursor />
-                  <div className="relative min-h-screen bg-gradient-dark">
-                    {children}
-                  </div>
+        <ThemeProvider>
+          <AuthProvider>
+            <TracksProvider>
+              <GlobalAudioProvider>
+                <UploadProvider>
+                  <CursorProvider>
+                    <CustomCursor />                    <div className="relative min-h-screen bg-background-50 dark:bg-background-900 text-neutral-900 dark:text-white transition-colors duration-300">
+                      {children}
+                    </div>
 
-                  {/* Global Modals & Drawers */}
-                  <GlobalModals />
+                    {/* Global Modals & Drawers */}
+                    <GlobalModals />
 
-                  <Toaster
-                    position="top-center"
-                    reverseOrder={false}
-                    gutter={8}
-                    containerStyle={{
-                      top: 80,
-                    }}
-                  />
-                </CursorProvider>
-              </UploadProvider>
-            </GlobalAudioProvider>
-          </TracksProvider>
-        </AuthProvider>
+                    <Toaster
+                      position="top-center"
+                      reverseOrder={false}
+                      gutter={8}
+                      containerStyle={{
+                        top: 80,
+                      }}
+                    />
+                  </CursorProvider>
+                </UploadProvider>
+              </GlobalAudioProvider>
+            </TracksProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

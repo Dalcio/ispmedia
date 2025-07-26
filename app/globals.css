@@ -24,17 +24,17 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-  body {
+  }  body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    /* Light theme by default */
-    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    /* Dynamic theming based on class */
+    background: #fafafa;
     color: #0a0a0a;
     min-height: 100vh;
     overflow-x: hidden;
     /* Hide default cursor on desktop */
     cursor: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* Show cursor on mobile and tablets */
@@ -44,19 +44,11 @@
     }
   }
 
-  /* Dark theme support */
-  @media (prefers-color-scheme: dark) {
-    body {
-      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-      color: #ffffff;
-    }
-  }
-
   /* Dark theme class override */
   .dark body {
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    background: #0f0f0f;
     color: #ffffff;
-  }  /* Container base para layout */
+  }/* Container base para layout */
   .container {
     width: 100%;
     max-width: 1200px;
