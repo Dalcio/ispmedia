@@ -19,49 +19,21 @@ export function PlayCountDisplay({
   showIcon = true,
   size = "md",
 }: PlayCountDisplayProps) {
-  const [playCount, setPlayCount] = useState(initialCount);
   const [isAnimating, setIsAnimating] = useState(false);
-  const { getPlayCount } = usePlayCount();
+  
+  // Use the new usePlayCount hook with real-time updates
+  const { playCount } = usePlayCount(trackId);
 
-  // Carregar contador atual
+  // Animation trigger for play count changes
+  const [previousPlayCount, setPreviousPlayCount] = useState(playCount);
+  
   useEffect(() => {
-    if (trackId) {
-      getPlayCount(trackId).then((count) => {
-        if (count !== playCount) {
-          setPlayCount(count);
-        }
-      });
-    }
-  }, [trackId, getPlayCount]);
-
-  // Atualizar contador com animação
-  const updateCount = (newCount: number) => {
-    if (newCount > playCount) {
+    if (playCount > previousPlayCount) {
       setIsAnimating(true);
-      setPlayCount(newCount);
       setTimeout(() => setIsAnimating(false), 300);
     }
-  };
-
-  // Escutar eventos globais de play count (opcional)
-  useEffect(() => {
-    const handlePlayCountUpdate = (event: CustomEvent) => {
-      if (event.detail.trackId === trackId) {
-        updateCount(event.detail.playCount);
-      }
-    };
-
-    window.addEventListener(
-      "playCountUpdated",
-      handlePlayCountUpdate as EventListener
-    );
-    return () => {
-      window.removeEventListener(
-        "playCountUpdated",
-        handlePlayCountUpdate as EventListener
-      );
-    };
-  }, [trackId, playCount]);
+    setPreviousPlayCount(playCount);
+  }, [playCount, previousPlayCount]);
 
   const formatPlayCount = (count: number): string => {
     if (count >= 1000000) {

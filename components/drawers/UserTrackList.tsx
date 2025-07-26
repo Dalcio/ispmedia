@@ -20,7 +20,6 @@ import { EditTrackModal } from "@/components/modals/edit-track-modal";
 import { TrackDetailsModal } from "@/components/modals/track-details-modal";
 import { PlayCountDisplay } from "@/components/ui/play-count-display";
 import { TrackStats } from "@/components/ui/track-stats";
-import { PlayCountDebug } from "@/components/debug/play-count-debug";
 import {
   Play,
   Edit,
@@ -245,15 +244,14 @@ export function UserTrackList({
             <div
               key={track.id}
               className="group bg-glass-100 hover:bg-glass-200 rounded-xl p-4 transition-all duration-200"
-            >
-              <div className="flex items-start gap-3">
+            >              <div className="flex items-start gap-3">
                 {/* Ícone do arquivo */}
                 <div className="w-12 h-12 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                   <FileAudio className="h-6 w-6 text-primary-500" />
                 </div>
 
                 {/* Informações da música */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 overflow-hidden">
                   <h4 className="font-medium text-text-primary truncate mb-1">
                     {track.title}
                   </h4>
@@ -266,8 +264,7 @@ export function UserTrackList({
                       <Calendar className="h-3 w-3" />
                       <span>{formatDate(track.createdAt)}</span>
                     </div>
-                  </div>{" "}
-                  <div className="flex items-center gap-4 text-xs text-text-muted">
+                  </div>{" "}                  <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
                     <span>{formatFileSize(track.fileSize)}</span>
                     {track.duration && (
                       <span>{formatDuration(track.duration)}</span>
@@ -276,14 +273,15 @@ export function UserTrackList({
                       trackId={track.id}
                       initialPlayCount={track.playCount || 0}
                       showTrend={true}
+                      showIncrementButton={true}
                       size="sm"
                       className="text-text-muted"
-                    />{" "}
-                    <span className="truncate">{track.fileName}</span>
+                    />
                   </div>
-                  {/* Debug Component - Temporary */}
-                  <div className="mt-2">
-                    <PlayCountDebug trackId={track.id} />
+                  <div className="text-xs text-text-muted mt-1 w-full overflow-hidden">
+                    <span className="truncate block" title={track.fileName}>
+                      {track.fileName}
+                    </span>
                   </div>
                 </div>
               </div>

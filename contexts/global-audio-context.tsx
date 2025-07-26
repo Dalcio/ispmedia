@@ -12,6 +12,8 @@ import {
 import { usePlayCount } from "@/hooks/use-play-count";
 import { useAtividade } from "@/hooks/use-atividade";
 import { useAuth } from "@/contexts/auth-context";
+import { doc, updateDoc, increment } from "firebase/firestore";
+import { db } from "@/firebase/config";
 
 interface Track {
   id: string;
@@ -69,11 +71,9 @@ const GlobalAudioContext = createContext<GlobalAudioContextType | undefined>(
   undefined
 );
 
-export function GlobalAudioProvider({ children }: { children: ReactNode }) {
-  // Activity and Auth hooks
+export function GlobalAudioProvider({ children }: { children: ReactNode }) {  // Activity and Auth hooks
   const { user } = useAuth();
   const { registrarReproducao, registrarPausa, registrarPulo } = useAtividade();
-  const { incrementPlayCount } = usePlayCount();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
@@ -87,6 +87,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   >(null);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
+  // Track play count incremented status
+  const hasIncrementedPlayCount = useRef<boolean>(false);
+
   // Computed playlist values
   const hasNext = currentTrackIndex < currentPlaylist.length - 1;
   const hasPrevious = currentTrackIndex > 0;
@@ -97,6 +100,36 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.volume = volume;
     }
   }, [volume]);
+  // Helper function to increment play count directly in Firestore
+  const incrementPlayCountDirectly = async (trackId: string): Promise<number | null> => {
+    try {
+      console.log(`[GlobalAudio] Incrementing play count for track: ${trackId}`);
+      
+      const trackRef = doc(db, "tracks", trackId);
+      await updateDoc(trackRef, {
+        playCount: increment(1),
+        lastPlayedAt: new Date(),
+      });
+
+      console.log(`✅ [GlobalAudio] Play count incremented for track ${trackId}`);
+      return 1; // We don't need the exact count here, just success
+    } catch (error) {
+      console.error(`[GlobalAudio] Failed to increment play count for track ${trackId}:`, error);
+      return null;
+    }
+  };
+
+  // Helper function to emit play count update events
+  const emitPlayCountUpdate = (trackId: string, increment: number = 1) => {
+    console.log(
+      `[GlobalAudio] Emitting playCountUpdated event for track ${trackId} with increment ${increment}`
+    );
+    const event = new CustomEvent("playCountUpdated", {
+      detail: { trackId, increment, timestamp: Date.now() },
+    });
+    window.dispatchEvent(event);
+    console.log(`[GlobalAudio] Event dispatched successfully`);
+  };
 
   // Audio event handlers
   useEffect(() => {
@@ -112,8 +145,20 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
         setCurrentTrackIndex(currentTrackIndex + 1);
         playTrackDirectly(nextTrack);
       }
+    };    const handlePlay = () => {
+      setIsPlaying(true);
+      
+      // Increment play count when track actually starts playing (not just when called)
+      if (currentTrack && !hasIncrementedPlayCount.current) {
+        hasIncrementedPlayCount.current = true;
+        incrementPlayCountDirectly(currentTrack.id).then((result) => {
+          if (result) {
+            console.log(`✅ Play count updated for track ${currentTrack.id}`);
+            emitPlayCountUpdate(currentTrack.id); // Emit event
+          }
+        });
+      }
     };
-    const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
@@ -158,38 +203,19 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       setCurrentTrackIndex(0);
     }
 
-    setCurrentTrack(audioTrack);
-
-    if (audioRef.current) {
+    setCurrentTrack(audioTrack);    if (audioRef.current) {
       audioRef.current.src = track.audioUrl;
       audioRef.current.load();
       audioRef.current.play().catch(console.error);
     }
 
-    // Increment play count when track starts playing
-    incrementPlayCount(track.id).then((result) => {
-      if (result) {
-        console.log(
-          `✅ Play count updated: ${result.playCount} plays for track ${track.id}`
-        );
-        emitPlayCountUpdate(track.id, result.playCount); // Emit event
-      }
-    });
+    // Reset play count increment flag for new track
+    hasIncrementedPlayCount.current = false;
+
     // Register activity: play
     if (user) {
       registrarReproducao(user.uid, track.id).catch(() => {});
     }
-  };
-  // Helper function to emit play count update events
-  const emitPlayCountUpdate = (trackId: string, playCount: number) => {
-    console.log(
-      `[GlobalAudio] Emitting playCountUpdated event for track ${trackId} with count ${playCount}`
-    );
-    const event = new CustomEvent("playCountUpdated", {
-      detail: { trackId, playCount },
-    });
-    window.dispatchEvent(event);
-    console.log(`[GlobalAudio] Event dispatched successfully`);
   };
 
   const playNext = () => {
@@ -224,8 +250,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       duration: track.duration || 0,
       url: track.audioUrl,
       coverArt: undefined,
-    };
-    setCurrentTrack(audioTrack);
+    };    setCurrentTrack(audioTrack);
+
+    // Reset play count increment flag for new track
+    hasIncrementedPlayCount.current = false;
 
     if (audioRef.current) {
       audioRef.current.src = track.audioUrl;
@@ -233,15 +261,6 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.play().catch(console.error);
     }
 
-    // Increment play count when track starts playing
-    incrementPlayCount(track.id).then((result) => {
-      if (result) {
-        console.log(
-          `✅ Play count updated: ${result.playCount} plays for track ${track.id}`
-        );
-        emitPlayCountUpdate(track.id, result.playCount); // Emit event
-      }
-    });
     // Register activity: play
     if (user) {
       registrarReproducao(user.uid, track.id).catch(() => {});

@@ -8,55 +8,25 @@ interface PlayCountDebugProps {
 }
 
 export function PlayCountDebug({ trackId }: PlayCountDebugProps) {
-  const [currentCount, setCurrentCount] = useState(0);
   const [eventLog, setEventLog] = useState<string[]>([]);
-  const [realTimeCount, setRealTimeCount] = useState(0);
   const [lastError, setLastError] = useState<string | null>(null);
-  const { incrementPlayCount, getPlayCount, loading } = usePlayCount();
+  
+  // Use the new usePlayCount hook with real-time updates
+  const { playCount, incrementPlayCount, getPlayCount, loading, isListening } = usePlayCount(trackId);
 
-  // Load initial count
+  // Log when play count changes
   useEffect(() => {
-    const loadInitialCount = async () => {
-      const count = await getPlayCount(trackId);
-      setCurrentCount(count);
-      setRealTimeCount(count);
-      addToLog(`Initial count loaded: ${count}`);
-    };
-
-    loadInitialCount();
-  }, [trackId, getPlayCount]);
-
-  // Listen for play count updates
-  useEffect(() => {
-    const handlePlayCountUpdate = (event: CustomEvent) => {
-      if (event.detail.trackId === trackId) {
-        setRealTimeCount(event.detail.playCount);
-        addToLog(`Event received: ${event.detail.playCount}`);
-      }
-    };
-
-    window.addEventListener(
-      "playCountUpdated",
-      handlePlayCountUpdate as EventListener
-    );
-    return () => {
-      window.removeEventListener(
-        "playCountUpdated",
-        handlePlayCountUpdate as EventListener
-      );
-    };
-  }, [trackId]);
+    addToLog(`Play count updated: ${playCount}`);
+  }, [playCount]);
 
   const addToLog = (message: string) => {
     const timestamp = new Date().toLocaleTimeString();
     setEventLog((prev) => [`[${timestamp}] ${message}`, ...prev.slice(0, 4)]);
-  };
-  const handleIncrement = async () => {
+  };  const handleIncrement = async () => {
     addToLog("Manual increment clicked");
     try {
       const result = await incrementPlayCount(trackId);
       if (result) {
-        setCurrentCount(result.playCount);
         setLastError(null);
         addToLog(`API returned: ${result.playCount}`);
       } else {
@@ -74,7 +44,6 @@ export function PlayCountDebug({ trackId }: PlayCountDebugProps) {
     addToLog("Manual refresh clicked");
     try {
       const count = await getPlayCount(trackId);
-      setCurrentCount(count);
       setLastError(null);
       addToLog(`Refreshed count: ${count}`);
     } catch (error) {
@@ -111,20 +80,21 @@ export function PlayCountDebug({ trackId }: PlayCountDebugProps) {
           <div className="font-mono text-gray-800">
             {trackId.slice(0, 8)}...
           </div>
-        </div>
-        <div>
+        </div>        <div>
           <div className="text-gray-600">Loading:</div>
           <div className={loading ? "text-orange-600" : "text-green-600"}>
             {loading ? "Yes" : "No"}
           </div>
         </div>
         <div>
-          <div className="text-gray-600">Static Count:</div>
-          <div className="font-bold text-blue-600">{currentCount}</div>
+          <div className="text-gray-600">Listening:</div>
+          <div className={isListening ? "text-orange-600" : "text-green-600"}>
+            {isListening ? "Yes" : "No"}
+          </div>
         </div>
         <div>
-          <div className="text-gray-600">Real-time:</div>
-          <div className="font-bold text-green-600">{realTimeCount}</div>
+          <div className="text-gray-600">Play Count:</div>
+          <div className="font-bold text-blue-600">{playCount}</div>
         </div>
       </div>
 

@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { usePlayCount } from "@/hooks/use-play-count";
 import { useAtividade } from "@/hooks/use-atividade";
 import { useAuth } from "@/contexts/auth-context";
-import { Play, TrendingUp, Clock } from "lucide-react";
+import { Play, TrendingUp, Clock, Plus } from "lucide-react";
 
 interface TrackStatsProps {
   trackId: string;
   initialPlayCount?: number;
   showTrend?: boolean;
   showLastPlayed?: boolean;
+  showIncrementButton?: boolean;
   className?: string;
   size?: "sm" | "md" | "lg";
 }
@@ -20,61 +21,28 @@ export function TrackStats({
   initialPlayCount = 0,
   showTrend = false,
   showLastPlayed = false,
+  showIncrementButton = false,
   className = "",
   size = "md",
 }: TrackStatsProps) {
-  const [playCount, setPlayCount] = useState(initialPlayCount);
   const [isAnimating, setIsAnimating] = useState(false);
   const [lastPlayed, setLastPlayed] = useState<Date | null>(null);
   const [recentPlaysCount, setRecentPlaysCount] = useState(0);
+  const [isIncrementing, setIsIncrementing] = useState(false);
 
-  const { getPlayCount } = usePlayCount();
+  // Use the new usePlayCount hook with real-time updates
+  const { playCount, incrementPlayCount, loading } = usePlayCount(trackId);
   const { buscarAtividades } = useAtividade();
   const { user } = useAuth();
 
   console.log(
-    `[TrackStats] Component rendered for track ${trackId} with initial count: ${initialPlayCount}`
-  ); // Carregar estatísticas iniciais
+    `[TrackStats] Component rendered for track ${trackId} with play count: ${playCount} (initial: ${initialPlayCount})`
+  );  // Load activity history for trend and last played data
   useEffect(() => {
-    if (trackId) {
-      console.log(
-        `[TrackStats] Loading stats for track: ${trackId}, initial: ${initialPlayCount}`
-      );
-
-      // Usar o valor inicial se disponível
-      if (initialPlayCount > 0 && playCount === 0) {
-        console.log(
-          `[TrackStats] Using initial play count: ${initialPlayCount}`
-        );
-        setPlayCount(initialPlayCount);
-      }
-
-      // Carregar play count atual do servidor para sincronizar
-      getPlayCount(trackId).then((count) => {
-        console.log(
-          `[TrackStats] Got play count from server: ${count} for track: ${trackId}`
-        );
-        if (count !== playCount) {
-          console.log(
-            `[TrackStats] Updating play count from ${playCount} to ${count}`
-          );
-          setPlayCount(count);
-        }
-      });
-
-      // Carregar histórico de atividades se usuário logado
-      if (user && (showTrend || showLastPlayed)) {
-        loadActivityHistory();
-      }
+    if (trackId && user && (showTrend || showLastPlayed)) {
+      loadActivityHistory();
     }
-  }, [
-    trackId,
-    initialPlayCount,
-    user,
-    showTrend,
-    showLastPlayed,
-    getPlayCount,
-  ]);
+  }, [trackId, user, showTrend, showLastPlayed]);
 
   const loadActivityHistory = async () => {
     if (!user) return;
@@ -107,31 +75,41 @@ export function TrackStats({
       }
     } catch (error) {
       console.warn("Erro ao carregar histórico de atividades:", error);
-    }
-  };
-  // Atualizar contador com animação
-  const updateCount = (newCount: number) => {
-    console.log(
-      `[TrackStats] updateCount called: ${playCount} -> ${newCount} for track: ${trackId}`
-    );
-    if (newCount > playCount) {
+    }  };  // Animation trigger for play count changes
+  const [previousPlayCount, setPreviousPlayCount] = useState(playCount);
+  
+  useEffect(() => {
+    if (playCount > previousPlayCount) {
       setIsAnimating(true);
-      setPlayCount(newCount);
       setTimeout(() => setIsAnimating(false), 500);
     }
-  };
-  // Escutar eventos globais de play count
+    setPreviousPlayCount(playCount);
+  }, [playCount, previousPlayCount]);  // Manual increment function
+  const handleManualIncrement = async () => {
+    if (isIncrementing || loading) return; // Prevent double clicks
+    
+    try {
+      setIsIncrementing(true);
+      console.log(`[TrackStats] Manual increment clicked for track: ${trackId}`);
+      
+      const result = await incrementPlayCount(trackId);
+      if (result) {
+        console.log(`[TrackStats] Manual increment successful: ${result.playCount}`);
+      } else {
+        console.warn(`[TrackStats] Manual increment failed`);
+      }
+    } catch (error) {
+      console.warn("Failed to manually increment play count:", error);
+    } finally {
+      setIsIncrementing(false);
+    }
+  };  // Listen for global events to update last played time
   useEffect(() => {
     const handlePlayCountUpdate = (event: CustomEvent) => {
       console.log(`[TrackStats] Play count event received:`, event.detail);
-      if (event.detail.trackId === trackId) {
-        console.log(`[TrackStats] Event matches this track, updating count`);
-        updateCount(event.detail.playCount);
-
-        // Atualizar também a última reprodução
-        if (showLastPlayed) {
-          setLastPlayed(new Date());
-        }
+      if (event.detail.trackId === trackId && showLastPlayed) {
+        console.log(`[TrackStats] Event matches this track, updating last played`);
+        setLastPlayed(new Date());
       }
     };
 
@@ -147,7 +125,7 @@ export function TrackStats({
         handlePlayCountUpdate as EventListener
       );
     };
-  }, [trackId, playCount, showLastPlayed]);
+  }, [trackId, showLastPlayed]);
 
   const formatPlayCount = (count: number): string => {
     if (count >= 1000000) {
@@ -187,7 +165,7 @@ export function TrackStats({
   };
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       {/* Play Count */}
       <div
         className={`flex items-center gap-1 text-text-muted transition-all duration-300 ${
@@ -206,8 +184,7 @@ export function TrackStats({
           <TrendingUp className={`${iconSizes[size]}`} />
           <span className={`${sizeClasses[size]} font-medium`}>
             +{recentPlaysCount}
-          </span>
-        </div>
+          </span>        </div>
       )}
 
       {/* Last Played */}
@@ -216,8 +193,24 @@ export function TrackStats({
           <Clock className={`${iconSizes[size]} opacity-70`} />
           <span className={`${sizeClasses[size]}`}>
             {formatLastPlayed(lastPlayed)}
-          </span>
-        </div>
+          </span>        </div>
+      )}
+
+      {/* Manual Increment Button */}
+      {showIncrementButton && (
+        <button
+          onClick={handleManualIncrement}
+          disabled={isIncrementing}
+          className={`flex items-center gap-1 px-1.5 py-0.5 text-primary-500 hover:text-primary-600 hover:bg-primary-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses[size]} flex-shrink-0`}
+          title="Increment play count manually"
+        >
+          {isIncrementing ? (
+            <div className={`border border-primary-500 border-t-transparent rounded-full animate-spin ${iconSizes[size]}`} />
+          ) : (
+            <Plus className={`${iconSizes[size]}`} />
+          )}
+          <span className="font-medium">+1</span>
+        </button>
       )}
     </div>
   );
