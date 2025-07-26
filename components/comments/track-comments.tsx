@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackComments, useCommentSubmission } from "@/hooks/use-track-comments";
+import {
+  useTrackComments,
+  useCommentSubmission,
+} from "@/hooks/use-track-comments";
 import { useAuth } from "@/contexts/auth-context";
 import { Send, MessageCircle, User, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { Textarea } from "@/components/ui/textarea";
 import type { Comment } from "@/lib/services/comments";
 
@@ -118,9 +121,7 @@ export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
           <div className="flex items-center justify-between">
             <div className="text-xs text-text-muted">
               {!user && (
-                <span className="text-info-500">
-                  Faça login para comentar
-                </span>
+                <span className="text-info-500">Faça login para comentar</span>
               )}
               {user && newComment.trim().length === 0 && focused && (
                 <span className="text-error-500">

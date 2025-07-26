@@ -1,7 +1,7 @@
 "use client";
 
 import { UserAvatarButton } from "@/components/layout/user-avatar-button";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { useUploadModal } from "@/contexts/upload-context";
 import { useCommandPalette } from "@/hooks/use-command-palette";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";

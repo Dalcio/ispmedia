@@ -9,7 +9,7 @@ import {
   Sparkles,
   Heart,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { AuthModal } from "@/components/modals/auth-modal";
 import { SearchModal } from "@/components/modals/search-modal";
 import { Header } from "@/components/layout/header";

@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import {
   User,
   ChevronDown,

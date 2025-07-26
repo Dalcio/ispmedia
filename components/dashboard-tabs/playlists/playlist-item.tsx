@@ -7,7 +7,7 @@ import { useTracks, type Track } from "@/contexts/tracks-context";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
 import { useToast } from "@/hooks/use-toast";
 import { TrackSelectorModal } from "./track-selector-modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import {
   ListMusic,
   Music,

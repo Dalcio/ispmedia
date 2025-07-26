@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { UserTrackList } from "@/components/drawers/UserTrackList";
 import { PlaylistSection } from "@/components/dashboard-tabs/playlists";
 import { ProfileSection } from "@/components/dashboard-tabs/profile";

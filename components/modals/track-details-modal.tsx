@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { Modal } from "@/components/ui/modal";
-import { TrackComments } from "@/components/comments/track-comments-new";
-import { TrackModeration } from "@/components/comments/track-moderation-new";
+import { TrackComments } from "@/components/comments/track-comments";
+import { TrackModeration } from "@/components/comments/track-moderation";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { db } from "@/firebase/config";
@@ -55,7 +55,9 @@ export function TrackDetailsModal({
   onPlay,
   onEdit,
 }: TrackDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "comments" | "moderation">("details");
+  const [activeTab, setActiveTab] = useState<
+    "details" | "comments" | "moderation"
+  >("details");
   const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
   const { user } = useAuth();
   const toast = useToast();
@@ -97,16 +99,18 @@ export function TrackDetailsModal({
     try {
       const newVisibility = !track.isPublic;
       const trackRef = doc(db, "tracks", track.id);
-      
+
       await updateDoc(trackRef, {
-        isPublic: newVisibility
+        isPublic: newVisibility,
       });
 
       // Update local track object
       track.isPublic = newVisibility;
 
       toast.success(
-        `Música ${newVisibility ? "tornada pública" : "tornada privada"} com sucesso!`
+        `Música ${
+          newVisibility ? "tornada pública" : "tornada privada"
+        } com sucesso!`
       );
     } catch (error) {
       console.error("Error updating track visibility:", error);
@@ -156,7 +160,8 @@ export function TrackDetailsModal({
               <X className="w-4 h-4" />
             </button>
           </div>
-        </div>        {/* Tabs */}
+        </div>{" "}
+        {/* Tabs */}
         <div className="flex border-b border-border-light">
           <button
             onClick={() => setActiveTab("details")}
@@ -197,11 +202,12 @@ export function TrackDetailsModal({
             </button>
           )}
         </div>
-
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {activeTab === "details" && (
-            <div className="space-y-6">              {/* Informações básicas */}
+            <div className="space-y-6">
+              {" "}
+              {/* Informações básicas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InfoItem
                   icon={<Tag className="w-4 h-4" />}
@@ -241,7 +247,6 @@ export function TrackDetailsModal({
                   value={track.fileName}
                 />
               </div>
-
               {/* Configurações de Visibilidade - Apenas para o dono da faixa */}
               {isTrackOwner && (
                 <div className="mt-6 p-4 rounded-xl bg-glass-200 border border-border-subtle">
@@ -260,10 +265,9 @@ export function TrackDetailsModal({
                           {track.isPublic ? "Música Pública" : "Música Privada"}
                         </p>
                         <p className="text-sm text-text-muted">
-                          {track.isPublic 
+                          {track.isPublic
                             ? "Qualquer pessoa pode encontrar e ouvir esta música"
-                            : "Apenas você pode ver e ouvir esta música"
-                          }
+                            : "Apenas você pode ver e ouvir esta música"}
                         </p>
                       </div>
                     </div>
@@ -274,19 +278,21 @@ export function TrackDetailsModal({
                         track.isPublic
                           ? "bg-warning-500/20 text-warning-500 hover:bg-warning-500/30"
                           : "bg-success-500/20 text-success-500 hover:bg-success-500/30"
-                      } ${isUpdatingVisibility ? "opacity-50 cursor-not-allowed" : ""}`}
+                      } ${
+                        isUpdatingVisibility
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
                     >
-                      {isUpdatingVisibility 
-                        ? "Alterando..." 
-                        : track.isPublic 
-                          ? "Tornar Privada" 
-                          : "Tornar Pública"
-                      }
+                      {isUpdatingVisibility
+                        ? "Alterando..."
+                        : track.isPublic
+                        ? "Tornar Privada"
+                        : "Tornar Pública"}
                     </button>
                   </div>
                 </div>
               )}
-
               {/* Estatísticas */}
               {track.playCount !== undefined && (
                 <div className="mt-6 p-4 rounded-xl bg-glass-200 border border-border-subtle">
@@ -304,7 +310,7 @@ export function TrackDetailsModal({
           )}
 
           {activeTab === "comments" && <TrackComments trackId={track.id} />}
-          
+
           {activeTab === "moderation" && isTrackOwner && (
             <TrackModeration trackId={track.id} />
           )}

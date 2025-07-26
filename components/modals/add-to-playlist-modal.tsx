@@ -1,18 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, query, where, onSnapshot, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { ListMusic, Plus } from "lucide-react";
 
 interface Playlist {
   id: string;
   title: string;
-  visibility: 'public' | 'private';
+  visibility: "public" | "private";
   tracks: string[];
 }
 
@@ -27,11 +35,11 @@ export function AddToPlaylistModal({
   isOpen,
   onClose,
   trackId,
-  trackTitle
+  trackTitle,
 }: AddToPlaylistModalProps) {
   const { user } = useAuth();
   const { success, error: showError } = useToast();
-  
+
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState<string | null>(null);
@@ -54,10 +62,10 @@ export function AddToPlaylistModal({
       })) as Playlist[];
 
       // Filtrar playlists que já contêm esta música
-      const availablePlaylists = playlistsData.filter(playlist => 
-        !playlist.tracks.includes(trackId)
+      const availablePlaylists = playlistsData.filter(
+        (playlist) => !playlist.tracks.includes(trackId)
       );
-      
+
       setPlaylists(availablePlaylists);
       setLoading(false);
     });
@@ -65,13 +73,16 @@ export function AddToPlaylistModal({
     return () => unsubscribe();
   }, [user, isOpen, trackId]);
 
-  const handleAddToPlaylist = async (playlistId: string, playlistTitle: string) => {
+  const handleAddToPlaylist = async (
+    playlistId: string,
+    playlistTitle: string
+  ) => {
     setAdding(playlistId);
     try {
       const playlistRef = doc(db, "playlists", playlistId);
       await updateDoc(playlistRef, {
         tracks: arrayUnion(trackId),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
 
       success(`"${trackTitle}" adicionada à playlist "${playlistTitle}"`);
@@ -94,7 +105,10 @@ export function AddToPlaylistModal({
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 animate-pulse"
+              >
                 <div className="w-10 h-10 bg-glass-200 rounded-lg" />
                 <div className="flex-1">
                   <div className="h-4 bg-glass-200 rounded w-3/4 mb-1" />
@@ -107,7 +121,8 @@ export function AddToPlaylistModal({
           <div className="text-center py-8">
             <ListMusic className="w-12 h-12 mx-auto mb-4 text-text-muted" />
             <p className="text-text-muted mb-4">
-              Você não tem playlists disponíveis ou esta música já está em todas as suas playlists.
+              Você não tem playlists disponíveis ou esta música já está em todas
+              as suas playlists.
             </p>
             <Button
               onClick={onClose}
@@ -123,22 +138,25 @@ export function AddToPlaylistModal({
               {playlists.map((playlist) => (
                 <div
                   key={playlist.id}
-                  onClick={() => handleAddToPlaylist(playlist.id, playlist.title)}
+                  onClick={() =>
+                    handleAddToPlaylist(playlist.id, playlist.title)
+                  }
                   className="flex items-center gap-3 p-3 rounded-lg cursor-pointer bg-glass-50 hover:bg-glass-100 border border-transparent hover:border-primary-200 transition-all duration-200"
                 >
                   <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <ListMusic className="h-5 w-5 text-primary-500" />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium text-text-primary truncate">
                       {playlist.title}
                     </h4>
                     <p className="text-sm text-text-muted">
-                      {playlist.tracks.length} música(s) • {playlist.visibility === 'public' ? 'Pública' : 'Privada'}
+                      {playlist.tracks.length} música(s) •{" "}
+                      {playlist.visibility === "public" ? "Pública" : "Privada"}
                     </p>
                   </div>
-                  
+
                   {adding === playlist.id ? (
                     <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
                   ) : (

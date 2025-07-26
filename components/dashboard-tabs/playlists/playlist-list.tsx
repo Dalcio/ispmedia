@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PlaylistItem } from "./playlist-item";
 import { PlaylistModal } from "@/components/modals/playlist-modal";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { ListMusic, Trash2, Plus } from "lucide-react";
 
 interface Playlist {

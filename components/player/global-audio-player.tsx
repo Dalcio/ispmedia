@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { AddToPlaylistModal } from "@/components/modals/add-to-playlist-modal";
 import { AudioVisualizer } from "./audio-visualizer";
 import AudioWaves from "./audio-waves";

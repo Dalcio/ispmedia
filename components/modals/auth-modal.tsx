@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { Input } from "@/components/ui/input";
 import { signUp, signIn } from "@/lib/auth";
 import { useAuth } from "@/contexts/auth-context";
@@ -64,7 +64,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     try {
       const result = await signIn(formData.email, formData.password);
-      
+
       if (result.success) {
         toast.dismiss(loadingToast);
         toast.success("Login realizado com sucesso!");
@@ -94,8 +94,12 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const loadingToast = toast.loading("Criando conta...");
 
     try {
-      const result = await signUp(formData.email, formData.password, formData.name);
-      
+      const result = await signUp(
+        formData.email,
+        formData.password,
+        formData.name
+      );
+
       if (result.success) {
         toast.dismiss(loadingToast);
         toast.success("Conta criada com sucesso! Bem-vindo ao ISPmedia!");
@@ -128,7 +132,9 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       title="Entrar no ISPmedia"
       size="md"
     >
-      <div className="space-y-6">        {/* Mode Toggle */}
+      <div className="space-y-6">
+        {" "}
+        {/* Mode Toggle */}
         <div className="flex bg-white/5 rounded-lg p-1">
           <button
             onClick={() => setMode("login")}
@@ -150,7 +156,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
           >
             Cadastrar
           </button>
-        </div>        {/* Login Form */}
+        </div>{" "}
+        {/* Login Form */}
         {mode === "login" && (
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -159,7 +166,9 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="Email"
                 value={formData.email}
                 onChange={(e) => updateFormData("email", e.target.value)}
-                className={errors.email ? "border-red-500 focus:ring-red-500" : ""}
+                className={
+                  errors.email ? "border-red-500 focus:ring-red-500" : ""
+                }
                 required
               />
               {errors.email && (
@@ -172,18 +181,25 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="Senha"
                 value={formData.password}
                 onChange={(e) => updateFormData("password", e.target.value)}
-                className={errors.password ? "border-red-500 focus:ring-red-500" : ""}
+                className={
+                  errors.password ? "border-red-500 focus:ring-red-500" : ""
+                }
                 required
               />
               {errors.password && (
                 <p className="text-red-400 text-sm mt-1">{errors.password}</p>
               )}
             </div>
-            <Button type="submit" className="w-full cursor-hover" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full cursor-hover"
+              disabled={isLoading}
+            >
               {isLoading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
-        )}        {/* Register Form */}
+        )}{" "}
+        {/* Register Form */}
         {mode === "register" && (
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
@@ -192,7 +208,9 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="Nome completo"
                 value={formData.name}
                 onChange={(e) => updateFormData("name", e.target.value)}
-                className={errors.name ? "border-red-500 focus:ring-red-500" : ""}
+                className={
+                  errors.name ? "border-red-500 focus:ring-red-500" : ""
+                }
                 required
               />
               {errors.name && (
@@ -205,7 +223,9 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="Email"
                 value={formData.email}
                 onChange={(e) => updateFormData("email", e.target.value)}
-                className={errors.email ? "border-red-500 focus:ring-red-500" : ""}
+                className={
+                  errors.email ? "border-red-500 focus:ring-red-500" : ""
+                }
                 required
               />
               {errors.email && (
@@ -218,7 +238,9 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="Senha"
                 value={formData.password}
                 onChange={(e) => updateFormData("password", e.target.value)}
-                className={errors.password ? "border-red-500 focus:ring-red-500" : ""}
+                className={
+                  errors.password ? "border-red-500 focus:ring-red-500" : ""
+                }
                 required
               />
               {errors.password && (
@@ -233,28 +255,46 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 onChange={(e) =>
                   updateFormData("confirmPassword", e.target.value)
                 }
-                className={errors.confirmPassword ? "border-red-500 focus:ring-red-500" : ""}
+                className={
+                  errors.confirmPassword
+                    ? "border-red-500 focus:ring-red-500"
+                    : ""
+                }
                 required
               />
               {errors.confirmPassword && (
-                <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
               )}
             </div>
-            <Button type="submit" className="w-full cursor-hover" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full cursor-hover"
+              disabled={isLoading}
+            >
               {isLoading ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </form>
         )}
-
         {/* Social Login */}
         <div className="pt-4 border-t border-white/10">
           <p className="text-center text-white/60 text-sm mb-4">
             Ou continue com
-          </p>          <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" disabled={isLoading} className="cursor-hover">
+          </p>{" "}
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              disabled={isLoading}
+              className="cursor-hover"
+            >
               Google
             </Button>
-            <Button variant="outline" disabled={isLoading} className="cursor-hover">
+            <Button
+              variant="outline"
+              disabled={isLoading}
+              className="cursor-hover"
+            >
               GitHub
             </Button>
           </div>

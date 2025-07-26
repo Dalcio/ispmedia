@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useAtividade } from "@/hooks/use-atividade";
 import { Atividade, TipoAcao } from "@/lib/types/atividade";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import {
   Activity,
   Play,

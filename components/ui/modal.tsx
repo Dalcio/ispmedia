@@ -3,7 +3,7 @@
 import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import { Button } from "./button";
+import { Button } from "./ui-button";
 
 interface ModalProps {
   isOpen: boolean;
