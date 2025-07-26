@@ -197,14 +197,15 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       mimeType: track.mimeType
     }
     
-    audioPlayer.playTrack(audioTrack)
-    // Fechar modal após iniciar reprodução
+    audioPlayer.playTrack(audioTrack)    // Fechar modal após iniciar reprodução
     onClose()
   }
+  
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Buscar" size="lg">
       <div className="space-y-4">
-        {/* Search Input */}        <div className="relative">
+        {/* Search Input */}
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
           <Input
             placeholder="Busque por músicas ou artistas…"
@@ -289,12 +290,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             {artist.name.charAt(0).toUpperCase()}
                           </span>
                         )}
-                      </div>
-                      <div className="flex-1">
+                      </div>                      <div className="flex-1">
                         <p className="text-white font-medium">{artist.name}</p>
                         <p className="text-white/60 text-sm">
                           {artist.tracksCount ? `${artist.tracksCount} músicas` : 'Artista'}
-                        </p>                      </div>
+                        </p>
+                      </div>
+                    </div>
                     )
                   })}
                 </div>

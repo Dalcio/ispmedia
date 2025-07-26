@@ -11,10 +11,10 @@ interface PlayCountResponse {
 // POST /api/plays/[trackId] - Incrementar contador de plays
 export async function POST(
   request: NextRequest,
-  { params }: { params: { trackId: string } }
+  { params }: { params: Promise<{ trackId: string }> }
 ) {
   try {
-    const { trackId } = params;
+    const { trackId } = await params;
     console.log(`[API] POST /api/plays/${trackId} - Starting increment`);
 
     if (!trackId) {
@@ -90,10 +90,10 @@ export async function POST(
 // GET /api/plays/[trackId] - Buscar contador de plays atual
 export async function GET(
   request: NextRequest,
-  { params }: { params: { trackId: string } }
+  { params }: { params: Promise<{ trackId: string }> }
 ) {
   try {
-    const { trackId } = params;
+    const { trackId } = await params;
     console.log(`[API] GET /api/plays/${trackId} - Getting current count`);
 
     if (!trackId) {
