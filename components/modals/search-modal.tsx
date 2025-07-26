@@ -247,49 +247,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       const [tracks, artists] = await Promise.all([
         searchTracks(searchLower),
         searchArtists(searchQuery.trim()), // Manter case original para nomes
-      ]);
-
-      console.log("🔍 Resultados encontrados:", {
+      ]);      console.log("🔍 Resultados encontrados:", {
         tracks: tracks.length,
         artists: artists.length,
         tracksData: tracks,
         artistsData: artists,
       });
-
-      // Se não há dados reais, mostrar dados de exemplo para teste
-      if (
-        tracks.length === 0 &&
-        artists.length === 0 &&
-        searchQuery.length > 0
-      ) {
-        console.log("📝 Adicionando dados de exemplo para teste");
-        const exampleTracks: TrackResult[] = [
-          {
-            id: "example-1",
-            title: `Música exemplo com "${searchQuery}"`,
-            genre: "Exemplo",
-            audioUrl: "#",
-            fileName: "exemplo.mp3",
-            fileSize: 1024,
-            mimeType: "audio/mpeg",
-            createdAt: new Date(),
-            artistName: "Artista Exemplo",
-          },
-        ];
-
-        const exampleArtists: UserResult[] = [
-          {
-            uid: "example-artist-1",
-            name: `Artista ${searchQuery}`,
-            email: "exemplo@exemplo.com",
-            createdAt: new Date(),
-            tracksCount: 5,
-          },
-        ];
-
-        setResults({ tracks: exampleTracks, artists: exampleArtists });
-        return;
-      }
 
       setResults({ tracks, artists });
     } catch (error) {
@@ -444,9 +407,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   })}
                 </div>
               </div>
-            )}
-
-            {/* No Results */}
+            )}            {/* No Results */}
             {results.tracks.length === 0 && results.artists.length === 0 && (
               <div className="text-center py-12">
                 <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -454,9 +415,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
                 <h3 className="text-xl font-medium text-white mb-3">
                   Nenhum resultado encontrado
-                </h3>                <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto">
-                  Não encontramos músicas{user ? " ou artistas" : ""} com "{query}". 
-                  {user ? " Que tal fazer upload de uma nova música?" : " Experimente outros termos de busca."}
+                </h3>
+                <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto">
+                  {user 
+                    ? `Não encontramos músicas ou artistas com "${query}". Que tal fazer upload de uma nova música?`
+                    : `Não encontramos músicas públicas com "${query}". Experimente outros termos de busca ou faça login para ver mais conteúdo.`
+                  }
                 </p>
                 {user && (
                   <Button
@@ -471,6 +435,17 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   >
                     <Upload className="h-5 w-5" />
                     Fazer upload de música
+                  </Button>
+                )}
+                {!user && (
+                  <Button
+                    onClick={() => {
+                      // Redirecionar para página de login ou mostrar modal de login
+                      window.location.href = '/login';
+                    }}
+                    className="inline-flex items-center gap-2 py-3 px-6 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
+                  >
+                    Fazer login para ver mais
                   </Button>
                 )}
               </div>

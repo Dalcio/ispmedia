@@ -33,20 +33,46 @@ interface PlayerState {
 export const useAudioPlayer = (initialPlaylist: AudioTrack[] = []) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   
-  const [state, setState] = useState<PlayerState>({
-    isPlaying: false,
-    currentTime: 0,
-    duration: 0,
-    volume: 1,
-    isMuted: false,
-    isRepeat: false,
-    isShuffle: false,
-    isLoading: false,
-    error: null,
-    currentTrack: initialPlaylist[0] || null,
-    playlist: initialPlaylist,
-    currentTrackIndex: 0
-  });
+  // Carregar estado persistido do localStorage
+  const getInitialState = (): PlayerState => {
+    if (typeof window !== 'undefined') {
+      const savedLoop = localStorage.getItem('audioPlayer.isRepeat');
+      const savedShuffle = localStorage.getItem('audioPlayer.isShuffle');
+      const savedVolume = localStorage.getItem('audioPlayer.volume');
+      
+      return {
+        isPlaying: false,
+        currentTime: 0,
+        duration: 0,
+        volume: savedVolume ? parseFloat(savedVolume) : 1,
+        isMuted: false,
+        isRepeat: savedLoop ? JSON.parse(savedLoop) : false,
+        isShuffle: savedShuffle ? JSON.parse(savedShuffle) : false,
+        isLoading: false,
+        error: null,
+        currentTrack: initialPlaylist[0] || null,
+        playlist: initialPlaylist,
+        currentTrackIndex: 0
+      };
+    }
+    
+    return {
+      isPlaying: false,
+      currentTime: 0,
+      duration: 0,
+      volume: 1,
+      isMuted: false,
+      isRepeat: false,
+      isShuffle: false,
+      isLoading: false,
+      error: null,
+      currentTrack: initialPlaylist[0] || null,
+      playlist: initialPlaylist,
+      currentTrackIndex: 0
+    };
+  };
+  
+  const [state, setState] = useState<PlayerState>(getInitialState());
 
   // Atualizar estado de forma segura
   const updateState = useCallback((updates: Partial<PlayerState>) => {
@@ -140,7 +166,6 @@ export const useAudioPlayer = (initialPlaylist: AudioTrack[] = []) => {
       currentTime: 0
     });
   }, [state.playlist, state.currentTrackIndex, state.isShuffle, updateState]);
-
   // Função para alterar volume
   const setVolume = useCallback((volume: number) => {
     if (!audioRef.current) return;
@@ -151,6 +176,11 @@ export const useAudioPlayer = (initialPlaylist: AudioTrack[] = []) => {
       volume: clampedVolume, 
       isMuted: clampedVolume === 0 
     });
+    
+    // Persistir no localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('audioPlayer.volume', clampedVolume.toString());
+    }
   }, [updateState]);
 
   // Função para alternar mute
@@ -165,15 +195,26 @@ export const useAudioPlayer = (initialPlaylist: AudioTrack[] = []) => {
       updateState({ isMuted: true });
     }
   }, [state.isMuted, state.volume, updateState]);
-
   // Função para alternar repeat
   const toggleRepeat = useCallback(() => {
-    updateState({ isRepeat: !state.isRepeat });
+    const newRepeatState = !state.isRepeat;
+    updateState({ isRepeat: newRepeatState });
+    
+    // Persistir no localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('audioPlayer.isRepeat', JSON.stringify(newRepeatState));
+    }
   }, [state.isRepeat, updateState]);
 
   // Função para alternar shuffle
   const toggleShuffle = useCallback(() => {
-    updateState({ isShuffle: !state.isShuffle });
+    const newShuffleState = !state.isShuffle;
+    updateState({ isShuffle: newShuffleState });
+    
+    // Persistir no localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('audioPlayer.isShuffle', JSON.stringify(newShuffleState));
+    }
   }, [state.isShuffle, updateState]);
 
   // Função para carregar nova playlist

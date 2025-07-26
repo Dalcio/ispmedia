@@ -62,6 +62,12 @@ interface GlobalAudioContextType {
   hasNext: boolean;
   hasPrevious: boolean;
 
+  // Playback modes
+  isRepeat: boolean;
+  isShuffle: boolean;
+  setIsRepeat: (repeat: boolean) => void;
+  setIsShuffle: (shuffle: boolean) => void;
+
   // Controls
   togglePlayPause: () => void;
   seek: (time: number) => void;
@@ -85,8 +91,22 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
   const [currentPlaylist, setCurrentPlaylist] = useState<Track[]>([]);
   const [currentPlaylistTitle, setCurrentPlaylistTitle] = useState<
     string | null
-  >(null);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  >(null);  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  // Playback modes with localStorage persistence
+  const [isRepeat, setIsRepeat] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('audioRepeat') === 'true';
+    }
+    return false;
+  });
+  
+  const [isShuffle, setIsShuffle] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('audioShuffle') === 'true';
+    }
+    return false;
+  });
 
   // Track play count incremented status
   const hasIncrementedPlayCount = useRef<boolean>(false);
@@ -94,6 +114,19 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
   // Computed playlist values
   const hasNext = currentTrackIndex < currentPlaylist.length - 1;
   const hasPrevious = currentTrackIndex > 0;
+
+  // Persist repeat and shuffle settings
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('audioRepeat', isRepeat.toString());
+    }
+  }, [isRepeat]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('audioShuffle', isShuffle.toString());
+    }
+  }, [isShuffle]);
 
   // Update audio element when volume changes
   useEffect(() => {
@@ -137,16 +170,42 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
     const audio = audioRef.current;
     if (!audio) return;
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const handleDurationChange = () => setDuration(audio.duration);
-    const handleEnded = () => {
+    const handleDurationChange = () => setDuration(audio.duration);    const handleEnded = () => {
       setIsPlaying(false);
-      // Auto-play next track if available
+      
+      // Handle repeat mode
+      if (isRepeat && currentTrack) {
+        // Repeat current track
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
+          }
+        }, 100);
+        return;
+      }
+      
+      // Handle shuffle mode
+      if (isShuffle && currentPlaylist.length > 1) {
+        // Get random track index (excluding current)
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * currentPlaylist.length);
+        } while (randomIndex === currentTrackIndex && currentPlaylist.length > 1);
+        
+        const nextTrack = currentPlaylist[randomIndex];
+        setCurrentTrackIndex(randomIndex);
+        playTrackDirectly(nextTrack);
+        return;
+      }
+      
+      // Auto-play next track if available (normal mode)
       if (currentTrackIndex < currentPlaylist.length - 1) {
         const nextTrack = currentPlaylist[currentTrackIndex + 1];
         setCurrentTrackIndex(currentTrackIndex + 1);
         playTrackDirectly(nextTrack);
       }
-    };    const handlePlay = () => {
+    };const handlePlay = () => {
       setIsPlaying(true);
       
       // Increment play count when track actually starts playing (not just when called)
@@ -218,8 +277,26 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
       registrarReproducao(user.uid, track.id).catch(() => {});
     }
   };
-
   const playNext = () => {
+    // Handle shuffle mode
+    if (isShuffle && currentPlaylist.length > 1) {
+      // Get random track index (excluding current)
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * currentPlaylist.length);
+      } while (randomIndex === currentTrackIndex && currentPlaylist.length > 1);
+      
+      const nextTrack = currentPlaylist[randomIndex];
+      setCurrentTrackIndex(randomIndex);
+      playTrackDirectly(nextTrack);
+      // Register activity: skip (pulo)
+      if (user && currentTrack) {
+        registrarPulo(user.uid, currentTrack.id).catch(() => {});
+      }
+      return;
+    }
+    
+    // Normal mode: play next track sequentially
     if (currentTrackIndex < currentPlaylist.length - 1) {
       const nextTrack = currentPlaylist[currentTrackIndex + 1];
       setCurrentTrackIndex(currentTrackIndex + 1);
@@ -230,8 +307,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
       }
     }
   };
-
   const playPrevious = () => {
+    // In shuffle mode, still allow going to previous track sequentially
+    // (Most music apps work this way for better UX)
     if (currentTrackIndex > 0) {
       const prevTrack = currentPlaylist[currentTrackIndex - 1];
       setCurrentTrackIndex(currentTrackIndex - 1);
@@ -311,8 +389,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
   };
 
   return (
-    <GlobalAudioContext.Provider
-      value={{
+    <GlobalAudioContext.Provider      value={{
         playTrack,
         playNext,
         playPrevious,
@@ -329,6 +406,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {  //
         currentTrackIndex,
         hasNext,
         hasPrevious,
+        isRepeat,
+        isShuffle,
+        setIsRepeat,
+        setIsShuffle,
         togglePlayPause,
         seek,
         setVolume,

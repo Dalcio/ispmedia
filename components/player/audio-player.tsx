@@ -13,6 +13,7 @@ import {
   Shuffle,
 } from "lucide-react";
 import { useAudioPlayer, type AudioTrack } from "@/hooks/use-audio-player";
+import AudioWaves from "./audio-waves";
 
 // Props do componente
 interface AudioPlayerProps {
@@ -99,11 +100,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   const progressPercentage = getProgressPercentage();
-
   return (
     <div className={`audio-player ${className}`}>
       {/* Audio element - hidden */}
-      <audio ref={audioRef} preload="metadata" />
+      <audio ref={audioRef} preload="metadata" loop={isRepeat} />
 
       {/* Player Container */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-800/50 shadow-2xl">
@@ -138,10 +138,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   {currentTrack.artist}
                 </p>
               </div>
-            </div>
-
-            {/* Controls */}
+            </div>            {/* Controls */}
             <div className="flex flex-col items-center gap-2 flex-1 max-w-2xl">
+              {/* Audio Waves - Positioned above controls */}
+              <AudioWaves isPlaying={isPlaying} className="mb-1" />
+              
               {/* Control Buttons */}
               <div className="flex items-center gap-2">
                 <button
