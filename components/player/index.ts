@@ -1,9 +1,8 @@
 // Player Components Exports
-export { default as AudioPlayer } from './audio-player';
-export { default as AudioPlayerDemo } from './audio-player-demo';
+export { default as AudioPlayer } from "./audio-player";
 
 // Hook exports
-export { useAudioPlayer } from '@/hooks/use-audio-player';
+export { useAudioPlayer } from "@/hooks/use-audio-player";
 
 // Types
 export interface AudioTrack {
