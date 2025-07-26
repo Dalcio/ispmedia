@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
-import { TrackComments } from "@/components/comments";
+import { TrackComments } from "@/components/comments/track-comments-new";
+import { TrackModeration } from "@/components/comments/track-moderation-new";
+import { useAuth } from "@/contexts/auth-context";
 import {
   X,
   Play,
@@ -13,6 +15,7 @@ import {
   Clock,
   User,
   MessageCircle,
+  Shield,
 } from "lucide-react";
 import { formatFileSize, formatDuration } from "@/lib/upload";
 
@@ -28,6 +31,7 @@ interface Track {
   createdAt: any;
   mimeType: string;
   playCount?: number;
+  createdBy?: string; // ID do usuário que criou a faixa
 }
 
 interface TrackDetailsModalProps {
@@ -45,9 +49,13 @@ export function TrackDetailsModal({
   onPlay,
   onEdit,
 }: TrackDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "comments">("details");
+  const [activeTab, setActiveTab] = useState<"details" | "comments" | "moderation">("details");
+  const { user } = useAuth();
 
   if (!track) return null;
+
+  // Verificar se o usuário atual é o criador da faixa
+  const isTrackOwner = user && track.createdBy === user.uid;
 
   const formatDate = (timestamp: any) => {
     try {
@@ -115,9 +123,7 @@ export function TrackDetailsModal({
               <X className="w-4 h-4" />
             </button>
           </div>
-        </div>
-
-        {/* Tabs */}
+        </div>        {/* Tabs */}
         <div className="flex border-b border-border-light">
           <button
             onClick={() => setActiveTab("details")}
@@ -142,6 +148,21 @@ export function TrackDetailsModal({
             <MessageCircle className="w-4 h-4" />
             Comentários
           </button>
+
+          {/* Aba de Moderação - Visível apenas para o criador da faixa */}
+          {isTrackOwner && (
+            <button
+              onClick={() => setActiveTab("moderation")}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${
+                activeTab === "moderation"
+                  ? "text-primary-500 border-b-2 border-primary-500 bg-glass-200"
+                  : "text-text-muted hover:text-text-primary hover:bg-glass-100"
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+              Moderação
+            </button>
+          )}
         </div>
 
         {/* Content */}
@@ -206,6 +227,10 @@ export function TrackDetailsModal({
           )}
 
           {activeTab === "comments" && <TrackComments trackId={track.id} />}
+          
+          {activeTab === "moderation" && isTrackOwner && (
+            <TrackModeration trackId={track.id} />
+          )}
         </div>
       </div>
     </Modal>

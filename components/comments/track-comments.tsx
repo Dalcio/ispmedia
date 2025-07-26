@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useComments, type Comment } from "@/hooks/use-comments";
+import { useTrackComments, useCommentSubmission } from "@/hooks/use-track-comments";
 import { useAuth } from "@/contexts/auth-context";
-import { Send, MessageCircle, User } from "lucide-react";
+import { Send, MessageCircle, User, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import type { Comment } from "@/lib/services/comments";
 
 interface TrackCommentsProps {
   trackId: string;
@@ -13,7 +16,8 @@ interface TrackCommentsProps {
 }
 
 export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
-  const { comments, loading, submitting, addComment } = useComments(trackId);
+  const { comments, loading } = useTrackComments(trackId);
+  const { submitComment, submitting } = useCommentSubmission(trackId);
   const { user } = useAuth();
   const [newComment, setNewComment] = useState("");
   const [focused, setFocused] = useState(false);
@@ -21,7 +25,9 @@ export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const success = await addComment({ content: newComment });
+    if (!newComment.trim()) return;
+
+    const success = await submitComment(newComment);
     if (success) {
       setNewComment("");
       setFocused(false);
@@ -76,16 +82,16 @@ export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
       </div>
 
       {/* Form para novo comentário */}
-      {user && (
+      {user ? (
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="relative">
-            <textarea
+            <Textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder="Adicione um comentário..."
-              className={`w-full p-3 rounded-xl bg-glass-100 border transition-all duration-200 resize-none ${
+              className={`min-h-[80px] transition-all duration-200 resize-none ${
                 focused
                   ? "border-primary-500/50 bg-glass-200"
                   : "border-border-light hover:border-border-medium"
@@ -111,7 +117,12 @@ export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
           {/* Botão de envio e validação */}
           <div className="flex items-center justify-between">
             <div className="text-xs text-text-muted">
-              {newComment.trim().length === 0 && focused && (
+              {!user && (
+                <span className="text-info-500">
+                  Faça login para comentar
+                </span>
+              )}
+              {user && newComment.trim().length === 0 && focused && (
                 <span className="text-error-500">
                   O comentário não pode estar vazio
                 </span>
@@ -119,22 +130,34 @@ export function TrackComments({ trackId, className = "" }: TrackCommentsProps) {
               {newComment.length > maxLength && (
                 <span className="text-error-500">Comentário muito longo</span>
               )}
+              {user && isCommentValid && (
+                <span className="text-info-500">
+                  💡 Seu comentário será publicado após aprovação do autor.
+                </span>
+              )}
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={!isCommentValid || submitting}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`flex items-center gap-2 ${
                 isCommentValid && !submitting
-                  ? "bg-primary-500 hover:bg-primary-600 text-dark-900 shadow-primary"
-                  : "bg-glass-200 text-text-disabled cursor-not-allowed border border-border-subtle"
+                  ? "bg-primary-500 hover:bg-primary-600 text-dark-900"
+                  : ""
               }`}
             >
               <Send className="w-4 h-4" />
               {submitting ? "Enviando..." : "Comentar"}
-            </button>
+            </Button>
           </div>
         </form>
+      ) : (
+        <div className="p-4 rounded-xl bg-glass-100 border border-border-subtle text-center">
+          <p className="text-sm text-text-muted">
+            <User className="w-4 h-4 inline mr-2" />
+            Faça login para comentar
+          </p>
+        </div>
       )}
 
       {/* Lista de comentários */}
@@ -178,18 +201,27 @@ function CommentItem({
     <div className="flex gap-3 p-3 rounded-xl bg-glass-100 border border-border-subtle hover:bg-glass-200 transition-all duration-200 backdrop-blur-sm">
       {/* Avatar */}
       <div className="flex-shrink-0">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-dark-900 text-xs font-medium shadow-primary">
-          {getInitials(comment.userName)}
-        </div>
+        {comment.userAvatar ? (
+          <img
+            src={comment.userAvatar}
+            alt={comment.userDisplayName}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-dark-900 text-xs font-medium shadow-primary">
+            {getInitials(comment.userDisplayName)}
+          </div>
+        )}
       </div>
 
       {/* Conteúdo */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm font-medium text-text-primary">
-            {comment.userName}
+            {comment.userDisplayName}
           </span>
-          <span className="text-xs text-text-muted">
+          <span className="text-xs text-text-muted flex items-center gap-1">
+            <Clock className="w-3 h-3" />
             {formatTimestamp(comment.timestamp)}
           </span>
         </div>
