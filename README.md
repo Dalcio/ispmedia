@@ -1,53 +1,36 @@
-![ISP Media Project Logo](logo.png)
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-# ISP Media Project
+## Getting Started
 
----
+First, run the development server:
 
-## 🚀 Project Structure
-
-This project is organized into **two main branches**:
-
-- **frontend**: Contains all the code and documentation for the user interface.
-- **backend**: Contains all the code and documentation for the server-side logic and APIs.
-
----
-
-## 🌳 Branch Management
-
-To switch between branches, use the following commands:
-
-```sh
- git checkout frontend   # Switch to the frontend branch
- git checkout backend    # Switch to the backend branch
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
----
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 💡 Recommended Workflow
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-We recommend **cloning this repository twice**:
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-1. **One folder for the frontend**
-2. **Another folder for the backend**
+## Learn More
 
-This allows you to work on both parts independently and run them simultaneously if needed.
+To learn more about Next.js, take a look at the following resources:
 
-**Example:**
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```sh
-git clone <repo-url> ispmedia-frontend
-cd ispmedia-frontend
-git checkout frontend
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-# In a separate folder
-git clone <repo-url> ispmedia-backend
-cd ispmedia-backend
-git checkout backend
-```
+## Deploy on Vercel
 
----
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## 📚 In-Depth Documentation
-
-You will find **detailed explanations, setup instructions, and usage guides** inside each branch's README file. Please refer to them for more information about running and developing each part of the project.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
