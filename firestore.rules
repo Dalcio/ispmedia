@@ -6,8 +6,7 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
-    // Tracks - More permissive rules for creation
+      // Tracks - More permissive rules for creation
     match /tracks/{trackId} {
       // Allow authenticated users to read all tracks
       allow read: if request.auth != null;
@@ -23,6 +22,24 @@ service cloud.firestore {
       // Allow users to update/delete only their own tracks
       allow update, delete: if request.auth != null 
                             && request.auth.uid == resource.data.createdBy;
+      
+      // Comments subcollection
+      match /comments/{commentId} {
+        // Allow authenticated users to read all comments
+        allow read: if request.auth != null;
+        
+        // Allow authenticated users to create comments with proper data
+        allow create: if request.auth != null 
+                      && request.auth.uid == request.resource.data.userId
+                      && request.resource.data.keys().hasAll(['userId', 'userName', 'trackId', 'content'])
+                      && request.resource.data.content is string
+                      && request.resource.data.content.size() > 0
+                      && request.resource.data.content.size() <= 500;
+        
+        // Allow users to update/delete only their own comments
+        allow update, delete: if request.auth != null 
+                              && request.auth.uid == resource.data.userId;
+      }
     }
     
     // Playlists - Users can read all playlists but only write their own

@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
 import { Button } from "@/components/ui/button";
 import { EditTrackModal } from "@/components/modals/edit-track-modal";
+import { TrackDetailsModal } from "@/components/modals/track-details-modal";
 import {
   Play,
   Edit,
@@ -25,7 +26,7 @@ import {
   Calendar,
   Tag,
   FileAudio,
-  Repeat,
+  Info,
 } from "lucide-react";
 import { formatFileSize, formatDuration } from "@/lib/upload";
 
@@ -51,13 +52,10 @@ export function UserTrackList({
   onPlayTrack,
 }: UserTrackListProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [deletingTrackId, setDeletingTrackId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);  const [deletingTrackId, setDeletingTrackId] = useState<string | null>(null);
   const [editingTrack, setEditingTrack] = useState<Track | null>(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [repeatingTracks, setRepeatingTracks] = useState<Set<string>>(
-    new Set()
-  );
+  const [showEditModal, setShowEditModal] = useState(false);  const [detailsTrack, setDetailsTrack] = useState<Track | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const { user } = useAuth();
   const toast = useToast();
@@ -164,23 +162,20 @@ export function UserTrackList({
     setEditingTrack(track);
     setShowEditModal(true);
     onEditTrack?.(track);
-  };
-  const handleTrackUpdated = (updatedTrack: Track) => {
+  };  const handleTrackUpdated = (updatedTrack: Track) => {
     setTracks((prev) =>
       prev.map((t) => (t.id === updatedTrack.id ? updatedTrack : t))
     );
   };
 
-  const handleToggleRepeat = (trackId: string) => {
-    setRepeatingTracks((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(trackId)) {
-        newSet.delete(trackId);
-      } else {
-        newSet.add(trackId);
-      }
-      return newSet;
-    });
+  const handleShowDetails = (track: Track) => {
+    setDetailsTrack(track);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setDetailsTrack(null);
   };
 
   const formatDate = (timestamp: any) => {
@@ -283,23 +278,16 @@ export function UserTrackList({
               className="flex items-center gap-1 text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
             >
               <Play className="h-4 w-4" />
-              <span className="text-xs">Play</span>
-            </Button>
+              <span className="text-xs">Play</span>            </Button>
 
             <Button
               size="sm"
               variant="ghost"
-              onClick={() => handleToggleRepeat(track.id)}
-              className={`flex items-center gap-1 transition-all duration-200 ${
-                repeatingTracks.has(track.id)
-                  ? "text-primary-500 bg-primary-500/10 hover:bg-primary-500/20"
-                  : "text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
-              }`}
+              onClick={() => handleShowDetails(track)}
+              className="flex items-center gap-1 text-text-muted hover:text-blue-500 hover:bg-blue-500/10"
             >
-              <Repeat className="h-4 w-4" />
-              <span className="text-xs">
-                {repeatingTracks.has(track.id) ? "Repeating" : "Repeat"}
-              </span>
+              <Info className="h-4 w-4" />
+              <span className="text-xs">Detalhes</span>
             </Button>
 
             <Button
@@ -337,8 +325,7 @@ export function UserTrackList({
             {tracks.length} {tracks.length === 1 ? "track" : "tracks"} uploaded
           </p>
         </div>
-      )}
-      {/* Edit Track Modal */}
+      )}      {/* Edit Track Modal */}
       <EditTrackModal
         isOpen={showEditModal}
         onClose={() => {
@@ -347,6 +334,15 @@ export function UserTrackList({
         }}
         track={editingTrack}
         onTrackUpdated={handleTrackUpdated}
+      />
+
+      {/* Track Details Modal */}
+      <TrackDetailsModal
+        isOpen={showDetailsModal}
+        onClose={handleCloseDetailsModal}
+        track={detailsTrack}
+        onPlay={handlePlayTrack}
+        onEdit={handleEditTrack}
       />
     </div>
   );
