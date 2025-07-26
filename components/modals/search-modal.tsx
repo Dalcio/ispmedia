@@ -17,6 +17,7 @@ import { debounce } from "@/lib/utils";
 import { db } from "@/firebase/config";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
 import { useTracks } from "@/contexts/tracks-context";
+import { useAuth } from "@/contexts/auth-context";
 
 // Interfaces para os resultados da busca
 interface TrackResult {
@@ -60,6 +61,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const audioPlayer = useGlobalAudio();
   const { tracks: userTracks } = useTracks(); // Get tracks from context
+  const { user } = useAuth(); // Get authentication status
 
   // Resetar seleção quando resultados mudarem
   useEffect(() => {
@@ -94,13 +96,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     } else if (e.key === "Escape") {
       onClose();
     }
-  }; // Função para buscar tracks no Firestore
+  };  // Função para buscar tracks no Firestore
   const searchTracks = async (searchQuery: string): Promise<TrackResult[]> => {
     try {
-      console.log("🎵 SearchModal: Buscando tracks para:", searchQuery);
-
-      // First, try to use user tracks from context for faster search
-      if (userTracks.length > 0) {
+      console.log("🎵 SearchModal: Buscando tracks para:", searchQuery);      // First, try to use user tracks from context for faster search (only if authenticated)
+      if (user && userTracks.length > 0) {
         console.log(
           "🎵 SearchModal: Using tracks from context:",
           userTracks.length
@@ -134,30 +134,35 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         }
       }
 
-      // Fallback to Firestore search for global tracks
-      console.log("🎵 SearchModal: Fallback to Firestore search");
+      // Search for public tracks in Firestore (works for both authenticated and unauthenticated users)
+      console.log("🎵 SearchModal: Searching public tracks in Firestore");
       const tracksRef = collection(db, "tracks");
 
-      // Tentar buscar todos os tracks primeiro para debug
-      const allTracksQuery = firestoreQuery(tracksRef, limit(50));
-      const allSnapshot = await getDocs(allTracksQuery);
+      // Query for public tracks only
+      const publicTracksQuery = firestoreQuery(
+        tracksRef, 
+        where("isPublic", "==", true),
+        limit(50)
+      );
+      const allSnapshot = await getDocs(publicTracksQuery);
 
-      console.log("🎵 Total de tracks na coleção:", allSnapshot.size);
+      console.log("🎵 Total public tracks found:", allSnapshot.size);
 
       if (allSnapshot.size === 0) {
-        console.log("⚠️ Nenhum track encontrado na coleção");
+        console.log("⚠️ No public tracks found");
         return [];
       }
 
-      // Buscar por título que contém a query (mais flexível)
+      // Filter tracks by search query
       const tracks: TrackResult[] = [];
 
       allSnapshot.forEach((doc) => {
         const data = doc.data();
         const title = (data.title || "").toLowerCase();
+        const genre = (data.genre || "").toLowerCase();
 
-        // Busca mais flexível - se o título contém a query
-        if (title.includes(searchQuery.toLowerCase())) {
+        // Search in title or genre
+        if (title.includes(searchQuery.toLowerCase()) || genre.includes(searchQuery.toLowerCase())) {
           tracks.push({
             id: doc.id,
             title: data.title || "",
@@ -169,15 +174,15 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             createdAt: data.createdAt,
             mimeType: data.mimeType || "",
             artistName: data.artistName,
-            userUid: data.userUid,
+            userUid: data.createdBy,
           });
         }
       });
 
-      console.log("🎵 Tracks encontradas:", tracks.length, tracks);
-      return tracks.slice(0, 10); // Limitar a 10 resultados
+      console.log("🎵 Public tracks found matching search:", tracks.length, tracks);
+      return tracks.slice(0, 10); // Limit to 10 results
     } catch (error) {
-      console.error("❌ Erro ao buscar tracks:", error);
+      console.error("❌ Error searching tracks:", error);
       return [];
     }
   };
@@ -320,18 +325,22 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Buscar" size="lg">
-      <div className="space-y-4">
-        {/* Search Input */}
+      <div className="space-y-4">        {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
           <Input
-            placeholder="Busque por músicas ou artistas…"
+            placeholder={user ? "Busque por músicas ou artistas…" : "Busque por músicas públicas…"}
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
             className="pl-10"
             autoFocus
           />
+          {!user && (
+            <p className="text-white/50 text-xs mt-1 ml-10">
+              Você está vendo apenas músicas públicas. Faça login para ver mais.
+            </p>
+          )}
         </div>
 
         {/* Loading */}
@@ -445,36 +454,35 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
                 <h3 className="text-xl font-medium text-white mb-3">
                   Nenhum resultado encontrado
-                </h3>
-                <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto">
-                  Não encontramos músicas ou artistas com "{query}". Que tal
-                  fazer upload de uma nova música?
+                </h3>                <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto">
+                  Não encontramos músicas{user ? " ou artistas" : ""} com "{query}". 
+                  {user ? " Que tal fazer upload de uma nova música?" : " Experimente outros termos de busca."}
                 </p>
-                <Button
-                  onClick={() => {
-                    console.log("🎵 Botão upload clicado no search");
-                    // Disparar evento para abrir modal de upload
-                    const event = new CustomEvent("openUploadModal");
-                    window.dispatchEvent(event);
-                    onClose(); // Fechar modal de search
-                  }}
-                  className="inline-flex items-center gap-2 py-3 px-6 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
-                >
-                  <Upload className="h-5 w-5" />
-                  Fazer upload de música
-                </Button>
+                {user && (
+                  <Button
+                    onClick={() => {
+                      console.log("🎵 Botão upload clicado no search");
+                      // Disparar evento para abrir modal de upload
+                      const event = new CustomEvent("openUploadModal");
+                      window.dispatchEvent(event);
+                      onClose(); // Fechar modal de search
+                    }}
+                    className="inline-flex items-center gap-2 py-3 px-6 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
+                  >
+                    <Upload className="h-5 w-5" />
+                    Fazer upload de música
+                  </Button>
+                )}
               </div>
             )}
           </div>
-        )}
-
-        {/* Empty State */}
+        )}        {/* Empty State */}
         {!query && (
           <div className="text-center py-8">
             <Search className="h-16 w-16 text-white/20 mx-auto mb-4" />
             <p className="text-white/60">Digite algo para começar a buscar</p>
             <p className="text-white/40 text-sm mt-2">
-              Use "/" ou "Ctrl + S" para abrir rapidamente
+              {user ? 'Use "/" ou "Ctrl + S" para abrir rapidamente' : 'Buscando músicas públicas disponíveis'}
             </p>
           </div>
         )}

@@ -8,6 +8,7 @@ export interface UploadTrackParams {
   genre: string;
   audioFile: File;
   userId: string;
+  isPublic?: boolean; // Optional, defaults to true
   onProgress?: (percentage: number, message: string) => void;
 }
 
@@ -22,6 +23,7 @@ export interface TrackDocument {
   fileSize: number;
   duration?: number; // Em segundos
   mimeType: string;
+  isPublic: boolean; // Public/private visibility
 }
 
 /**
@@ -32,6 +34,7 @@ export async function uploadTrack({
   genre,
   audioFile,
   userId,
+  isPublic = true, // Default to public
   onProgress,
 }: UploadTrackParams): Promise<TrackDocument> {
   // Validações básicas
@@ -183,9 +186,7 @@ export async function uploadTrack({
     // Aguardar conclusão do upload
     const audioUrl = await uploadPromise;
 
-    onProgress?.(85, "Salvando informações da música...");
-
-    // Preparar documento para o Firestore
+    onProgress?.(85, "Salvando informações da música...");    // Preparar documento para o Firestore
     const trackData: Omit<TrackDocument, "duration"> = {
       title: title.trim(),
       genre,
@@ -195,6 +196,7 @@ export async function uploadTrack({
       fileName: audioFile.name,
       fileSize: audioFile.size,
       mimeType: audioFile.type || "audio/mpeg",
+      isPublic: isPublic, // Use the parameter value
     };
 
     console.log("💾 Criando documento no Firestore:", trackData);

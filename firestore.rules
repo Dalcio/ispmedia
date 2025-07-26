@@ -5,20 +5,23 @@ service cloud.firestore {
     // Users can only access their own user document
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-      // Tracks - More permissive rules for creation
+    }    // Tracks - Allow unauthenticated users to read public tracks
     match /tracks/{trackId} {
-      // Allow authenticated users to read all tracks
-      allow read: if request.auth != null;
+      // Allow everyone (including unauthenticated) to read public tracks
+      // Allow authenticated users to read all tracks (including their private ones)
+      allow read: if resource.data.isPublic == true || 
+                     (request.auth != null && request.auth.uid == resource.data.createdBy);
       
-      // Allow authenticated users to create tracks with proper data
+      // Allow authenticated users to create tracks with proper data including isPublic field
       allow create: if request.auth != null 
                     && request.auth.uid == request.resource.data.createdBy
-                    && request.resource.data.keys().hasAll(['title', 'genre', 'createdBy', 'audioUrl'])
+                    && request.resource.data.keys().hasAll(['title', 'genre', 'createdBy', 'audioUrl', 'isPublic'])
                     && request.resource.data.title is string
                     && request.resource.data.genre is string
-                    && request.resource.data.audioUrl is string;
-        // Allow users to update/delete only their own tracks
+                    && request.resource.data.audioUrl is string
+                    && (request.resource.data.isPublic == true || request.resource.data.isPublic == false);
+        
+      // Allow users to update/delete only their own tracks
       allow update, delete: if request.auth != null 
                             && request.auth.uid == resource.data.createdBy;
     }

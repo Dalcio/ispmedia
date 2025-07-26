@@ -19,6 +19,7 @@ interface FormData {
   title: string;
   genre: string;
   audioFile: File | null;
+  isPublic: boolean;
 }
 
 interface UploadProgress {
@@ -68,11 +69,11 @@ export function UploadMusicModal({
   preSelectedFile,
 }: UploadMusicModalProps) {
   console.log("🎵 UploadMusicModal renderizado, isOpen:", isOpen);
-
   const [formData, setFormData] = useState<FormData>({
     title: "",
     genre: "",
     audioFile: null,
+    isPublic: true, // Default to public
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [uploadProgress, setUploadProgress] = useState<UploadProgress>({
@@ -94,12 +95,12 @@ export function UploadMusicModal({
       setFormData((prev) => ({ ...prev, audioFile: preSelectedFile }));
       setErrors((prev) => ({ ...prev, audioFile: "" }));
     }
-  }, [preSelectedFile, isOpen]);
-  const resetForm = () => {
+  }, [preSelectedFile, isOpen]);  const resetForm = () => {
     setFormData({
       title: "",
       genre: "",
       audioFile: null,
+      isPublic: true, // Default to public
     });
     setErrors({});
     setUploadProgress({
@@ -451,6 +452,48 @@ export function UploadMusicModal({
           {errors.genre && (
             <p className="text-sm text-error-500 mt-1">{errors.genre}</p>
           )}
+        </div>
+
+        {/* Visibilidade */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-text-subtitle">
+            Visibilidade da Música
+          </label>
+          <div className="space-y-3">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="radio"
+                name="visibility"
+                checked={formData.isPublic}
+                onChange={() => setFormData(prev => ({ ...prev, isPublic: true }))}
+                disabled={isUploading}
+                className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
+              />
+              <div className="flex-1">
+                <div className="text-text-primary font-medium">Pública</div>
+                <div className="text-sm text-text-muted">
+                  Qualquer pessoa pode encontrar e ouvir esta música
+                </div>
+              </div>
+            </label>
+            
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="radio"
+                name="visibility"
+                checked={!formData.isPublic}
+                onChange={() => setFormData(prev => ({ ...prev, isPublic: false }))}
+                disabled={isUploading}
+                className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
+              />
+              <div className="flex-1">
+                <div className="text-text-primary font-medium">Privada</div>
+                <div className="text-sm text-text-muted">
+                  Apenas você pode ver e ouvir esta música
+                </div>
+              </div>
+            </label>
+          </div>
         </div>
 
         {/* Upload de Arquivo */}

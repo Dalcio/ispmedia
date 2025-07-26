@@ -24,6 +24,7 @@ interface Track {
   createdAt: any;
   mimeType: string;
   playCount?: number;
+  isPublic?: boolean;
 }
 
 export type { Track };

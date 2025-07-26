@@ -26,6 +26,7 @@ interface Track {
   duration?: number;
   createdAt: any;
   mimeType: string;
+  isPublic?: boolean;
 }
 
 interface AudioTrack {
