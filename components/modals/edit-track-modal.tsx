@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebase/config';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Modal } from '@/components/ui/modal';
-import { X, Save, Loader2 } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/ui-button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Modal } from "@/components/ui/modal";
+import { X, Save, Loader2 } from "lucide-react";
 
 interface Track {
   id: string;
@@ -30,23 +30,24 @@ interface EditTrackModalProps {
   onTrackUpdated?: (updatedTrack: Track) => void;
 }
 
-export function EditTrackModal({ 
-  isOpen, 
-  onClose, 
-  track, 
-  onTrackUpdated 
+export function EditTrackModal({
+  isOpen,
+  onClose,
+  track,
+  onTrackUpdated,
 }: EditTrackModalProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    genre: ''
-  });  const toast = useToast();
+    title: "",
+    genre: "",
+  });
+  const toast = useToast();
 
   useEffect(() => {
     if (track) {
       setFormData({
-        title: track.title || '',
-        genre: track.genre || ''
+        title: track.title || "",
+        genre: track.genre || "",
       });
     }
   }, [track]);
@@ -63,21 +64,22 @@ export function EditTrackModal({
     try {
       setLoading(true);
 
-      const trackRef = doc(db, 'tracks', track.id);
+      const trackRef = doc(db, "tracks", track.id);
       const updateData = {
         title: formData.title.trim(),
-        genre: formData.genre.trim() || 'Unknown',
-        updatedAt: new Date()
+        genre: formData.genre.trim() || "Unknown",
+        updatedAt: new Date(),
       };
 
-      await updateDoc(trackRef, updateData);      const updatedTrack = { ...track, ...updateData };
+      await updateDoc(trackRef, updateData);
+      const updatedTrack = { ...track, ...updateData };
       onTrackUpdated?.(updatedTrack);
 
       toast.success(`"${formData.title}" has been updated successfully`);
 
       onClose();
     } catch (error) {
-      console.error('Error updating track:', error);
+      console.error("Error updating track:", error);
       toast.error("Failed to update track. Please try again.");
     } finally {
       setLoading(false);
@@ -91,7 +93,7 @@ export function EditTrackModal({
   };
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
-      <div 
+      <div
         className="bg-white dark:bg-neutral-900 rounded-2xl p-6 w-full max-w-md mx-4"
         onClick={(e) => e.stopPropagation()}
       >
@@ -120,7 +122,9 @@ export function EditTrackModal({
             <Input
               type="text"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               placeholder="Enter track title"
               disabled={loading}
               className="w-full"
@@ -135,7 +139,9 @@ export function EditTrackModal({
             <Input
               type="text"
               value={formData.genre}
-              onChange={(e) => setFormData(prev => ({ ...prev, genre: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, genre: e.target.value }))
+              }
               placeholder="Enter genre (optional)"
               disabled={loading}
               className="w-full"

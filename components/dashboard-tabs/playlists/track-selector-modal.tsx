@@ -6,7 +6,7 @@ import { db } from "@/firebase/config";
 import { useTracks } from "@/contexts/tracks-context";
 import { useToast } from "@/hooks/use-toast";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { Input } from "@/components/ui/input";
 import { Music, Plus, Search } from "lucide-react";
 

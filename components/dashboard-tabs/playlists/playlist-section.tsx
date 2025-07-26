@@ -6,7 +6,7 @@ import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { PlaylistList } from "./playlist-list";
 import { PlaylistModal } from "@/components/modals/playlist-modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { Plus, ListMusic } from "lucide-react";
 
 interface PlaylistSectionProps {

@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { debounce } from "@/lib/utils";
 import { db } from "@/firebase/config";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
@@ -96,10 +96,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     } else if (e.key === "Escape") {
       onClose();
     }
-  };  // Função para buscar tracks no Firestore
+  }; // Função para buscar tracks no Firestore
   const searchTracks = async (searchQuery: string): Promise<TrackResult[]> => {
     try {
-      console.log("🎵 SearchModal: Buscando tracks para:", searchQuery);      // First, try to use user tracks from context for faster search (only if authenticated)
+      console.log("🎵 SearchModal: Buscando tracks para:", searchQuery); // First, try to use user tracks from context for faster search (only if authenticated)
       if (user && userTracks.length > 0) {
         console.log(
           "🎵 SearchModal: Using tracks from context:",
@@ -140,7 +140,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
       // Query for public tracks only
       const publicTracksQuery = firestoreQuery(
-        tracksRef, 
+        tracksRef,
         where("isPublic", "==", true),
         limit(50)
       );
@@ -162,7 +162,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         const genre = (data.genre || "").toLowerCase();
 
         // Search in title or genre
-        if (title.includes(searchQuery.toLowerCase()) || genre.includes(searchQuery.toLowerCase())) {
+        if (
+          title.includes(searchQuery.toLowerCase()) ||
+          genre.includes(searchQuery.toLowerCase())
+        ) {
           tracks.push({
             id: doc.id,
             title: data.title || "",
@@ -179,7 +182,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         }
       });
 
-      console.log("🎵 Public tracks found matching search:", tracks.length, tracks);
+      console.log(
+        "🎵 Public tracks found matching search:",
+        tracks.length,
+        tracks
+      );
       return tracks.slice(0, 10); // Limit to 10 results
     } catch (error) {
       console.error("❌ Error searching tracks:", error);
@@ -247,7 +254,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       const [tracks, artists] = await Promise.all([
         searchTracks(searchLower),
         searchArtists(searchQuery.trim()), // Manter case original para nomes
-      ]);      console.log("🔍 Resultados encontrados:", {
+      ]);
+      console.log("🔍 Resultados encontrados:", {
         tracks: tracks.length,
         artists: artists.length,
         tracksData: tracks,
@@ -288,11 +296,17 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Buscar" size="lg">
-      <div className="space-y-4">        {/* Search Input */}
+      <div className="space-y-4">
+        {" "}
+        {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
           <Input
-            placeholder={user ? "Busque por músicas ou artistas…" : "Busque por músicas públicas…"}
+            placeholder={
+              user
+                ? "Busque por músicas ou artistas…"
+                : "Busque por músicas públicas…"
+            }
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -305,7 +319,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             </p>
           )}
         </div>
-
         {/* Loading */}
         {isLoading && (
           <div className="text-center py-8">
@@ -313,7 +326,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <p className="text-white/60 mt-2">Buscando...</p>
           </div>
         )}
-
         {/* Results */}
         {!isLoading && query && (
           <div className="space-y-6 max-h-96 overflow-y-auto">
@@ -360,7 +372,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
               </div>
             )}
-
             {/* Artists */}
             {results.artists.length > 0 && (
               <div>
@@ -407,7 +418,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   })}
                 </div>
               </div>
-            )}            {/* No Results */}
+            )}{" "}
+            {/* No Results */}
             {results.tracks.length === 0 && results.artists.length === 0 && (
               <div className="text-center py-12">
                 <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -417,10 +429,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   Nenhum resultado encontrado
                 </h3>
                 <p className="text-white/60 text-sm mb-6 max-w-sm mx-auto">
-                  {user 
+                  {user
                     ? `Não encontramos músicas ou artistas com "${query}". Que tal fazer upload de uma nova música?`
-                    : `Não encontramos músicas públicas com "${query}". Experimente outros termos de busca ou faça login para ver mais conteúdo.`
-                  }
+                    : `Não encontramos músicas públicas com "${query}". Experimente outros termos de busca ou faça login para ver mais conteúdo.`}
                 </p>
                 {user && (
                   <Button
@@ -441,7 +452,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <Button
                     onClick={() => {
                       // Redirecionar para página de login ou mostrar modal de login
-                      window.location.href = '/login';
+                      window.location.href = "/login";
                     }}
                     className="inline-flex items-center gap-2 py-3 px-6 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg"
                   >
@@ -451,13 +462,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               </div>
             )}
           </div>
-        )}        {/* Empty State */}
+        )}{" "}
+        {/* Empty State */}
         {!query && (
           <div className="text-center py-8">
             <Search className="h-16 w-16 text-white/20 mx-auto mb-4" />
             <p className="text-white/60">Digite algo para começar a buscar</p>
             <p className="text-white/40 text-sm mt-2">
-              {user ? 'Use "/" ou "Ctrl + S" para abrir rapidamente' : 'Buscando músicas públicas disponíveis'}
+              {user
+                ? 'Use "/" ou "Ctrl + S" para abrir rapidamente'
+                : "Buscando músicas públicas disponíveis"}
             </p>
           </div>
         )}

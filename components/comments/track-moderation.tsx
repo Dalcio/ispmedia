@@ -1,10 +1,13 @@
 "use client";
 
-import { useTrackPendingComments, useCommentModeration } from "@/hooks/use-track-comments";
+import {
+  useTrackPendingComments,
+  useCommentModeration,
+} from "@/hooks/use-track-comments";
 import { Check, X, Clock, User, MessageCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import type { Comment } from "@/lib/services/comments";
 
 interface TrackModerationProps {
@@ -12,7 +15,10 @@ interface TrackModerationProps {
   className?: string;
 }
 
-export function TrackModeration({ trackId, className = "" }: TrackModerationProps) {
+export function TrackModeration({
+  trackId,
+  className = "",
+}: TrackModerationProps) {
   const { pendingComments, loading } = useTrackPendingComments(trackId);
   const { moderateComment, moderating } = useCommentModeration(trackId);
 

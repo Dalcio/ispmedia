@@ -5,7 +5,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { useTracks } from "@/contexts/tracks-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import {
   User,
   Mail,

@@ -15,7 +15,7 @@ import { db, storage } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { EditTrackModal } from "@/components/modals/edit-track-modal";
 import { TrackDetailsModal } from "@/components/modals/track-details-modal";
 import { PlayCountDisplay } from "@/components/ui/play-count-display";
@@ -247,7 +247,9 @@ export function UserTrackList({
             <div
               key={track.id}
               className="group bg-glass-100 hover:bg-glass-200 rounded-xl p-4 transition-all duration-200"
-            >              <div className="flex items-start gap-3">
+            >
+              {" "}
+              <div className="flex items-start gap-3">
                 {/* Ícone do arquivo */}
                 <div className="w-12 h-12 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                   <FileAudio className="h-6 w-6 text-primary-500" />
@@ -257,7 +259,8 @@ export function UserTrackList({
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <h4 className="font-medium text-text-primary truncate mb-1">
                     {track.title}
-                  </h4>                  <div className="flex items-center gap-4 text-sm text-text-muted mb-2">
+                  </h4>{" "}
+                  <div className="flex items-center gap-4 text-sm text-text-muted mb-2">
                     <div className="flex items-center gap-1">
                       <Tag className="h-3 w-3" />
                       <span>{track.genre}</span>
@@ -271,16 +274,21 @@ export function UserTrackList({
                       {track.isPublic ? (
                         <>
                           <Eye className="h-3 w-3 text-success-500" />
-                          <span className="text-success-500 text-xs">Pública</span>
+                          <span className="text-success-500 text-xs">
+                            Pública
+                          </span>
                         </>
                       ) : (
                         <>
                           <EyeOff className="h-3 w-3 text-warning-500" />
-                          <span className="text-warning-500 text-xs">Privada</span>
+                          <span className="text-warning-500 text-xs">
+                            Privada
+                          </span>
                         </>
                       )}
                     </div>
-                  </div>{" "}                  <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
+                  </div>{" "}
+                  <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
                     <span>{formatFileSize(track.fileSize)}</span>
                     {track.duration && (
                       <span>{formatDuration(track.duration)}</span>

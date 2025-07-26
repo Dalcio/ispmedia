@@ -1,18 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, query, where, onSnapshot, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { ListMusic, Check, X } from "lucide-react";
 
 interface Playlist {
   id: string;
   title: string;
-  visibility: 'public' | 'private';
+  visibility: "public" | "private";
   tracks: string[];
 }
 
@@ -27,11 +35,11 @@ export function PostUploadPlaylistSelector({
   isOpen,
   onClose,
   trackId,
-  trackTitle
+  trackTitle,
 }: PostUploadPlaylistSelectorProps) {
   const { user } = useAuth();
   const { success, error: showError } = useToast();
-  
+
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
@@ -53,7 +61,7 @@ export function PostUploadPlaylistSelector({
         id: doc.id,
         ...doc.data(),
       })) as Playlist[];
-      
+
       setPlaylists(playlistsData);
       setLoading(false);
     });
@@ -64,7 +72,7 @@ export function PostUploadPlaylistSelector({
   const handleAddToPlaylist = async () => {
     if (!selectedPlaylist) return;
 
-    const playlist = playlists.find(p => p.id === selectedPlaylist);
+    const playlist = playlists.find((p) => p.id === selectedPlaylist);
     if (!playlist) return;
 
     setAdding(true);
@@ -72,7 +80,7 @@ export function PostUploadPlaylistSelector({
       const playlistRef = doc(db, "playlists", selectedPlaylist);
       await updateDoc(playlistRef, {
         tracks: arrayUnion(trackId),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
 
       success(`"${trackTitle}" adicionada à playlist "${playlist.title}"`);
@@ -90,11 +98,7 @@ export function PostUploadPlaylistSelector({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Upload Concluído!"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Upload Concluído!">
       <div className="space-y-6">
         <div className="text-center">
           <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -111,7 +115,10 @@ export function PostUploadPlaylistSelector({
         {loading ? (
           <div className="space-y-3">
             {[...Array(2)].map((_, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 animate-pulse"
+              >
                 <div className="w-10 h-10 bg-glass-200 rounded-lg" />
                 <div className="flex-1">
                   <div className="h-4 bg-glass-200 rounded w-3/4 mb-1" />
@@ -146,21 +153,24 @@ export function PostUploadPlaylistSelector({
                   <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <ListMusic className="h-5 w-5 text-primary-500" />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium text-text-primary truncate">
                       {playlist.title}
                     </h4>
                     <p className="text-sm text-text-muted">
-                      {playlist.tracks.length} música(s) • {playlist.visibility === 'public' ? 'Pública' : 'Privada'}
+                      {playlist.tracks.length} música(s) •{" "}
+                      {playlist.visibility === "public" ? "Pública" : "Privada"}
                     </p>
                   </div>
-                  
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedPlaylist === playlist.id
-                      ? "bg-primary-500 border-primary-500"
-                      : "border-glass-300"
-                  }`}>
+
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedPlaylist === playlist.id
+                        ? "bg-primary-500 border-primary-500"
+                        : "border-glass-300"
+                    }`}
+                  >
                     {selectedPlaylist === playlist.id && (
                       <Check className="h-3 w-3 text-white" />
                     )}
@@ -180,7 +190,7 @@ export function PostUploadPlaylistSelector({
             <X className="h-4 w-4" />
             Pular
           </Button>
-          
+
           {playlists.length > 0 && (
             <Button
               onClick={handleAddToPlaylist}

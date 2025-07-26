@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
@@ -95,7 +95,8 @@ export function UploadMusicModal({
       setFormData((prev) => ({ ...prev, audioFile: preSelectedFile }));
       setErrors((prev) => ({ ...prev, audioFile: "" }));
     }
-  }, [preSelectedFile, isOpen]);  const resetForm = () => {
+  }, [preSelectedFile, isOpen]);
+  const resetForm = () => {
     setFormData({
       title: "",
       genre: "",
@@ -465,7 +466,9 @@ export function UploadMusicModal({
                 type="radio"
                 name="visibility"
                 checked={formData.isPublic}
-                onChange={() => setFormData(prev => ({ ...prev, isPublic: true }))}
+                onChange={() =>
+                  setFormData((prev) => ({ ...prev, isPublic: true }))
+                }
                 disabled={isUploading}
                 className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
               />
@@ -476,13 +479,15 @@ export function UploadMusicModal({
                 </div>
               </div>
             </label>
-            
+
             <label className="flex items-start gap-3 cursor-pointer group">
               <input
                 type="radio"
                 name="visibility"
                 checked={!formData.isPublic}
-                onChange={() => setFormData(prev => ({ ...prev, isPublic: false }))}
+                onChange={() =>
+                  setFormData((prev) => ({ ...prev, isPublic: false }))
+                }
                 disabled={isUploading}
                 className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
               />

@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/ui-button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/hooks/use-toast";
@@ -87,13 +87,20 @@ export function UserPlaylistList({ className = "" }: UserPlaylistListProps) {
 
         setPlaylists(playlistsData);
         setLoading(false);
-      },      (err) => {
+      },
+      (err) => {
         console.error("Error loading playlists:", err);
-        
+
         // Only show error toast for actual errors, not for empty results
         if (err.code === "failed-precondition") {
-          showError("Database indexing in progress. Please wait a few minutes and refresh.");
-        } else if (err.code !== 'permission-denied' && err.message && !err.message.includes('No such document')) {
+          showError(
+            "Database indexing in progress. Please wait a few minutes and refresh."
+          );
+        } else if (
+          err.code !== "permission-denied" &&
+          err.message &&
+          !err.message.includes("No such document")
+        ) {
           showError("Failed to load your playlists");
         }
         setLoading(false);
