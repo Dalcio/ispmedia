@@ -37,7 +37,7 @@ export function TrackStats({
 
   console.log(
     `[TrackStats] Component rendered for track ${trackId} with play count: ${playCount} (initial: ${initialPlayCount})`
-  );  // Load activity history for trend and last played data
+  ); // Load activity history for trend and last played data
   useEffect(() => {
     if (trackId && user && (showTrend || showLastPlayed)) {
       loadActivityHistory();
@@ -75,26 +75,31 @@ export function TrackStats({
       }
     } catch (error) {
       console.warn("Erro ao carregar histórico de atividades:", error);
-    }  };  // Animation trigger for play count changes
+    }
+  }; // Animation trigger for play count changes
   const [previousPlayCount, setPreviousPlayCount] = useState(playCount);
-  
+
   useEffect(() => {
     if (playCount > previousPlayCount) {
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 500);
     }
     setPreviousPlayCount(playCount);
-  }, [playCount, previousPlayCount]);  // Manual increment function
+  }, [playCount, previousPlayCount]); // Manual increment function
   const handleManualIncrement = async () => {
     if (isIncrementing || loading) return; // Prevent double clicks
-    
+
     try {
       setIsIncrementing(true);
-      console.log(`[TrackStats] Manual increment clicked for track: ${trackId}`);
-      
+      console.log(
+        `[TrackStats] Manual increment clicked for track: ${trackId}`
+      );
+
       const result = await incrementPlayCount(trackId);
       if (result) {
-        console.log(`[TrackStats] Manual increment successful: ${result.playCount}`);
+        console.log(
+          `[TrackStats] Manual increment successful: ${result.playCount}`
+        );
       } else {
         console.warn(`[TrackStats] Manual increment failed`);
       }
@@ -103,12 +108,14 @@ export function TrackStats({
     } finally {
       setIsIncrementing(false);
     }
-  };  // Listen for global events to update last played time
+  }; // Listen for global events to update last played time
   useEffect(() => {
     const handlePlayCountUpdate = (event: CustomEvent) => {
       console.log(`[TrackStats] Play count event received:`, event.detail);
       if (event.detail.trackId === trackId && showLastPlayed) {
-        console.log(`[TrackStats] Event matches this track, updating last played`);
+        console.log(
+          `[TrackStats] Event matches this track, updating last played`
+        );
         setLastPlayed(new Date());
       }
     };
@@ -184,7 +191,8 @@ export function TrackStats({
           <TrendingUp className={`${iconSizes[size]}`} />
           <span className={`${sizeClasses[size]} font-medium`}>
             +{recentPlaysCount}
-          </span>        </div>
+          </span>{" "}
+        </div>
       )}
 
       {/* Last Played */}
@@ -193,24 +201,8 @@ export function TrackStats({
           <Clock className={`${iconSizes[size]} opacity-70`} />
           <span className={`${sizeClasses[size]}`}>
             {formatLastPlayed(lastPlayed)}
-          </span>        </div>
-      )}
-
-      {/* Manual Increment Button */}
-      {showIncrementButton && (
-        <button
-          onClick={handleManualIncrement}
-          disabled={isIncrementing}
-          className={`flex items-center gap-1 px-1.5 py-0.5 text-primary-500 hover:text-primary-600 hover:bg-primary-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses[size]} flex-shrink-0`}
-          title="Increment play count manually"
-        >
-          {isIncrementing ? (
-            <div className={`border border-primary-500 border-t-transparent rounded-full animate-spin ${iconSizes[size]}`} />
-          ) : (
-            <Plus className={`${iconSizes[size]}`} />
-          )}
-          <span className="font-medium">+1</span>
-        </button>
+          </span>{" "}
+        </div>
       )}
     </div>
   );
