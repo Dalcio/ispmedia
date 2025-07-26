@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
 import { Modal } from "@/components/ui/modal";
-import { TrackComments } from "@/components/comments";
+import { TrackComments } from "@/components/comments/track-comments-new";
+import { TrackModeration } from "@/components/comments/track-moderation-new";
+import { useAuth } from "@/contexts/auth-context";
+import { useToast } from "@/hooks/use-toast";
+import { db } from "@/firebase/config";
 import {
   X,
   Play,
@@ -13,6 +18,9 @@ import {
   Clock,
   User,
   MessageCircle,
+  Shield,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { formatFileSize, formatDuration } from "@/lib/upload";
 
@@ -28,6 +36,8 @@ interface Track {
   createdAt: any;
   mimeType: string;
   playCount?: number;
+  createdBy?: string; // ID do usuário que criou a faixa
+  isPublic?: boolean; // Visibilidade da faixa
 }
 
 interface TrackDetailsModalProps {
@@ -45,10 +55,15 @@ export function TrackDetailsModal({
   onPlay,
   onEdit,
 }: TrackDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "comments">("details");
+  const [activeTab, setActiveTab] = useState<"details" | "comments" | "moderation">("details");
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
+  const { user } = useAuth();
+  const toast = useToast();
 
   if (!track) return null;
 
+  // Verificar se o usuário atual é o criador da faixa
+  const isTrackOwner = user && track.createdBy === user.uid;
   const formatDate = (timestamp: any) => {
     try {
       let date: Date;
@@ -72,6 +87,32 @@ export function TrackDetailsModal({
       });
     } catch (error) {
       return "Data não disponível";
+    }
+  };
+
+  const handleVisibilityToggle = async () => {
+    if (!track || !isTrackOwner) return;
+
+    setIsUpdatingVisibility(true);
+    try {
+      const newVisibility = !track.isPublic;
+      const trackRef = doc(db, "tracks", track.id);
+      
+      await updateDoc(trackRef, {
+        isPublic: newVisibility
+      });
+
+      // Update local track object
+      track.isPublic = newVisibility;
+
+      toast.success(
+        `Música ${newVisibility ? "tornada pública" : "tornada privada"} com sucesso!`
+      );
+    } catch (error) {
+      console.error("Error updating track visibility:", error);
+      toast.error("Erro ao alterar visibilidade da música. Tente novamente.");
+    } finally {
+      setIsUpdatingVisibility(false);
     }
   };
   return (
@@ -115,9 +156,7 @@ export function TrackDetailsModal({
               <X className="w-4 h-4" />
             </button>
           </div>
-        </div>
-
-        {/* Tabs */}
+        </div>        {/* Tabs */}
         <div className="flex border-b border-border-light">
           <button
             onClick={() => setActiveTab("details")}
@@ -142,13 +181,27 @@ export function TrackDetailsModal({
             <MessageCircle className="w-4 h-4" />
             Comentários
           </button>
+
+          {/* Aba de Moderação - Visível apenas para o criador da faixa */}
+          {isTrackOwner && (
+            <button
+              onClick={() => setActiveTab("moderation")}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${
+                activeTab === "moderation"
+                  ? "text-primary-500 border-b-2 border-primary-500 bg-glass-200"
+                  : "text-text-muted hover:text-text-primary hover:bg-glass-100"
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+              Moderação
+            </button>
+          )}
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {activeTab === "details" && (
-            <div className="space-y-6">
-              {/* Informações básicas */}
+            <div className="space-y-6">              {/* Informações básicas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InfoItem
                   icon={<Tag className="w-4 h-4" />}
@@ -189,6 +242,51 @@ export function TrackDetailsModal({
                 />
               </div>
 
+              {/* Configurações de Visibilidade - Apenas para o dono da faixa */}
+              {isTrackOwner && (
+                <div className="mt-6 p-4 rounded-xl bg-glass-200 border border-border-subtle">
+                  <h3 className="text-lg font-medium mb-4 text-text-primary">
+                    Configurações de Visibilidade
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {track.isPublic ? (
+                        <Eye className="w-5 h-5 text-success-500" />
+                      ) : (
+                        <EyeOff className="w-5 h-5 text-warning-500" />
+                      )}
+                      <div>
+                        <p className="text-text-primary font-medium">
+                          {track.isPublic ? "Música Pública" : "Música Privada"}
+                        </p>
+                        <p className="text-sm text-text-muted">
+                          {track.isPublic 
+                            ? "Qualquer pessoa pode encontrar e ouvir esta música"
+                            : "Apenas você pode ver e ouvir esta música"
+                          }
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleVisibilityToggle}
+                      disabled={isUpdatingVisibility}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                        track.isPublic
+                          ? "bg-warning-500/20 text-warning-500 hover:bg-warning-500/30"
+                          : "bg-success-500/20 text-success-500 hover:bg-success-500/30"
+                      } ${isUpdatingVisibility ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      {isUpdatingVisibility 
+                        ? "Alterando..." 
+                        : track.isPublic 
+                          ? "Tornar Privada" 
+                          : "Tornar Pública"
+                      }
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Estatísticas */}
               {track.playCount !== undefined && (
                 <div className="mt-6 p-4 rounded-xl bg-glass-200 border border-border-subtle">
@@ -206,6 +304,10 @@ export function TrackDetailsModal({
           )}
 
           {activeTab === "comments" && <TrackComments trackId={track.id} />}
+          
+          {activeTab === "moderation" && isTrackOwner && (
+            <TrackModeration trackId={track.id} />
+          )}
         </div>
       </div>
     </Modal>

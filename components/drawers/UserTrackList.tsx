@@ -29,6 +29,8 @@ import {
   Tag,
   FileAudio,
   Info,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { formatFileSize, formatDuration } from "@/lib/upload";
 
@@ -43,6 +45,7 @@ interface Track {
   createdAt: any;
   mimeType: string;
   playCount?: number;
+  isPublic?: boolean;
 }
 
 interface UserTrackListProps {
@@ -254,8 +257,7 @@ export function UserTrackList({
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <h4 className="font-medium text-text-primary truncate mb-1">
                     {track.title}
-                  </h4>
-                  <div className="flex items-center gap-4 text-sm text-text-muted mb-2">
+                  </h4>                  <div className="flex items-center gap-4 text-sm text-text-muted mb-2">
                     <div className="flex items-center gap-1">
                       <Tag className="h-3 w-3" />
                       <span>{track.genre}</span>
@@ -263,6 +265,20 @@ export function UserTrackList({
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       <span>{formatDate(track.createdAt)}</span>
+                    </div>
+                    {/* Indicador de Visibilidade */}
+                    <div className="flex items-center gap-1">
+                      {track.isPublic ? (
+                        <>
+                          <Eye className="h-3 w-3 text-success-500" />
+                          <span className="text-success-500 text-xs">Pública</span>
+                        </>
+                      ) : (
+                        <>
+                          <EyeOff className="h-3 w-3 text-warning-500" />
+                          <span className="text-warning-500 text-xs">Privada</span>
+                        </>
+                      )}
                     </div>
                   </div>{" "}                  <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
                     <span>{formatFileSize(track.fileSize)}</span>
