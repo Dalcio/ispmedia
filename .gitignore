@@ -73,3 +73,6 @@ next-env.d.ts
 # Temporary files
 *.tmp
 *.temp
+
+# firebase
+/ispmedia-70af7-firebase-adminsdk-fbsvc-8d69a685e8.json
