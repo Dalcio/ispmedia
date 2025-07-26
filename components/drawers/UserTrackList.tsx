@@ -18,6 +18,9 @@ import { useGlobalAudio } from "@/contexts/global-audio-context";
 import { Button } from "@/components/ui/button";
 import { EditTrackModal } from "@/components/modals/edit-track-modal";
 import { TrackDetailsModal } from "@/components/modals/track-details-modal";
+import { PlayCountDisplay } from "@/components/ui/play-count-display";
+import { TrackStats } from "@/components/ui/track-stats";
+import { PlayCountDebug } from "@/components/debug/play-count-debug";
 import {
   Play,
   Edit,
@@ -40,6 +43,7 @@ interface Track {
   duration?: number;
   createdAt: any;
   mimeType: string;
+  playCount?: number;
 }
 
 interface UserTrackListProps {
@@ -80,12 +84,12 @@ export function UserTrackList({
       tracksQuery,
       (snapshot) => {
         const userTracks: Track[] = [];
-
         snapshot.forEach((doc) => {
           const data = doc.data();
           console.log("Track loaded:", {
             id: doc.id,
             title: data.title,
+            playCount: data.playCount,
             createdBy: data.createdBy,
             userUID: user.uid,
           });
@@ -93,6 +97,7 @@ export function UserTrackList({
           userTracks.push({
             id: doc.id,
             ...data,
+            playCount: data.playCount || 0, // Ensure playCount is included
           } as Track);
         });
 
@@ -125,7 +130,7 @@ export function UserTrackList({
     );
 
     return () => unsubscribe();
-  }, [user?.uid, toast]);
+  }, []);
 
   const handleDeleteTrack = async (track: Track) => {
     if (!user) return;
@@ -232,122 +237,135 @@ export function UserTrackList({
       </div>
     );
   }
-
   return (
-    <div className="space-y-3">
-      {tracks.map((track) => (
-        <div
-          key={track.id}
-          className="group bg-glass-100 hover:bg-glass-200 rounded-xl p-4 transition-all duration-200"
-        >
-          <div className="flex items-start gap-3">
-            {/* Ícone do arquivo */}
-            <div className="w-12 h-12 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FileAudio className="h-6 w-6 text-primary-500" />
-            </div>
-
-            {/* Informações da música */}
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-text-primary truncate mb-1">
-                {track.title}
-              </h4>
-
-              <div className="flex items-center gap-4 text-sm text-text-muted mb-2">
-                <div className="flex items-center gap-1">
-                  <Tag className="h-3 w-3" />
-                  <span>{track.genre}</span>
+    <div className="h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto">
+        <div className="space-y-3">
+          {tracks.map((track) => (
+            <div
+              key={track.id}
+              className="group bg-glass-100 hover:bg-glass-200 rounded-xl p-4 transition-all duration-200"
+            >
+              <div className="flex items-start gap-3">
+                {/* Ícone do arquivo */}
+                <div className="w-12 h-12 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FileAudio className="h-6 w-6 text-primary-500" />
                 </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>{formatDate(track.createdAt)}</span>
+
+                {/* Informações da música */}
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-text-primary truncate mb-1">
+                    {track.title}
+                  </h4>
+                  <div className="flex items-center gap-4 text-sm text-text-muted mb-2">
+                    <div className="flex items-center gap-1">
+                      <Tag className="h-3 w-3" />
+                      <span>{track.genre}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>{formatDate(track.createdAt)}</span>
+                    </div>
+                  </div>{" "}
+                  <div className="flex items-center gap-4 text-xs text-text-muted">
+                    <span>{formatFileSize(track.fileSize)}</span>
+                    {track.duration && (
+                      <span>{formatDuration(track.duration)}</span>
+                    )}
+                    <TrackStats
+                      trackId={track.id}
+                      initialPlayCount={track.playCount || 0}
+                      showTrend={true}
+                      size="sm"
+                      className="text-text-muted"
+                    />{" "}
+                    <span className="truncate">{track.fileName}</span>
+                  </div>
+                  {/* Debug Component - Temporary */}
+                  <div className="mt-2">
+                    <PlayCountDebug trackId={track.id} />
+                  </div>
                 </div>
               </div>
+              {/* Ações */}
+              <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handlePlayTrack(track)}
+                  className="flex items-center gap-1 text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
+                >
+                  <Play className="h-4 w-4" />
+                  <span className="text-xs">Play</span>{" "}
+                </Button>
 
-              <div className="flex items-center gap-4 text-xs text-text-muted">
-                <span>{formatFileSize(track.fileSize)}</span>
-                {track.duration && (
-                  <span>{formatDuration(track.duration)}</span>
-                )}
-                <span className="truncate">{track.fileName}</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleShowDetails(track)}
+                  className="flex items-center gap-1 text-text-muted hover:text-blue-500 hover:bg-blue-500/10"
+                >
+                  <Info className="h-4 w-4" />
+                  <span className="text-xs">Detalhes</span>
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleEditTrack(track)}
+                  className="flex items-center gap-1 text-text-muted hover:text-info-500 hover:bg-info-500/10"
+                >
+                  <Edit className="h-4 w-4" />
+                  <span className="text-xs">Edit</span>
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleDeleteTrack(track)}
+                  disabled={deletingTrackId === track.id}
+                  className="flex items-center gap-1 text-text-muted hover:text-error-500 hover:bg-error-500/10"
+                >
+                  {deletingTrackId === track.id ? (
+                    <div className="w-4 h-4 border border-error-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                  <span className="text-xs">
+                    {deletingTrackId === track.id ? "Deleting..." : "Delete"}
+                  </span>
+                </Button>
               </div>
             </div>
-          </div>
-          {/* Ações */}
-          <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handlePlayTrack(track)}
-              className="flex items-center gap-1 text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
-            >
-              <Play className="h-4 w-4" />
-              <span className="text-xs">Play</span>{" "}
-            </Button>
-
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handleShowDetails(track)}
-              className="flex items-center gap-1 text-text-muted hover:text-blue-500 hover:bg-blue-500/10"
-            >
-              <Info className="h-4 w-4" />
-              <span className="text-xs">Detalhes</span>
-            </Button>
-
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handleEditTrack(track)}
-              className="flex items-center gap-1 text-text-muted hover:text-info-500 hover:bg-info-500/10"
-            >
-              <Edit className="h-4 w-4" />
-              <span className="text-xs">Edit</span>
-            </Button>
-
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handleDeleteTrack(track)}
-              disabled={deletingTrackId === track.id}
-              className="flex items-center gap-1 text-text-muted hover:text-error-500 hover:bg-error-500/10"
-            >
-              {deletingTrackId === track.id ? (
-                <div className="w-4 h-4 border border-error-500 border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Trash2 className="h-4 w-4" />
-              )}
-              <span className="text-xs">
-                {deletingTrackId === track.id ? "Deleting..." : "Delete"}
-              </span>
-            </Button>
-          </div>
+          ))}
+          {tracks.length > 0 && (
+            <div className="text-center pt-2">
+              <p className="text-xs text-text-muted">
+                {tracks.length} {tracks.length === 1 ? "track" : "tracks"}{" "}
+                uploaded
+              </p>
+            </div>
+          )}{" "}
+          {/* Edit Track Modal */}
+          <EditTrackModal
+            isOpen={showEditModal}
+            onClose={() => {
+              setShowEditModal(false);
+              setEditingTrack(null);
+            }}
+            track={editingTrack}
+            onTrackUpdated={handleTrackUpdated}
+          />
+          {/* Track Details Modal */}
+          <TrackDetailsModal
+            isOpen={showDetailsModal}
+            onClose={handleCloseDetailsModal}
+            track={detailsTrack}
+            onPlay={handlePlayTrack}
+            onEdit={handleEditTrack}
+          />
         </div>
-      ))}
-      {tracks.length > 0 && (
-        <div className="text-center pt-2">
-          <p className="text-xs text-text-muted">
-            {tracks.length} {tracks.length === 1 ? "track" : "tracks"} uploaded
-          </p>
-        </div>
-      )}{" "}
-      {/* Edit Track Modal */}
-      <EditTrackModal
-        isOpen={showEditModal}
-        onClose={() => {
-          setShowEditModal(false);
-          setEditingTrack(null);
-        }}
-        track={editingTrack}
-        onTrackUpdated={handleTrackUpdated}
-      />
-      {/* Track Details Modal */}
-      <TrackDetailsModal
-        isOpen={showDetailsModal}
-        onClose={handleCloseDetailsModal}
-        track={detailsTrack}
-        onPlay={handlePlayTrack}
-        onEdit={handleEditTrack}
-      />
+      </div>
     </div>
   );
 }

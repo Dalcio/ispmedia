@@ -197,11 +197,10 @@ export function ActivitySection() {
       </div>
     );
   }
-
   return (
-    <div className="space-y-4">
+    <div className="h-full flex flex-col space-y-4">
       {/* Cabeçalho da seção */}
-      <div className="flex items-center gap-3 pb-3 border-b border-neutral-200 dark:border-neutral-700">
+      <div className="flex items-center gap-3 pb-3 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
         <Activity className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
         <div>
           <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-200">
@@ -214,7 +213,7 @@ export function ActivitySection() {
       </div>
 
       {/* Controles */}
-      <div className="space-y-3">
+      <div className="space-y-3 flex-shrink-0">
         {/* Filtros */}
         <div className="flex items-center gap-2 flex-wrap">
           <Filter className="w-4 h-4 text-neutral-500" />
@@ -237,98 +236,100 @@ export function ActivitySection() {
       </div>
 
       {/* Lista de atividades */}
-      <div className="space-y-2">
-        {loading && atividades.length === 0 ? (
-          <div className="flex items-center justify-center py-8">
-            <RefreshCw className="w-5 h-5 animate-spin text-neutral-400 mr-2" />
-            <span className="text-sm text-neutral-500">
-              Carregando atividades...
-            </span>
-          </div>
-        ) : error ? (
-          <div className="text-center py-8">
-            <div className="text-red-500 text-sm mb-2">❌ {error}</div>
-            <Button
-              onClick={() => window.location.reload()}
-              size="sm"
-              variant="ghost"
-            >
-              <RefreshCw className="w-4 h-4 mr-1" />
-              Tentar novamente
-            </Button>
-          </div>
-        ) : atividades.length === 0 ? (
-          <div className="text-center py-8">
-            <Calendar className="w-12 h-12 mx-auto mb-4 text-neutral-400" />
-            <h4 className="font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-              Nenhuma atividade encontrada
-            </h4>
-            <p className="text-sm text-neutral-500">
-              Suas interações com músicas aparecerão aqui
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Títulos das músicas por ID - hooks no topo do componente */}
-            {/* useState/useEffect moved to top-level to follow Rules of Hooks */}
-            {atividades.map((atividade) => {
-              const acaoInfo = formatarAcao(atividade.acao);
-              const IconeAcao = acaoInfo.icon;
-              const trackTitle = trackTitles[atividade.midiaId];
-              return (
-                <div
-                  key={atividade.id}
-                  className="flex items-center gap-3 p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
-                >
+      <div className="flex-1 overflow-y-auto">
+        <div className="space-y-2">
+          {loading && atividades.length === 0 ? (
+            <div className="flex items-center justify-center py-8">
+              <RefreshCw className="w-5 h-5 animate-spin text-neutral-400 mr-2" />
+              <span className="text-sm text-neutral-500">
+                Carregando atividades...
+              </span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <div className="text-red-500 text-sm mb-2">❌ {error}</div>
+              <Button
+                onClick={() => window.location.reload()}
+                size="sm"
+                variant="ghost"
+              >
+                <RefreshCw className="w-4 h-4 mr-1" />
+                Tentar novamente
+              </Button>
+            </div>
+          ) : atividades.length === 0 ? (
+            <div className="text-center py-8">
+              <Calendar className="w-12 h-12 mx-auto mb-4 text-neutral-400" />
+              <h4 className="font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                Nenhuma atividade encontrada
+              </h4>
+              <p className="text-sm text-neutral-500">
+                Suas interações com músicas aparecerão aqui
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Títulos das músicas por ID - hooks no topo do componente */}
+              {/* useState/useEffect moved to top-level to follow Rules of Hooks */}
+              {atividades.map((atividade) => {
+                const acaoInfo = formatarAcao(atividade.acao);
+                const IconeAcao = acaoInfo.icon;
+                const trackTitle = trackTitles[atividade.midiaId];
+                return (
                   <div
-                    className={`p-2 rounded-full bg-white dark:bg-neutral-900 ${acaoInfo.color}`}
+                    key={atividade.id}
+                    className="flex items-center gap-3 p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
                   >
-                    <IconeAcao className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                        {acaoInfo.label}
-                      </span>
-                      <span className="text-xs text-neutral-500">
-                        {formatarDataRelativa(atividade.timestamp)}
-                      </span>
+                    <div
+                      className={`p-2 rounded-full bg-white dark:bg-neutral-900 ${acaoInfo.color}`}
+                    >
+                      <IconeAcao className="w-4 h-4" />
                     </div>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400 truncate">
-                      Mídia: {trackTitle ? trackTitle : atividade.midiaId}
-                    </p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                          {acaoInfo.label}
+                        </span>
+                        <span className="text-xs text-neutral-500">
+                          {formatarDataRelativa(atividade.timestamp)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-neutral-600 dark:text-neutral-400 truncate">
+                        Mídia: {trackTitle ? trackTitle : atividade.midiaId}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
-            {/* Botão carregar mais */}
-            {hasMore && (
-              <div className="text-center pt-4">
-                <Button
-                  onClick={carregarMaisAtividades}
-                  disabled={carregandoMais}
-                  variant="ghost"
-                  size="sm"
-                  className="text-neutral-600 dark:text-neutral-400"
-                >
-                  {carregandoMais ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                      Carregando...
-                    </>
-                  ) : (
-                    "Carregar mais"
-                  )}
-                </Button>
-              </div>
-            )}
-          </>
-        )}
+              {/* Botão carregar mais */}
+              {hasMore && (
+                <div className="text-center pt-4">
+                  <Button
+                    onClick={carregarMaisAtividades}
+                    disabled={carregandoMais}
+                    variant="ghost"
+                    size="sm"
+                    className="text-neutral-600 dark:text-neutral-400"
+                  >
+                    {carregandoMais ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                        Carregando...
+                      </>
+                    ) : (
+                      "Carregar mais"
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Informações da seção */}
-      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
+      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700 flex-shrink-0">
         <p className="text-xs text-neutral-500 text-center">
           Total de atividades: {atividades.length}
           {filtroAcao !== "todas" &&

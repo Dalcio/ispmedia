@@ -141,12 +141,11 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
       <div
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity duration-300"
         onClick={closeDrawer}
-      />
-
+      />{" "}
       {/* Drawer */}
       <div
         id="dashboard-drawer"
-        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-l border-neutral-200 dark:border-neutral-700 shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-l border-neutral-200 dark:border-neutral-700 shadow-2xl z-50 transform transition-transform duration-300 ease-out flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } ${className}`}
       >
@@ -235,9 +234,11 @@ export function DashboardDrawer({ className = "" }: DashboardDrawerProps) {
               Fazer Upload de Música
             </Button>
           </div>
-        </div>
+        </div>{" "}
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">{renderContent()}</div>
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto p-4">{renderContent()}</div>
+        </div>
       </div>
     </>,
     document.body

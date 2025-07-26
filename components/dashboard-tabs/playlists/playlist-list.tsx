@@ -194,81 +194,84 @@ export function PlaylistList({ className = "" }: PlaylistListProps) {
       </div>
     );
   }
-
   return (
-    <div className={`space-y-3 ${className}`}>
-      {/* Lista de playlists */}
-      {playlists.map((playlist) => (
-        <PlaylistItem
-          key={playlist.id}
-          playlist={playlist}
-          isExpanded={expandedPlaylistId === playlist.id}
-          onToggleExpand={() => handleToggleExpand(playlist.id)}
-          onEdit={() => handleEditPlaylist(playlist)}
-          onDelete={() => handleDeletePlaylist(playlist)}
-        />
-      ))}
+    <div className={`h-full ${className}`}>
+      <div className="h-full overflow-y-auto">
+        <div className="space-y-3">
+          {/* Lista de playlists */}
+          {playlists.map((playlist) => (
+            <PlaylistItem
+              key={playlist.id}
+              playlist={playlist}
+              isExpanded={expandedPlaylistId === playlist.id}
+              onToggleExpand={() => handleToggleExpand(playlist.id)}
+              onEdit={() => handleEditPlaylist(playlist)}
+              onDelete={() => handleDeletePlaylist(playlist)}
+            />
+          ))}
 
-      {/* Total de playlists */}
-      {playlists.length > 0 && (
-        <div className="text-center pt-2">
-          <p className="text-xs text-text-muted">
-            {playlists.length}
-            {playlists.length === 1 ? "playlist" : "playlists"}
-          </p>
+          {/* Total de playlists */}
+          {playlists.length > 0 && (
+            <div className="text-center pt-2">
+              <p className="text-xs text-text-muted">
+                {playlists.length}
+                {playlists.length === 1 ? "playlist" : "playlists"}
+              </p>
+            </div>
+          )}
+
+          {/* Modal de edição */}
+          <PlaylistModal
+            isOpen={showEditModal}
+            onClose={handleCloseEditModal}
+            mode="edit"
+            playlist={editingPlaylist}
+          />
+
+          {/* Modal de confirmação de exclusão */}
+          {showDeleteConfirm && playlistToDelete && (
+            <Modal
+              isOpen={showDeleteConfirm}
+              onClose={() => {
+                setShowDeleteConfirm(false);
+                setPlaylistToDelete(null);
+              }}
+              title="Confirmar Exclusão"
+            >
+              <div className="text-center">
+                <div className="w-12 h-12 mx-auto mb-4 bg-error-500/10 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-6 h-6 text-error-500" />
+                </div>
+                <h3 className="text-lg font-medium text-text-primary mb-2">
+                  Excluir Playlist
+                </h3>
+                <p className="text-text-muted mb-6">
+                  Tem certeza que deseja excluir a playlist "
+                  {playlistToDelete.title}"? Esta ação não pode ser desfeita.
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setPlaylistToDelete(null);
+                    }}
+                    variant="ghost"
+                    className="flex-1"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={confirmDelete}
+                    className="flex-1 bg-error-500 hover:bg-error-600 text-white"
+                  >
+                    Excluir
+                  </Button>
+                </div>{" "}
+              </div>
+            </Modal>
+          )}
         </div>
-      )}
-
-      {/* Modal de edição */}
-      <PlaylistModal
-        isOpen={showEditModal}
-        onClose={handleCloseEditModal}
-        mode="edit"
-        playlist={editingPlaylist}
-      />
-
-      {/* Modal de confirmação de exclusão */}
-      {showDeleteConfirm && playlistToDelete && (
-        <Modal
-          isOpen={showDeleteConfirm}
-          onClose={() => {
-            setShowDeleteConfirm(false);
-            setPlaylistToDelete(null);
-          }}
-          title="Confirmar Exclusão"
-        >
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-4 bg-error-500/10 rounded-full flex items-center justify-center">
-              <Trash2 className="w-6 h-6 text-error-500" />
-            </div>
-            <h3 className="text-lg font-medium text-text-primary mb-2">
-              Excluir Playlist
-            </h3>
-            <p className="text-text-muted mb-6">
-              Tem certeza que deseja excluir a playlist "
-              {playlistToDelete.title}"? Esta ação não pode ser desfeita.
-            </p>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => {
-                  setShowDeleteConfirm(false);
-                  setPlaylistToDelete(null);
-                }}
-                variant="ghost"
-                className="flex-1"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={confirmDelete}
-                className="flex-1 bg-error-500 hover:bg-error-600 text-white"
-              >
-                Excluir
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
+      </div>
     </div>
   );
 }

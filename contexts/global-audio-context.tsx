@@ -9,7 +9,7 @@ import {
   ReactNode,
 } from "react";
 
-import { incrementPlayCount } from "@/lib/track-stats";
+import { usePlayCount } from "@/hooks/use-play-count";
 import { useAtividade } from "@/hooks/use-atividade";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -73,6 +73,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   // Activity and Auth hooks
   const { user } = useAuth();
   const { registrarReproducao, registrarPausa, registrarPulo } = useAtividade();
+  const { incrementPlayCount } = usePlayCount();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
@@ -166,11 +167,29 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     }
 
     // Increment play count when track starts playing
-    incrementPlayCount(track.id);
+    incrementPlayCount(track.id).then((result) => {
+      if (result) {
+        console.log(
+          `✅ Play count updated: ${result.playCount} plays for track ${track.id}`
+        );
+        emitPlayCountUpdate(track.id, result.playCount); // Emit event
+      }
+    });
     // Register activity: play
     if (user) {
       registrarReproducao(user.uid, track.id).catch(() => {});
     }
+  };
+  // Helper function to emit play count update events
+  const emitPlayCountUpdate = (trackId: string, playCount: number) => {
+    console.log(
+      `[GlobalAudio] Emitting playCountUpdated event for track ${trackId} with count ${playCount}`
+    );
+    const event = new CustomEvent("playCountUpdated", {
+      detail: { trackId, playCount },
+    });
+    window.dispatchEvent(event);
+    console.log(`[GlobalAudio] Event dispatched successfully`);
   };
 
   const playNext = () => {
@@ -215,7 +234,14 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     }
 
     // Increment play count when track starts playing
-    incrementPlayCount(track.id);
+    incrementPlayCount(track.id).then((result) => {
+      if (result) {
+        console.log(
+          `✅ Play count updated: ${result.playCount} plays for track ${track.id}`
+        );
+        emitPlayCountUpdate(track.id, result.playCount); // Emit event
+      }
+    });
     // Register activity: play
     if (user) {
       registrarReproducao(user.uid, track.id).catch(() => {});

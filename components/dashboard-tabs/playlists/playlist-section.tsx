@@ -45,8 +45,9 @@ export function PlaylistSection({ className = "" }: PlaylistSectionProps) {
       setShowCreateModal(true);
     };
 
-    window.addEventListener('openPlaylistModal', handleOpenModal);
-    return () => window.removeEventListener('openPlaylistModal', handleOpenModal);
+    window.addEventListener("openPlaylistModal", handleOpenModal);
+    return () =>
+      window.removeEventListener("openPlaylistModal", handleOpenModal);
   }, []);
 
   const handleCreatePlaylist = () => {
@@ -67,12 +68,11 @@ export function PlaylistSection({ className = "" }: PlaylistSectionProps) {
       </div>
     );
   }
-
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`h-full flex flex-col space-y-6 ${className}`}>
       {/* Header condicional - só mostra se tem playlists */}
       {hasPlaylists && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary-500/10 rounded-lg flex items-center justify-center">
               <ListMusic className="h-5 w-5 text-primary-500" />
@@ -86,7 +86,7 @@ export function PlaylistSection({ className = "" }: PlaylistSectionProps) {
               </p>
             </div>
           </div>
-          
+
           <Button
             onClick={handleCreatePlaylist}
             className="inline-flex items-center gap-2 py-2 px-4 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
@@ -98,7 +98,9 @@ export function PlaylistSection({ className = "" }: PlaylistSectionProps) {
       )}
 
       {/* Lista de playlists */}
-      <PlaylistList />
+      <div className="flex-1 overflow-y-auto">
+        <PlaylistList />
+      </div>
 
       {/* Modal de criação */}
       <PlaylistModal
