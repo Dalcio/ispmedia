@@ -9,6 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Modal } from "@/components/ui/modal";
 import { X, Save, Loader2 } from "lucide-react";
+import {
+  buscarUsuariosComMusicaEmPlaylists,
+  notificarMusicaAtualizada,
+} from "@/lib/notifications";
 
 interface Track {
   id: string;
@@ -51,7 +55,6 @@ export function EditTrackModal({
       });
     }
   }, [track]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!track) return;
@@ -64,6 +67,11 @@ export function EditTrackModal({
     try {
       setLoading(true);
 
+      // Buscar usuários que têm esta música em suas playlists
+      const usuariosAfetados = await buscarUsuariosComMusicaEmPlaylists(
+        track.id
+      );
+
       const trackRef = doc(db, "tracks", track.id);
       const updateData = {
         title: formData.title.trim(),
@@ -74,6 +82,18 @@ export function EditTrackModal({
       await updateDoc(trackRef, updateData);
       const updatedTrack = { ...track, ...updateData };
       onTrackUpdated?.(updatedTrack);
+
+      // Notificar usuários que têm esta música em suas playlists
+      if (usuariosAfetados.length > 0) {
+        await notificarMusicaAtualizada(
+          usuariosAfetados,
+          formData.title.trim(),
+          track.id
+        );
+        console.log(
+          `🔔 Notificações de edição enviadas para ${usuariosAfetados.length} usuários`
+        );
+      }
 
       toast.success(`"${formData.title}" has been updated successfully`);
 

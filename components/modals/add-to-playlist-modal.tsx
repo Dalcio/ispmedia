@@ -9,6 +9,7 @@ import {
   doc,
   updateDoc,
   arrayUnion,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
@@ -16,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/ui-button";
 import { ListMusic, Plus } from "lucide-react";
+import { notificarMusicaAdicionadaPlaylist } from "@/lib/notifications";
 
 interface Playlist {
   id: string;
@@ -72,7 +74,6 @@ export function AddToPlaylistModal({
 
     return () => unsubscribe();
   }, [user, isOpen, trackId]);
-
   const handleAddToPlaylist = async (
     playlistId: string,
     playlistTitle: string
@@ -84,6 +85,39 @@ export function AddToPlaylistModal({
         tracks: arrayUnion(trackId),
         updatedAt: new Date(),
       });
+
+      // Buscar informações da música para enviar notificação ao autor
+      try {
+        const trackRef = doc(db, "tracks", trackId);
+        const trackSnap = await getDoc(trackRef);
+
+        if (trackSnap.exists() && user) {
+          const trackData = trackSnap.data();
+          const autorMusicaId = trackData.createdBy;
+          const nomeMusica = trackData.title || "Música sem título";
+
+          // Só notificar se a música não for do próprio usuário que está adicionando
+          if (autorMusicaId && autorMusicaId !== user.uid) {
+            const nomeUsuario = user.displayName || user.email || "Usuário";
+            await notificarMusicaAdicionadaPlaylist(
+              autorMusicaId,
+              nomeMusica,
+              playlistTitle,
+              nomeUsuario,
+              trackId
+            );
+            console.log(
+              `📧 Notificação enviada para o autor da música: ${autorMusicaId}`
+            );
+          }
+        }
+      } catch (notificationError) {
+        console.error(
+          "❌ Erro ao enviar notificação de música adicionada à playlist:",
+          notificationError
+        );
+        // Não falhar a operação por causa da notificação
+      }
 
       success(`"${trackTitle}" adicionada à playlist "${playlistTitle}"`);
       onClose();

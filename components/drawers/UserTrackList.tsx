@@ -33,6 +33,11 @@ import {
   EyeOff,
 } from "lucide-react";
 import { formatFileSize, formatDuration } from "@/lib/upload";
+import {
+  buscarUsuariosComMusicaEmPlaylists,
+  notificarMusicaRemovida,
+  removerMusicaDePlaylists,
+} from "@/lib/notifications";
 
 interface Track {
   id: string;
@@ -133,7 +138,6 @@ export function UserTrackList({
 
     return () => unsubscribe();
   }, []);
-
   const handleDeleteTrack = async (track: Track) => {
     if (!user) return;
 
@@ -146,13 +150,31 @@ export function UserTrackList({
     try {
       setDeletingTrackId(track.id);
 
+      // Buscar usuários que têm esta música em suas playlists
+      const usuariosAfetados = await buscarUsuariosComMusicaEmPlaylists(
+        track.id
+      );
+
+      // Remover a música de todas as playlists que a contêm
+      await removerMusicaDePlaylists(track.id);
+
       // Deletar arquivo do Storage
       const storageRef = ref(storage, `tracks/${user.uid}/${track.fileName}`);
       await deleteObject(storageRef);
 
       // Deletar documento do Firestore
-      await deleteDoc(doc(db, "tracks", track.id)); // Update local list
+      await deleteDoc(doc(db, "tracks", track.id));
+
+      // Update local list
       setTracks((prev) => prev.filter((t) => t.id !== track.id));
+
+      // Notificar usuários que tinham esta música em suas playlists
+      if (usuariosAfetados.length > 0) {
+        await notificarMusicaRemovida(usuariosAfetados, track.title, track.id);
+        console.log(
+          `🔔 Notificações de remoção enviadas para ${usuariosAfetados.length} usuários`
+        );
+      }
 
       toast.success(`"${track.title}" was successfully removed`);
     } catch (error) {

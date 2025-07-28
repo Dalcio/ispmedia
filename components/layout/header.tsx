@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { UserAvatarButton } from "@/components/layout/user-avatar-button";
+import { NotificationButton } from "@/components/layout/notification-button";
 import { Button } from "@/components/ui/ui-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { AuthModal } from "@/components/modals/auth-modal";
@@ -88,8 +89,12 @@ export function Header({ className = "" }: HeaderProps) {
                     >
                       <LayoutDashboard className="w-4 h-4" />
                       Dashboard
-                    </Button>
+                    </Button>{" "}
                   </div>
+
+                  {/* Notifications Button */}
+                  <NotificationButton />
+
                   {/* User Avatar with Dropdown */}
                   <UserAvatarButton onOpenCommandPalette={openPalette} />
                 </>
