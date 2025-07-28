@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
@@ -73,6 +73,17 @@ export function TrackSelectorModal({
   const currentTracks = activeTab === "minhas" ? userTracks : publicTracks;
   const currentLoading = isLoading && (activeTab === "publicas" ? true : false);
 
+  // Calculate how many authors will be notified (memoized for performance)
+  const notificationCount = useMemo(() => {
+    if (activeTab !== "publicas" || selectedTracks.length === 0 || !user) return 0;
+
+    return selectedTracks.filter((trackId) => {
+      const track = currentTracks.find((t) => t.id === trackId);
+      const trackOwner = track?.userUid || track?.createdBy;
+      return track && trackOwner && trackOwner !== user.uid;
+    }).length;
+  }, [activeTab, selectedTracks, currentTracks, user]);
+
   const handleToggleTrack = (trackId: string) => {
     setSelectedTracks((prev) =>
       prev.includes(trackId)
@@ -80,7 +91,6 @@ export function TrackSelectorModal({
         : [...prev, trackId]
     );
   };
-
   const handleAddTracks = async () => {
     if (selectedTracks.length === 0) {
       showError("Selecione pelo menos uma música");
@@ -93,6 +103,7 @@ export function TrackSelectorModal({
     }
 
     setAdding(true);
+
     try {
       // Add tracks to playlist
       const playlistRef = doc(db, "playlists", playlistId);
@@ -101,45 +112,55 @@ export function TrackSelectorModal({
         updatedAt: new Date(),
       });
 
-      // Send notifications for public tracks from other users (exact search-modal compatibility)
+      // Send notifications for public tracks from other users (enhanced error handling)
       const allTracks = [...availableUserTracks, ...availablePublicTracks];
+      let notificationCount = 0;
+
       const notificationPromises = selectedTracks.map(async (trackId) => {
         const track = allTracks.find((t) => t.id === trackId);
         // Use both userUid (search-modal style) and createdBy (compatibility) for checking
         const trackOwner = track?.userUid || track?.createdBy;
+
         if (track && trackOwner && trackOwner !== user.uid) {
           try {
-            await notificarMusicaAdicionadaPlaylist(
+            const result = await notificarMusicaAdicionadaPlaylist(
               trackOwner,
               track.title,
               playlistTitle,
               user.displayName || user.email || "Um usuário",
               trackId
             );
-          } catch (error) {
-            console.error("Error sending notification:", error);
+
+            if (result) {
+              notificationCount++;
+              console.log(`✅ Notification sent for track: ${track.title}`);
+            }
+          } catch (notificationError) {
+            console.error(`❌ Failed to send notification for track "${track.title}":`, notificationError);
+            // Don't break the flow for notification errors
           }
         }
       });
 
+      // Wait for all notifications to complete (or fail)
       await Promise.allSettled(notificationPromises);
 
-      const notificationCount = selectedTracks.filter((trackId) => {
-        const track = allTracks.find((t) => t.id === trackId);
-        const trackOwner = track?.userUid || track?.createdBy;
-        return track && trackOwner && trackOwner !== user.uid;
-      }).length;
+      // Enhanced success message with notification feedback
+      let message = `${selectedTracks.length} música${
+        selectedTracks.length > 1 ? "s" : ""
+      } adicionada${selectedTracks.length > 1 ? "s" : ""} à playlist "${playlistTitle}"`;
 
-      let message = `${selectedTracks.length} música(s) adicionada(s) à playlist "${playlistTitle}"`;
       if (notificationCount > 0) {
-        message += ` (${notificationCount} autor(es) notificado(s))`;
+        message += ` • ${notificationCount} autor${
+          notificationCount > 1 ? "es" : ""
+        } notificado${notificationCount > 1 ? "s" : ""}`;
       }
 
       success(message);
       onClose();
     } catch (error) {
-      console.error("Error adding tracks to playlist:", error);
-      showError("Erro ao adicionar músicas à playlist");
+      console.error("❌ Error adding tracks to playlist:", error);
+      showError("Erro ao adicionar músicas à playlist. Tente novamente.");
     } finally {
       setAdding(false);
     }
@@ -224,36 +245,41 @@ export function TrackSelectorModal({
                 ? "Carregando suas músicas..."
                 : "Carregando músicas públicas..."
             }
-            onClearSearch={() => setSearchTerm("")}
-          />
+            onClearSearch={() => setSearchTerm("")}          />
         </div>
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-glass-200">
           <div className="text-sm text-text-muted">
-            <p>{selectedTracks.length} música(s) selecionada(s)</p>
-            {activeTab === "publicas" && selectedTracks.length > 0 && (
-              <p className="text-xs text-blue-600 dark:text-blue-400">
-                Autores serão notificados
+            <p>
+              {selectedTracks.length} música
+              {selectedTracks.length !== 1 ? "s" : ""} selecionada
+              {selectedTracks.length !== 1 ? "s" : ""}
+            </p>            {activeTab === "publicas" && notificationCount > 0 && (
+              <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                <span>📬</span>
+                {notificationCount} autor{notificationCount !== 1 ? "es" : ""} ser{notificationCount !== 1 ? "ão" : "á"} notificado{notificationCount !== 1 ? "s" : ""}
               </p>
             )}
           </div>
           <div className="flex gap-3">
             <Button variant="ghost" onClick={onClose}>
               Cancelar
-            </Button>
-            <Button
+            </Button>            <Button
               onClick={handleAddTracks}
               disabled={selectedTracks.length === 0 || adding}
-              className="bg-primary-500 hover:bg-primary-600 text-white"
+              className="bg-primary-500 hover:bg-primary-600 text-white disabled:opacity-50"
             >
-              {adding
-                ? "Adicionando..."
-                : `Adicionar ${
-                    selectedTracks.length > 0
-                      ? `(${selectedTracks.length})`
-                      : ""
-                  }`}
+              {adding ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Adicionando...
+                </div>
+              ) : (
+                `Adicionar ${
+                  selectedTracks.length > 0 ? `(${selectedTracks.length})` : ""
+                }`
+              )}
             </Button>
           </div>
         </div>

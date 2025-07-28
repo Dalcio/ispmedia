@@ -39,10 +39,6 @@ export function TrackList({
   if (isLoading) {
     return (
       <div className={`space-y-3 ${className}`}>
-        <div className="text-center py-4">
-          <p className="text-sm text-text-muted">{loadingMessage}</p>
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500 mx-auto mt-2"></div>
-        </div>
         {[...Array(3)].map((_, i) => (
           <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
             <div className="w-10 h-10 bg-glass-200 rounded-lg" />
@@ -84,7 +80,7 @@ export function TrackList({
       {tracks.map((track) => {
         const isSelected = selectedTrackIds.includes(track.id);
         const isUserTrack = !showPublicBadges; // If not showing public badges, assume user tracks
-        
+
         return (
           <div
             key={track.id}
@@ -93,15 +89,13 @@ export function TrackList({
               onTrackSelect ? "cursor-pointer" : ""
             } ${
               isSelected
-                ? "bg-primary-50 border border-primary-200"
+                ? "border border-primary-200"
                 : "bg-glass-50 hover:bg-glass-100 border border-transparent"
             }`}
           >
             <div
               className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                isUserTrack
-                  ? "bg-primary-500/10"
-                  : "bg-blue-500/10"
+                isUserTrack ? "bg-primary-500/10" : "bg-blue-500/10"
               }`}
             >
               <Music
@@ -135,7 +129,8 @@ export function TrackList({
                 )}
               </div>
               <p className="text-sm text-text-muted truncate">
-                {track.artist || track.artistName || "Artista"} • {track.genre || "Gênero"}
+                {track.artist || track.artistName || "Artista"} •{" "}
+                {track.genre || "Gênero"}
               </p>
             </div>
 
@@ -148,14 +143,10 @@ export function TrackList({
             {onTrackSelect && (
               <div
                 className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                  isSelected
-                    ? "bg-primary-500 border-primary-500"
-                    : "border-glass-300"
+                  isSelected ? "border-primary-500" : "border-glass-300"
                 }`}
               >
-                {isSelected && (
-                  <Check className="h-3 w-3 text-white" />
-                )}
+                {isSelected && <Check className="h-3 w-3 text-white" />}
               </div>
             )}
           </div>
