@@ -22,6 +22,7 @@ import {
   Calendar,
   Plus,
   X,
+  User,
 } from "lucide-react";
 
 interface Playlist {
@@ -186,6 +187,25 @@ export function PlaylistItem({
     playlist.id,
     loadingMissingTracks
   ]);
+
+  // Separate tracks into user's own tracks and public tracks from others
+  const { userOwnTracks, publicTracks } = useMemo(() => {
+    const userOwnTracks: Track[] = [];
+    const publicTracks: Track[] = [];
+
+    playlistTracks.forEach((track) => {
+      // Check if track is from allTracks (user's own tracks) or missingTracks (public tracks from others)
+      const isUserTrack = allTracks.some(userTrack => userTrack.id === track.id);
+      
+      if (isUserTrack) {
+        userOwnTracks.push(track);
+      } else {
+        publicTracks.push(track);
+      }
+    });
+
+    return { userOwnTracks, publicTracks };
+  }, [playlistTracks, allTracks]);
   const formatDate = useCallback((timestamp: any) => {
     if (!timestamp) return "Data desconhecida";
 
@@ -403,61 +423,142 @@ export function PlaylistItem({
                   <Plus className="h-4 w-4" />
                   Adicionar música
                 </Button>
-              </div>
-
-              {/* Lista de músicas */}
-              <div className="p-4 space-y-2">
-                {playlistTracks.map((track, index) => (
-                  <div
-                    key={track.id}
-                    className="group/track flex items-center gap-3 p-3 hover:bg-glass-100 rounded-lg transition-colors"
-                  >
-                    <div className="w-8 h-8 bg-glass-200 rounded flex items-center justify-center text-xs text-text-muted">
-                      {index + 1}
+              </div>              {/* Lista de músicas */}
+              <div className="p-4 space-y-4">
+                {/* Seção: Suas músicas */}
+                {userOwnTracks.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 pb-2 border-b border-glass-100">
+                      <User className="h-4 w-4 text-primary-500" />
+                      <h6 className="text-sm font-medium text-text-primary">
+                        Suas músicas ({userOwnTracks.length})
+                      </h6>
                     </div>
+                    <div className="space-y-2">
+                      {userOwnTracks.map((track, index) => (
+                        <div
+                          key={track.id}
+                          className="group/track flex items-center gap-3 p-3 hover:bg-glass-100 rounded-lg transition-colors"
+                        >
+                          <div className="w-8 h-8 bg-primary-500/10 rounded flex items-center justify-center text-xs text-primary-600 font-medium">
+                            {playlistTracks.findIndex(t => t.id === track.id) + 1}
+                          </div>
 
-                    <div className="flex-1 min-w-0">
-                      <h5 className="text-sm font-medium text-text-primary truncate">
-                        {track.title}
-                      </h5>
-                      <p className="text-xs text-text-muted truncate">
-                        {track.artist || track.genre}
-                      </p>
-                    </div>
+                          <div className="flex-1 min-w-0">
+                            <h5 className="text-sm font-medium text-text-primary truncate">
+                              {track.title}
+                            </h5>
+                            <p className="text-xs text-text-muted truncate">
+                              {track.artist || track.genre}
+                            </p>
+                          </div>
 
-                    {track.duration && (
-                      <span className="text-xs text-text-muted">
-                        {formatDuration(track.duration)}
-                      </span>
-                    )}
+                          {track.duration && (
+                            <span className="text-xs text-text-muted">
+                              {formatDuration(track.duration)}
+                            </span>
+                          )}
 
-                    <div className="opacity-0 group-hover/track:opacity-100 transition-opacity flex items-center gap-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handlePlayTrack(track)}
-                        className="text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
-                      >
-                        <Play className="h-3 w-3" />
-                      </Button>
+                          <div className="opacity-0 group-hover/track:opacity-100 transition-opacity flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handlePlayTrack(track)}
+                              className="text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
+                            >
+                              <Play className="h-3 w-3" />
+                            </Button>
 
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleRemoveTrack(track.id, track.title)}
-                        className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRemoveTrack(track.id, track.title)}
+                              className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
 
+                {/* Seção: Músicas públicas de outros usuários */}
+                {publicTracks.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 pb-2 border-b border-glass-100">
+                      <Globe className="h-4 w-4 text-success-500" />
+                      <h6 className="text-sm font-medium text-text-primary">
+                        Músicas públicas ({publicTracks.length})
+                      </h6>
+                    </div>
+                    <div className="space-y-2">
+                      {publicTracks.map((track, index) => (
+                        <div
+                          key={track.id}
+                          className="group/track flex items-center gap-3 p-3 hover:bg-glass-100 rounded-lg transition-colors"
+                        >
+                          <div className="w-8 h-8 bg-success-500/10 rounded flex items-center justify-center text-xs text-success-600 font-medium">
+                            {playlistTracks.findIndex(t => t.id === track.id) + 1}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h5 className="text-sm font-medium text-text-primary truncate">
+                              {track.title}
+                            </h5>                            <p className="text-xs text-text-muted truncate">
+                              {track.artist || track.genre}
+                            </p>
+                          </div>
+
+                          {track.duration && (
+                            <span className="text-xs text-text-muted">
+                              {formatDuration(track.duration)}
+                            </span>
+                          )}
+
+                          <div className="opacity-0 group-hover/track:opacity-100 transition-opacity flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handlePlayTrack(track)}
+                              className="text-text-muted hover:text-primary-500 hover:bg-primary-500/10"
+                            >
+                              <Play className="h-3 w-3" />
+                            </Button>
+
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRemoveTrack(track.id, track.title)}
+                              className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensagem quando nenhuma música foi carregada */}
+                {userOwnTracks.length === 0 && publicTracks.length === 0 && playlist.tracks.length > 0 && (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-text-muted">
+                      {loadingMissingTracks 
+                        ? "Carregando músicas da playlist..." 
+                        : "Não foi possível carregar as músicas desta playlist"}
+                    </p>
+                  </div>
+                )}
+
+                {/* Indicador de músicas não carregadas */}
                 {playlist.tracks.length > playlistTracks.length && (
-                  <div className="text-center pt-2">
+                  <div className="text-center pt-2 border-t border-glass-100">
                     <p className="text-xs text-text-muted">
                       e mais {playlist.tracks.length - playlistTracks.length}
-                      músicas...
+                      músicas não carregadas...
                     </p>
                   </div>
                 )}
