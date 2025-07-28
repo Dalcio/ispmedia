@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { UserAvatarButton } from "@/components/layout/user-avatar-button";
 import { Button } from "@/components/ui/ui-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { AuthModal } from "@/components/modals/auth-modal";
 import { useUploadModal } from "@/contexts/upload-context";
 import { useCommandPalette } from "@/hooks/use-command-palette";
 import { useDashboardDrawer } from "@/hooks/use-dashboard-drawer";
@@ -19,6 +21,7 @@ export function Header({ className = "" }: HeaderProps) {
   const { openUploadModal } = useUploadModal();
   const { openCommandPalette: openPalette } = useCommandPalette();
   const { openDrawer } = useDashboardDrawer();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   return (
     <>
@@ -48,11 +51,12 @@ export function Header({ className = "" }: HeaderProps) {
                   Diagramas
                 </Link>
               </nav>
-            </div>{" "}            {/* Actions */}
+            </div>{" "}
+            {/* Actions */}
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Theme Toggle */}
               <ThemeToggle />
-              
+
               {user ? (
                 <>
                   {/* Mobile Dashboard Button */}
@@ -88,18 +92,31 @@ export function Header({ className = "" }: HeaderProps) {
                   </div>
                   {/* User Avatar with Dropdown */}
                   <UserAvatarButton onOpenCommandPalette={openPalette} />
-                </>              ) : (
+                </>
+              ) : (
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsAuthModalOpen(true)}
+                  >
                     Entrar
                   </Button>
-                  <Button size="sm">Criar Conta</Button>
+                  <Button size="sm" onClick={() => setIsAuthModalOpen(true)}>
+                    Criar Conta
+                  </Button>
                 </div>
               )}
-            </div>
+            </div>{" "}
           </div>
         </div>
       </header>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </>
   );
 }
