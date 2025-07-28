@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
@@ -36,7 +36,6 @@ export function TrackSelectorModal({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);
-
   // Use the track search hook with exact search-modal logic
   const {
     userTracks,
@@ -50,7 +49,7 @@ export function TrackSelectorModal({
     includeUserTracks: activeTab === "minhas",
     includePublicTracks: activeTab === "publicas",
     excludeTrackIds: existingTrackIds,
-    autoLoadPublic: activeTab === "publicas" && isOpen && !!user,
+    autoLoadPublic: activeTab === "publicas" && isOpen, // Removed user check - should load for all users
   });
 
   // Reset state when modal opens/closes
@@ -72,6 +71,31 @@ export function TrackSelectorModal({
   // Get current tracks and loading state based on active tab
   const currentTracks = activeTab === "minhas" ? userTracks : publicTracks;
   const currentLoading = isLoading && (activeTab === "publicas" ? true : false);
+
+  // Debug logging for track loading issues
+  useEffect(() => {
+    console.log("🔍 TrackSelector Debug:", {
+      activeTab,
+      isOpen,
+      user: !!user,
+      userTracksCount: userTracks.length,
+      publicTracksCount: publicTracks.length,
+      currentTracksCount: currentTracks.length,
+      isLoading,
+      publicTracksError,
+      searchTerm,
+    });
+  }, [
+    activeTab,
+    isOpen,
+    user,
+    userTracks.length,
+    publicTracks.length,
+    currentTracks.length,
+    isLoading,
+    publicTracksError,
+    searchTerm,
+  ]);
 
   // Calculate how many authors will be notified (memoized for performance)
   const notificationCount = useMemo(() => {
@@ -102,15 +126,39 @@ export function TrackSelectorModal({
       return;
     }
 
-    setAdding(true);
-
-    try {
+    setAdding(true);    try {
       // Add tracks to playlist
       const playlistRef = doc(db, "playlists", playlistId);
+      
+      console.log("🎵 Adding tracks to playlist:", {
+        playlistId,
+        tracksToAdd: selectedTracks,
+        trackCount: selectedTracks.length
+      });
+      
       await updateDoc(playlistRef, {
         tracks: arrayUnion(...selectedTracks),
         updatedAt: new Date(),
       });
+
+      console.log("✅ Tracks successfully added to playlist");
+
+      // Verify the update was successful
+      try {
+        const updatedPlaylist = await getDoc(playlistRef);
+        if (updatedPlaylist.exists()) {
+          const data = updatedPlaylist.data();
+          console.log("🔍 Playlist verification:", {
+            playlistId,
+            currentTracks: data.tracks || [],
+            trackCount: (data.tracks || []).length,
+            addedTracks: selectedTracks,
+            containsAddedTracks: selectedTracks.every(id => (data.tracks || []).includes(id))
+          });
+        }
+      } catch (verifyError) {
+        console.error("❌ Error verifying playlist update:", verifyError);
+      }
 
       // Send notifications for public tracks from other users (enhanced error handling)
       const allTracks = [...availableUserTracks, ...availablePublicTracks];

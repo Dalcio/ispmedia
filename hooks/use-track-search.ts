@@ -52,10 +52,17 @@ export function useTrackSearch({
   const [publicTracks, setPublicTracks] = useState<TrackResult[]>([]);
   const [publicTracksLoading, setPublicTracksLoading] = useState(false);
   const [publicTracksError, setPublicTracksError] = useState<string | null>(null);
-
   // Load public tracks (exact search-modal logic)
   useEffect(() => {
+    console.log("🔍 useTrackSearch: Effect triggered", {
+      includePublicTracks,
+      autoLoadPublic,
+      user: !!user,
+      userId: user?.uid
+    });
+
     if (!includePublicTracks || !autoLoadPublic) {
+      console.log("⏭️ Skipping public tracks load", { includePublicTracks, autoLoadPublic });
       return;
     }
 
@@ -86,7 +93,7 @@ export function useTrackSearch({
         // Map all public tracks with EXACT same structure as search-modal
         const allPublicTracks: TrackResult[] = allSnapshot.docs.map((doc) => {
           const data = doc.data();
-          return {
+          const track = {
             id: doc.id,
             title: data.title || "",
             genre: data.genre || "",
@@ -102,11 +109,17 @@ export function useTrackSearch({
             createdBy: data.createdBy,  // Keep compatibility
             isPublic: data.isPublic,
           };
+          console.log("📀 Track data:", { id: doc.id, title: track.title, createdBy: track.createdBy, userUid: track.userUid });
+          return track;
         });
 
         // Filter out user's own tracks if user is authenticated (same logic as search-modal)
         const tracksFromOthers = user 
-          ? allPublicTracks.filter((track) => track.userUid !== user.uid)
+          ? allPublicTracks.filter((track) => {
+              const isOwnTrack = track.userUid === user.uid;
+              console.log(`🔍 Track "${track.title}": createdBy=${track.userUid}, currentUser=${user.uid}, isOwn=${isOwnTrack}`);
+              return !isOwnTrack;
+            })
           : allPublicTracks;
         
         console.log("✅ Public tracks from others:", tracksFromOthers.length);
@@ -147,11 +160,23 @@ export function useTrackSearch({
         isPublic: track.isPublic,
       }));
   }, [userTracks, excludeTrackIds, includeUserTracks]);
-
   // Filter public tracks (remove excluded IDs)
   const availablePublicTracks = useMemo(() => {
-    if (!includePublicTracks) return [];
-    return publicTracks.filter((track) => !excludeTrackIds.includes(track.id));
+    if (!includePublicTracks) {
+      console.log("⏭️ Not including public tracks");
+      return [];
+    }
+    
+    const filtered = publicTracks.filter((track) => !excludeTrackIds.includes(track.id));
+    console.log("🔍 Available public tracks after filtering:", {
+      total: publicTracks.length,
+      excluded: excludeTrackIds.length,
+      available: filtered.length,
+      excludedIds: excludeTrackIds,
+      availableTracks: filtered.map(t => ({ id: t.id, title: t.title }))
+    });
+    
+    return filtered;
   }, [publicTracks, excludeTrackIds, includePublicTracks]);
 
   // Search in user tracks (exact search-modal logic)

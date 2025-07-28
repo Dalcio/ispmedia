@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import { doc, updateDoc, arrayRemove } from "firebase/firestore";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { doc, updateDoc, arrayRemove, getDoc, getDocs, query, where, collection } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useTracks, type Track } from "@/contexts/tracks-context";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
@@ -54,6 +54,80 @@ export function PlaylistItem({
   const { playTrack } = useGlobalAudio();
   const { success, error: showError } = useToast();
   const [showTrackSelector, setShowTrackSelector] = useState(false);
+  const [missingTracks, setMissingTracks] = useState<Track[]>([]);
+  const [loadingMissingTracks, setLoadingMissingTracks] = useState(false);
+  // Load missing tracks that aren't in the user's tracks context
+  useEffect(() => {
+    if (!playlist.tracks || playlist.tracks.length === 0) {
+      setMissingTracks([]);
+      return;
+    }
+
+    const loadMissingTracks = async () => {
+      const availableTrackIds = allTracks.map((t) => t.id);
+      const missingTrackIds = playlist.tracks.filter(
+        (id) => !availableTrackIds.includes(id)
+      );
+
+      if (missingTrackIds.length === 0) {
+        setMissingTracks([]);
+        return;
+      }
+
+      console.log("🔍 Loading missing tracks for playlist:", {
+        playlistId: playlist.id,
+        missingTrackIds: missingTrackIds.length,
+      });
+
+      setLoadingMissingTracks(true);
+      try {
+        // Load tracks that are missing from user's context (public tracks from others)
+        const missingTracksData: Track[] = [];
+
+        // Batch load missing tracks
+        for (const trackId of missingTrackIds) {
+          try {
+            const trackDoc = await getDoc(doc(db, "tracks", trackId));
+            if (trackDoc.exists()) {
+              const trackData = trackDoc.data();
+              missingTracksData.push({
+                id: trackDoc.id,
+                title: trackData.title || "Título desconhecido",
+                artist:
+                  trackData.artist || trackData.artistName || "Artista desconhecido",
+                createdBy: trackData.createdBy || "",
+                genre: trackData.genre || "Gênero desconhecido",
+                audioUrl: trackData.audioUrl || "",
+                fileName: trackData.fileName || "",
+                fileSize: trackData.fileSize || 0,
+                duration: trackData.duration,
+                createdAt: trackData.createdAt,
+                mimeType: trackData.mimeType || "",
+                playCount: trackData.playCount || 0,
+                isPublic: trackData.isPublic || false,
+              });
+            }
+          } catch (error) {
+            console.error(`Failed to load track ${trackId}:`, error);
+          }
+        }
+
+        console.log("✅ Loaded missing tracks:", missingTracksData.length);
+        setMissingTracks(missingTracksData);
+      } catch (error) {
+        console.error("Error loading missing tracks:", error);
+        setMissingTracks([]);
+      } finally {
+        setLoadingMissingTracks(false);
+      }
+    };
+
+    loadMissingTracks();
+  }, [
+    playlist.tracks?.join(','), 
+    allTracks.map(t => t.id).sort().join(','), 
+    playlist.id
+  ]);
 
   // Create stable reference for tracks data for memoization
   const tracksDataKey = useMemo(
@@ -77,22 +151,40 @@ export function PlaylistItem({
       playlist.tracks?.join(","),
       playlist.id,
     ]
-  ); // Get tracks that belong to this playlist using the context
+  );  // Get tracks that belong to this playlist using the context + missing tracks
   const playlistTracks = useMemo(() => {
     if (!playlist.tracks || playlist.tracks.length === 0) {
       return [];
     }
 
-    const tracks = allTracks.filter((track) =>
+    // Combine user tracks from context with missing tracks loaded from Firestore
+    const allAvailableTracks = [...allTracks, ...missingTracks];
+    
+    const tracks = allAvailableTracks.filter((track) =>
       playlist.tracks.includes(track.id)
     );
 
-    return tracks;
+    // Sort tracks by the order they appear in the playlist.tracks array
+    const sortedTracks = playlist.tracks
+      .map(trackId => tracks.find(track => track.id === trackId))
+      .filter(Boolean) as Track[];
+
+    console.log("🎵 Playlist tracks resolved:", {
+      playlistId: playlist.id,
+      totalInPlaylist: playlist.tracks.length,
+      userTracks: allTracks.length,
+      missingTracks: missingTracks.length,
+      resolvedTracks: sortedTracks.length,
+      loadingMissing: loadingMissingTracks
+    });
+
+    return sortedTracks;
   }, [
-    tracksDataKey.length,
-    tracksDataKey.ids,
-    tracksDataKey.playlistLength,
-    tracksDataKey.playlistIds,
+    playlist.tracks,
+    allTracks,
+    missingTracks,
+    playlist.id,
+    loadingMissingTracks
   ]);
   const formatDate = useCallback((timestamp: any) => {
     if (!timestamp) return "Data desconhecida";
@@ -259,9 +351,11 @@ export function PlaylistItem({
       </div>
       {/* Lista de faixas expandida */}
       {isExpanded && (
-        <div className="border-t border-glass-200 bg-glass-50">
-          {tracksLoading ? (
+        <div className="border-t border-glass-200 bg-glass-50">          {tracksLoading || loadingMissingTracks ? (
             <div className="p-4 space-y-3">
+              <div className="text-xs text-text-muted mb-2">
+                {loadingMissingTracks ? "Carregando músicas da playlist..." : "Carregando suas músicas..."}
+              </div>
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex items-center gap-3 animate-pulse">
                   <div className="w-8 h-8 bg-glass-200 rounded" />
