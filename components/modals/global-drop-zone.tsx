@@ -122,10 +122,10 @@ export function GlobalDropZone({ onFileDropped }: GlobalDropZoneProps) {
       >
         <X className="h-6 w-6" />
       </button>{" "}
-      {/* Drop zone */}
+      {/* Drop zone */}{" "}
       <div
         className={`
-          relative w-[90%] max-w-2xl h-[70%] max-h-96 
+          relative w-[90%] max-w-2xl h-[70%] max-h-[calc(100vh-8rem)]
           border-2 border-dashed rounded-2xl 
           flex flex-col items-center justify-center
           transition-all duration-300 ease-in-out

@@ -121,7 +121,7 @@ export function TrackDetailsModal({
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
-      <div className="relative max-h-[80vh] overflow-hidden flex flex-col bg-glass-100 backdrop-blur-xl border border-border-light text-text-primary">
+      <div className="relative overflow-hidden flex flex-col bg-glass-100 backdrop-blur-xl border border-border-light text-text-primary">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border-light">
           <div className="flex-1 min-w-0">

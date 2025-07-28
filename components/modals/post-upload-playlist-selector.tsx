@@ -146,7 +146,7 @@ export function PostUploadPlaylistSelector({
                   onClick={() => setSelectedPlaylist(playlist.id)}
                   className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${
                     selectedPlaylist === playlist.id
-                      ? "bg-primary-50 border border-primary-200"
+                      ? "border border-primary-200"
                       : "bg-glass-50 hover:bg-glass-100 border border-transparent"
                   }`}
                 >

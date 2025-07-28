@@ -1,14 +1,25 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  collection,
+  query,
+  where,
+  getDocs,
+  or,
+} from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useTracks } from "@/contexts/tracks-context";
+import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
+import { notificarMusicaAdicionadaPlaylist } from "@/lib/notifications";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/ui-button";
 import { Input } from "@/components/ui/input";
-import { Music, Plus, Search } from "lucide-react";
+import { Music, Plus, Search, User } from "lucide-react";
 
 interface TrackSelectorModalProps {
   isOpen: boolean;
@@ -25,12 +36,55 @@ export function TrackSelectorModal({
   playlistTitle,
   existingTrackIds,
 }: TrackSelectorModalProps) {
-  const { tracks: allTracks, loading } = useTracks();
+  const { tracks: userTracks, loading: userTracksLoading } = useTracks();
+  const { user } = useAuth();
   const { success, error: showError } = useToast();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);
+  const [publicTracks, setPublicTracks] = useState<any[]>([]);
+  const [publicTracksLoading, setPublicTracksLoading] = useState(true);
+
+  // Load public tracks from other users
+  useEffect(() => {
+    if (!isOpen || !user) {
+      setPublicTracksLoading(false);
+      return;
+    }
+
+    const loadPublicTracks = async () => {
+      setPublicTracksLoading(true);
+      try {
+        const publicTracksQuery = query(
+          collection(db, "tracks"),
+          where("isPublic", "==", true),
+          where("createdBy", "!=", user.uid)
+        );
+
+        const snapshot = await getDocs(publicTracksQuery);
+        const tracks = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setPublicTracks(tracks);
+      } catch (error) {
+        console.error("Error loading public tracks:", error);
+      } finally {
+        setPublicTracksLoading(false);
+      }
+    };
+
+    loadPublicTracks();
+  }, [isOpen, user]);
+
+  // Combine user tracks and public tracks
+  const allTracks = useMemo(() => {
+    return [...userTracks, ...publicTracks];
+  }, [userTracks, publicTracks]);
+
+  const loading = userTracksLoading || publicTracksLoading;
 
   // Reset search and selection when modal opens/closes
   useEffect(() => {
@@ -70,10 +124,14 @@ export function TrackSelectorModal({
         : [...prev, trackId]
     );
   };
-
   const handleAddTracks = async () => {
     if (selectedTracks.length === 0) {
       showError("Selecione pelo menos uma música");
+      return;
+    }
+
+    if (!user) {
+      showError("Você precisa estar logado");
       return;
     }
 
@@ -84,6 +142,29 @@ export function TrackSelectorModal({
         tracks: arrayUnion(...selectedTracks),
         updatedAt: new Date(),
       });
+
+      // Send notifications for tracks from other users
+      const notificationPromises = selectedTracks.map(async (trackId) => {
+        const track = allTracks.find((t) => t.id === trackId);
+        if (track && track.createdBy !== user.uid) {
+          // This is a track from another user, send notification
+          try {
+            await notificarMusicaAdicionadaPlaylist(
+              track.createdBy,
+              track.title,
+              playlistTitle,
+              user.displayName || user.email || "Um usuário",
+              trackId
+            );
+          } catch (error) {
+            console.error("Error sending notification:", error);
+            // Don't fail the whole operation if notification fails
+          }
+        }
+      });
+
+      // Wait for all notifications to be sent (or fail silently)
+      await Promise.allSettled(notificationPromises);
 
       success(
         `${selectedTracks.length} música(s) adicionada(s) à playlist "${playlistTitle}"`
@@ -120,7 +201,7 @@ export function TrackSelectorModal({
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
-        </div>
+        </div>{" "}
         {/* Lista de músicas */}
         <div className="max-h-96 overflow-y-auto space-y-2">
           {loading ? (
@@ -145,13 +226,13 @@ export function TrackSelectorModal({
                 {searchTerm
                   ? `Nenhuma música encontrada para "${searchTerm}"`
                   : availableTracks.length === 0
-                  ? "Você ainda não tem músicas enviadas"
-                  : "Todas as suas músicas já estão nesta playlist"}
+                  ? "Nenhuma música disponível para adicionar"
+                  : "Todas as músicas já estão nesta playlist"}
               </p>
               {availableTracks.length === 0 && allTracks.length === 0 && (
                 <p className="text-text-muted text-sm">
-                  Envie algumas músicas primeiro para poder adicioná-las às
-                  playlists
+                  Envie algumas músicas ou busque por músicas públicas de outros
+                  usuários
                 </p>
               )}
             </div>
@@ -171,9 +252,17 @@ export function TrackSelectorModal({
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-text-primary truncate">
-                    {track.title}
-                  </h4>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-medium text-text-primary truncate">
+                      {track.title}
+                    </h4>
+                    {track.createdBy !== user?.uid && (
+                      <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs rounded-full">
+                        <User className="h-3 w-3" />
+                        Pública
+                      </div>
+                    )}
+                  </div>
                   <p className="text-sm text-text-muted truncate">
                     {track.artist || "Artista"} • {track.genre}
                   </p>
@@ -199,29 +288,26 @@ export function TrackSelectorModal({
               </div>
             ))
           )}
-        </div>
-        {/* Debug info - only in development */}
-        {process.env.NODE_ENV === "development" && (
-          <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded space-y-1">
-            <div>
-              Debug: Total tracks: {allTracks.length} | Available:
-              {availableTracks.length} | Filtered: {filteredTracks.length} |
-              Loading: {loading.toString()}
-            </div>
-            <div>All track IDs: {allTracks.map((t) => t.id).join(", ")}</div>
-            <div>Existing track IDs: {existingTrackIds.join(", ")}</div>
-            {allTracks.length > 0 && (
-              <div>
-                Sample track: {allTracks[0].title} (ID: {allTracks[0].id})
-              </div>
-            )}
-          </div>
-        )}
+        </div>{" "}
         {/* Ações */}
         <div className="flex items-center justify-between pt-4 border-t border-glass-200">
-          <p className="text-sm text-text-muted">
-            {selectedTracks.length} música(s) selecionada(s)
-          </p>
+          <div className="text-sm text-text-muted">
+            <p>{selectedTracks.length} música(s) selecionada(s)</p>
+            {selectedTracks.some((trackId) => {
+              const track = allTracks.find((t) => t.id === trackId);
+              return track && track.createdBy !== user?.uid;
+            }) && (
+              <p className="text-xs text-blue-600 dark:text-blue-400">
+                {
+                  selectedTracks.filter((trackId) => {
+                    const track = allTracks.find((t) => t.id === trackId);
+                    return track && track.createdBy !== user?.uid;
+                  }).length
+                }{" "}
+                música(s) pública(s) - autores serão notificados
+              </p>
+            )}
+          </div>
 
           <div className="flex gap-3">
             <Button variant="ghost" onClick={onClose}>

@@ -387,147 +387,148 @@ export function UploadMusicModal({
       title="Adicionar Nova Música"
       size="lg"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Título da Música */}
-        <div className="space-y-2">
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-text-subtitle"
-          >
-            Nome da Música *
-          </label>
-          <Input
-            id="title"
-            type="text"
-            value={formData.title}
-            onChange={(e) => handleInputChange("title", e.target.value)}
-            placeholder="Digite o nome da música..."
-            disabled={isUploading}
-            className={`w-full bg-glass-200 border-border-input text-text-primary placeholder:text-text-placeholder focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl px-4 py-3 ${
-              errors.title
-                ? "border-error-500 focus:border-error-500 focus:ring-error-500/20"
-                : ""
-            }`}
-          />
-          {errors.title && (
-            <p className="text-sm text-error-500 mt-1">{errors.title}</p>
-          )}
-        </div>
-
-        {/* Gênero Musical */}
-        <div className="space-y-2">
-          <label
-            htmlFor="genre"
-            className="block text-sm font-medium text-text-subtitle"
-          >
-            Gênero Musical *
-          </label>
-          <select
-            id="genre"
-            value={formData.genre}
-            onChange={(e) => handleInputChange("genre", e.target.value)}
-            disabled={isUploading}
-            className={`w-full bg-glass-200 border-border-input text-text-primary focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl px-4 py-3 cursor-pointer ${
-              errors.genre
-                ? "border-error-500 focus:border-error-500 focus:ring-error-500/20"
-                : ""
-            }`}
-          >
-            <option
-              value=""
-              disabled
-              className="bg-background-800 text-text-muted"
+      <div className="max-h-full overflow-y-auto">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Título da Música */}
+          <div className="space-y-2">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-text-subtitle"
             >
-              Selecione um gênero...
-            </option>
-            {MUSIC_GENRES.map((genre) => (
-              <option
-                key={genre}
-                value={genre}
-                className="bg-background-800 text-text-primary"
-              >
-                {genre}
-              </option>
-            ))}
-          </select>
-          {errors.genre && (
-            <p className="text-sm text-error-500 mt-1">{errors.genre}</p>
-          )}
-        </div>
-
-        {/* Visibilidade */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-text-subtitle">
-            Visibilidade da Música
-          </label>
-          <div className="space-y-3">
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <input
-                type="radio"
-                name="visibility"
-                checked={formData.isPublic}
-                onChange={() =>
-                  setFormData((prev) => ({ ...prev, isPublic: true }))
-                }
-                disabled={isUploading}
-                className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
-              />
-              <div className="flex-1">
-                <div className="text-text-primary font-medium">Pública</div>
-                <div className="text-sm text-text-muted">
-                  Qualquer pessoa pode encontrar e ouvir esta música
-                </div>
-              </div>
+              Nome da Música *
             </label>
-
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <input
-                type="radio"
-                name="visibility"
-                checked={!formData.isPublic}
-                onChange={() =>
-                  setFormData((prev) => ({ ...prev, isPublic: false }))
-                }
-                disabled={isUploading}
-                className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
-              />
-              <div className="flex-1">
-                <div className="text-text-primary font-medium">Privada</div>
-                <div className="text-sm text-text-muted">
-                  Apenas você pode ver e ouvir esta música
-                </div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        {/* Upload de Arquivo */}
-        <div className="space-y-2">
-          <label
-            htmlFor="audioFile"
-            className="block text-sm font-medium text-text-subtitle"
-          >
-            Arquivo de Áudio *
-          </label>
-
-          <div className="relative">
-            <input
-              ref={fileInputRef}
-              id="audioFile"
-              type="file"
-              accept=".mp3,.wav,audio/mpeg,audio/wav"
-              onChange={handleFileChange}
+            <Input
+              id="title"
+              type="text"
+              value={formData.title}
+              onChange={(e) => handleInputChange("title", e.target.value)}
+              placeholder="Digite o nome da música..."
               disabled={isUploading}
-              className="hidden"
-            />{" "}
-            <div
-              ref={dropZoneRef}
-              onClick={() => !isUploading && fileInputRef.current?.click()}
-              onDragEnter={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              className={`
+              className={`w-full bg-glass-200 border-border-input text-text-primary placeholder:text-text-placeholder focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl px-4 py-3 ${
+                errors.title
+                  ? "border-error-500 focus:border-error-500 focus:ring-error-500/20"
+                  : ""
+              }`}
+            />
+            {errors.title && (
+              <p className="text-sm text-error-500 mt-1">{errors.title}</p>
+            )}
+          </div>
+
+          {/* Gênero Musical */}
+          <div className="space-y-2">
+            <label
+              htmlFor="genre"
+              className="block text-sm font-medium text-text-subtitle"
+            >
+              Gênero Musical *
+            </label>
+            <select
+              id="genre"
+              value={formData.genre}
+              onChange={(e) => handleInputChange("genre", e.target.value)}
+              disabled={isUploading}
+              className={`w-full bg-glass-200 border-border-input text-text-primary focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 rounded-xl px-4 py-3 cursor-pointer ${
+                errors.genre
+                  ? "border-error-500 focus:border-error-500 focus:ring-error-500/20"
+                  : ""
+              }`}
+            >
+              <option
+                value=""
+                disabled
+                className="bg-background-800 text-text-muted"
+              >
+                Selecione um gênero...
+              </option>
+              {MUSIC_GENRES.map((genre) => (
+                <option
+                  key={genre}
+                  value={genre}
+                  className="bg-background-800 text-text-primary"
+                >
+                  {genre}
+                </option>
+              ))}
+            </select>
+            {errors.genre && (
+              <p className="text-sm text-error-500 mt-1">{errors.genre}</p>
+            )}
+          </div>
+
+          {/* Visibilidade */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-text-subtitle">
+              Visibilidade da Música
+            </label>
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="radio"
+                  name="visibility"
+                  checked={formData.isPublic}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, isPublic: true }))
+                  }
+                  disabled={isUploading}
+                  className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
+                />
+                <div className="flex-1">
+                  <div className="text-text-primary font-medium">Pública</div>
+                  <div className="text-sm text-text-muted">
+                    Qualquer pessoa pode encontrar e ouvir esta música
+                  </div>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="radio"
+                  name="visibility"
+                  checked={!formData.isPublic}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, isPublic: false }))
+                  }
+                  disabled={isUploading}
+                  className="mt-1 w-4 h-4 text-primary-500 border-border-input focus:ring-primary-500 focus:ring-2"
+                />
+                <div className="flex-1">
+                  <div className="text-text-primary font-medium">Privada</div>
+                  <div className="text-sm text-text-muted">
+                    Apenas você pode ver e ouvir esta música
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Upload de Arquivo */}
+          <div className="space-y-2">
+            <label
+              htmlFor="audioFile"
+              className="block text-sm font-medium text-text-subtitle"
+            >
+              Arquivo de Áudio *
+            </label>
+
+            <div className="relative">
+              <input
+                ref={fileInputRef}
+                id="audioFile"
+                type="file"
+                accept=".mp3,.wav,audio/mpeg,audio/wav"
+                onChange={handleFileChange}
+                disabled={isUploading}
+                className="hidden"
+              />{" "}
+              <div
+                ref={dropZoneRef}
+                onClick={() => !isUploading && fileInputRef.current?.click()}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                className={`
                 w-full border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200 cursor-pointer relative
                 ${
                   formData.audioFile
@@ -543,155 +544,156 @@ export function UploadMusicModal({
                     : "hover:bg-glass-200"
                 }
               `}
+              >
+                {/* Invisible drag overlay that covers the entire area */}
+                <div
+                  className="absolute inset-0 z-10"
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  style={{
+                    pointerEvents:
+                      isDragOver || !formData.audioFile ? "all" : "none",
+                  }}
+                />
+
+                {/* Drag overlay visual feedback */}
+                {isDragOver && !formData.audioFile && (
+                  <div className="absolute inset-2 border-2 border-dashed border-primary-400/50 rounded-lg animate-pulse pointer-events-none z-20" />
+                )}
+
+                {formData.audioFile ? (
+                  <div className="space-y-3 relative z-0">
+                    <div className="flex items-center justify-center">
+                      <FileAudio className="h-12 w-12 text-primary-500" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-text-primary font-medium">
+                        {formData.audioFile.name}
+                      </p>
+                      <p className="text-sm text-text-muted">
+                        {formatFileSize(formData.audioFile.size)}
+                      </p>
+                    </div>
+                    {!isUploading && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData((prev) => ({ ...prev, audioFile: null }));
+                          if (fileInputRef.current) {
+                            fileInputRef.current.value = "";
+                          }
+                        }}
+                        className="text-text-muted hover:text-error-500 hover:bg-error-500/10 relative z-30"
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Remover
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-3 relative z-0">
+                    <div className="flex items-center justify-center">
+                      <Upload
+                        className={`h-12 w-12 transition-colors duration-200 ${
+                          isDragOver ? "text-primary-400" : "text-text-muted"
+                        }`}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <p
+                        className={`font-medium transition-colors duration-200 ${
+                          isDragOver ? "text-primary-400" : "text-text-primary"
+                        }`}
+                      >
+                        {isDragOver
+                          ? "Solte o arquivo aqui"
+                          : "Clique para selecionar ou arraste um arquivo"}
+                      </p>
+                      <p className="text-sm text-text-muted">
+                        MP3 ou WAV • Máximo 50MB
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {errors.audioFile && (
+              <p className="text-sm text-error-500 mt-1">{errors.audioFile}</p>
+            )}
+          </div>
+
+          {/* Barra de Progresso */}
+          {(isUploading || isSuccess) && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-text-subtitle">
+                  {uploadProgress.message}
+                </span>
+                <span className="text-sm text-text-muted">
+                  {uploadProgress.percentage}%
+                </span>
+              </div>
+
+              <div className="w-full bg-glass-200 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 rounded-full ${
+                    uploadProgress.status === "success"
+                      ? "bg-success-500"
+                      : uploadProgress.status === "error"
+                      ? "bg-error-500"
+                      : "bg-primary-500"
+                  }`}
+                  style={{ width: `${uploadProgress.percentage}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Ações */}
+          <div className="flex items-center gap-3 pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleClose}
+              disabled={isUploading}
+              className="flex-1"
             >
-              {/* Invisible drag overlay that covers the entire area */}
-              <div
-                className="absolute inset-0 z-10"
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                style={{
-                  pointerEvents:
-                    isDragOver || !formData.audioFile ? "all" : "none",
-                }}
-              />
+              {isUploading ? "Aguarde..." : "Cancelar"}
+            </Button>
 
-              {/* Drag overlay visual feedback */}
-              {isDragOver && !formData.audioFile && (
-                <div className="absolute inset-2 border-2 border-dashed border-primary-400/50 rounded-lg animate-pulse pointer-events-none z-20" />
-              )}
-
-              {formData.audioFile ? (
-                <div className="space-y-3 relative z-0">
-                  <div className="flex items-center justify-center">
-                    <FileAudio className="h-12 w-12 text-primary-500" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-text-primary font-medium">
-                      {formData.audioFile.name}
-                    </p>
-                    <p className="text-sm text-text-muted">
-                      {formatFileSize(formData.audioFile.size)}
-                    </p>
-                  </div>
-                  {!isUploading && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setFormData((prev) => ({ ...prev, audioFile: null }));
-                        if (fileInputRef.current) {
-                          fileInputRef.current.value = "";
-                        }
-                      }}
-                      className="text-text-muted hover:text-error-500 hover:bg-error-500/10 relative z-30"
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Remover
-                    </Button>
-                  )}
+            <Button
+              type="submit"
+              disabled={
+                isUploading ||
+                !formData.title ||
+                !formData.genre ||
+                !formData.audioFile
+              }
+              className="flex-1 bg-primary-500 hover:bg-primary-600 text-black font-medium"
+            >
+              {isUploading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  {uploadProgress.status === "processing"
+                    ? "Processando..."
+                    : "Enviando..."}
                 </div>
               ) : (
-                <div className="space-y-3 relative z-0">
-                  <div className="flex items-center justify-center">
-                    <Upload
-                      className={`h-12 w-12 transition-colors duration-200 ${
-                        isDragOver ? "text-primary-400" : "text-text-muted"
-                      }`}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <p
-                      className={`font-medium transition-colors duration-200 ${
-                        isDragOver ? "text-primary-400" : "text-text-primary"
-                      }`}
-                    >
-                      {isDragOver
-                        ? "Solte o arquivo aqui"
-                        : "Clique para selecionar ou arraste um arquivo"}
-                    </p>
-                    <p className="text-sm text-text-muted">
-                      MP3 ou WAV • Máximo 50MB
-                    </p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Music className="h-4 w-4" />
+                  Adicionar Música
                 </div>
-              )}
-            </div>
+              )}{" "}
+            </Button>
           </div>
-
-          {errors.audioFile && (
-            <p className="text-sm text-error-500 mt-1">{errors.audioFile}</p>
-          )}
-        </div>
-
-        {/* Barra de Progresso */}
-        {(isUploading || isSuccess) && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-text-subtitle">
-                {uploadProgress.message}
-              </span>
-              <span className="text-sm text-text-muted">
-                {uploadProgress.percentage}%
-              </span>
-            </div>
-
-            <div className="w-full bg-glass-200 rounded-full h-2.5 overflow-hidden">
-              <div
-                className={`h-full transition-all duration-300 rounded-full ${
-                  uploadProgress.status === "success"
-                    ? "bg-success-500"
-                    : uploadProgress.status === "error"
-                    ? "bg-error-500"
-                    : "bg-primary-500"
-                }`}
-                style={{ width: `${uploadProgress.percentage}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Ações */}
-        <div className="flex items-center gap-3 pt-4">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleClose}
-            disabled={isUploading}
-            className="flex-1"
-          >
-            {isUploading ? "Aguarde..." : "Cancelar"}
-          </Button>
-
-          <Button
-            type="submit"
-            disabled={
-              isUploading ||
-              !formData.title ||
-              !formData.genre ||
-              !formData.audioFile
-            }
-            className="flex-1 bg-primary-500 hover:bg-primary-600 text-black font-medium"
-          >
-            {isUploading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                {uploadProgress.status === "processing"
-                  ? "Processando..."
-                  : "Enviando..."}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Music className="h-4 w-4" />
-                Adicionar Música
-              </div>
-            )}
-          </Button>
-        </div>
-      </form>
+        </form>
+      </div>
     </Modal>
   );
 }

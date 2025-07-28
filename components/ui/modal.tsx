@@ -50,11 +50,10 @@ export function Modal({
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-md"
         onClick={onClose}
-      />
-
+      />{" "}
       {/* Modal Content */}
       <div
-        className={`relative w-full ${sizeClasses[size]} mx-4 glass-card bg-white/95 dark:bg-black/95 rounded-3xl shadow-2xl overflow-hidden modal-content`}
+        className={`relative w-full ${sizeClasses[size]} mx-4 glass-card bg-white/95 dark:bg-black/95 rounded-3xl shadow-2xl overflow-hidden modal-content !max-h-[calc(100vh-8rem)] flex flex-col`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -72,10 +71,9 @@ export function Modal({
               <X className="h-5 w-5" />
             </Button>
           </div>
-        )}
-
+        )}{" "}
         {/* Content */}
-        <div className="p-6">{children}</div>
+        <div className="p-6 flex-1 overflow-y-auto">{children}</div>
       </div>
     </div>,
     document.body
