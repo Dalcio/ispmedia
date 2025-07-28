@@ -54,27 +54,27 @@ export function NotificationButton({
 
   return (
     <>
+      {" "}
       <Button
         variant="ghost"
         size="icon"
         onClick={handleOpenModal}
-        className={`relative transition-all duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 ${className}`}
+        className={`relative transition-all duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 ${className}`}
         title={`${countNaoLidas} notificações não lidas`}
       >
         {hasUnreadNotifications ? (
-          <BellDot className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+          <BellDot className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400" />
         ) : (
-          <Bell className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
+          <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-600 dark:text-neutral-400" />
         )}
 
         {/* Badge com número de notificações */}
         {hasUnreadNotifications && (
-          <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+          <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 h-4 w-4 sm:h-5 sm:w-5 bg-red-500 text-white text-[10px] sm:text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
             {countNaoLidas > 99 ? "99+" : countNaoLidas}
           </span>
         )}
       </Button>
-
       {/* Modal de notificações */}
       <NotificationsModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </>

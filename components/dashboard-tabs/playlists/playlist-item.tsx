@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { doc, updateDoc, arrayRemove, getDoc, getDocs, query, where, collection } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  arrayRemove,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  collection,
+} from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useTracks, type Track } from "@/contexts/tracks-context";
 import { useGlobalAudio } from "@/contexts/global-audio-context";
@@ -95,7 +104,9 @@ export function PlaylistItem({
                 id: trackDoc.id,
                 title: trackData.title || "Título desconhecido",
                 artist:
-                  trackData.artist || trackData.artistName || "Artista desconhecido",
+                  trackData.artist ||
+                  trackData.artistName ||
+                  "Artista desconhecido",
                 createdBy: trackData.createdBy || "",
                 genre: trackData.genre || "Gênero desconhecido",
                 audioUrl: trackData.audioUrl || "",
@@ -125,9 +136,12 @@ export function PlaylistItem({
 
     loadMissingTracks();
   }, [
-    playlist.tracks?.join(','), 
-    allTracks.map(t => t.id).sort().join(','), 
-    playlist.id
+    playlist.tracks?.join(","),
+    allTracks
+      .map((t) => t.id)
+      .sort()
+      .join(","),
+    playlist.id,
   ]);
 
   // Create stable reference for tracks data for memoization
@@ -152,7 +166,7 @@ export function PlaylistItem({
       playlist.tracks?.join(","),
       playlist.id,
     ]
-  );  // Get tracks that belong to this playlist using the context + missing tracks
+  ); // Get tracks that belong to this playlist using the context + missing tracks
   const playlistTracks = useMemo(() => {
     if (!playlist.tracks || playlist.tracks.length === 0) {
       return [];
@@ -160,14 +174,14 @@ export function PlaylistItem({
 
     // Combine user tracks from context with missing tracks loaded from Firestore
     const allAvailableTracks = [...allTracks, ...missingTracks];
-    
+
     const tracks = allAvailableTracks.filter((track) =>
       playlist.tracks.includes(track.id)
     );
 
     // Sort tracks by the order they appear in the playlist.tracks array
     const sortedTracks = playlist.tracks
-      .map(trackId => tracks.find(track => track.id === trackId))
+      .map((trackId) => tracks.find((track) => track.id === trackId))
       .filter(Boolean) as Track[];
 
     console.log("🎵 Playlist tracks resolved:", {
@@ -176,7 +190,7 @@ export function PlaylistItem({
       userTracks: allTracks.length,
       missingTracks: missingTracks.length,
       resolvedTracks: sortedTracks.length,
-      loadingMissing: loadingMissingTracks
+      loadingMissing: loadingMissingTracks,
     });
 
     return sortedTracks;
@@ -185,7 +199,7 @@ export function PlaylistItem({
     allTracks,
     missingTracks,
     playlist.id,
-    loadingMissingTracks
+    loadingMissingTracks,
   ]);
 
   // Separate tracks into user's own tracks and public tracks from others
@@ -195,8 +209,10 @@ export function PlaylistItem({
 
     playlistTracks.forEach((track) => {
       // Check if track is from allTracks (user's own tracks) or missingTracks (public tracks from others)
-      const isUserTrack = allTracks.some(userTrack => userTrack.id === track.id);
-      
+      const isUserTrack = allTracks.some(
+        (userTrack) => userTrack.id === track.id
+      );
+
       if (isUserTrack) {
         userOwnTracks.push(track);
       } else {
@@ -270,17 +286,18 @@ export function PlaylistItem({
 
   return (
     <div className="group bg-glass-100 hover:bg-glass-200 rounded-xl transition-all duration-200 overflow-hidden">
+      {" "}
       {/* Header da playlist */}
-      <div className="p-4">
-        <div className="flex items-start gap-3">
+      <div className="p-3 sm:p-4">
+        <div className="flex items-start gap-2 sm:gap-3">
           {/* Ícone da playlist */}
-          <div className="w-12 h-12 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-            <ListMusic className="h-6 w-6 text-primary-500" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <ListMusic className="h-5 w-5 sm:h-6 sm:w-6 text-primary-500" />
           </div>
           {/* Informações da playlist */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h4 className="font-medium text-text-primary truncate">
+              <h4 className="font-medium text-text-primary truncate text-sm sm:text-base">
                 {playlist.title}
               </h4>
               <div className="flex items-center gap-1">
@@ -297,40 +314,45 @@ export function PlaylistItem({
             </div>
 
             {playlist.description && (
-              <p className="text-sm text-text-muted mb-2 line-clamp-2">
+              <p className="text-xs sm:text-sm text-text-muted mb-2 line-clamp-2">
                 {playlist.description}
               </p>
             )}
 
-            <div className="flex items-center gap-4 text-xs text-text-muted">
+            <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-text-muted">
               <div className="flex items-center gap-1">
-                <Music className="h-3 w-3" />
+                <Music className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{playlist.tracks.length} músicas</span>
               </div>
               {isExpanded && playlistTracks.length > 0 && (
                 <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
+                  <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   <span>{formatDuration(getTotalDuration)}</span>
                 </div>
               )}
               <div className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                <span>{formatDate(playlist.createdAt)}</span>
+                <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                <span className="hidden sm:inline">
+                  {formatDate(playlist.createdAt)}
+                </span>
+                <span className="sm:hidden">
+                  {formatDate(playlist.createdAt).split(" ")[0]}
+                </span>
               </div>
             </div>
           </div>
           {/* Ações */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Botão Play Playlist */}
             {playlistTracks.length > 0 && (
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={handlePlayPlaylist}
-                className="text-text-muted hover:text-primary-500 hover:bg-primary-500/10 flex items-center gap-1"
+                className="text-text-muted hover:text-primary-500 hover:bg-primary-500/10 flex items-center gap-1 p-1.5 sm:p-2"
                 title="Reproduzir playlist"
               >
-                <Play className="h-4 w-4" fill="currentColor" />
+                <Play className="h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" />
               </Button>
             )}
 
@@ -338,12 +360,12 @@ export function PlaylistItem({
               size="sm"
               variant="ghost"
               onClick={onToggleExpand}
-              className="text-text-muted hover:text-text-primary hover:bg-glass-200"
+              className="text-text-muted hover:text-text-primary hover:bg-glass-200 p-1.5 sm:p-2"
             >
               {isExpanded ? (
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
               ) : (
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
               )}
             </Button>
 
@@ -352,18 +374,18 @@ export function PlaylistItem({
                 size="sm"
                 variant="ghost"
                 onClick={onEdit}
-                className="text-text-muted hover:text-info-500 hover:bg-info-500/10"
+                className="text-text-muted hover:text-info-500 hover:bg-info-500/10 p-1.5 sm:p-2"
               >
-                <Edit className="h-4 w-4" />
+                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
 
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={onDelete}
-                className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
+                className="text-text-muted hover:text-error-500 hover:bg-error-500/10 p-1.5 sm:p-2"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </div>
@@ -371,66 +393,78 @@ export function PlaylistItem({
       </div>
       {/* Lista de faixas expandida */}
       {isExpanded && (
-        <div className="border-t border-glass-200 bg-glass-50">          {tracksLoading || loadingMissingTracks ? (
-            <div className="p-4 space-y-3">
-              <div className="text-xs text-text-muted mb-2">
-                {loadingMissingTracks ? "Carregando músicas da playlist..." : "Carregando suas músicas..."}
+        <div className="border-t border-glass-200 bg-glass-50">
+          {" "}
+          {tracksLoading || loadingMissingTracks ? (
+            <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+              <div className="text-[10px] sm:text-xs text-text-muted mb-2">
+                {loadingMissingTracks
+                  ? "Carregando músicas da playlist..."
+                  : "Carregando suas músicas..."}
               </div>
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex items-center gap-3 animate-pulse">
-                  <div className="w-8 h-8 bg-glass-200 rounded" />
+                <div
+                  key={i}
+                  className="flex items-center gap-2 sm:gap-3 animate-pulse"
+                >
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-glass-200 rounded" />
                   <div className="flex-1">
-                    <div className="h-3 bg-glass-200 rounded w-2/3 mb-1" />
+                    <div className="h-2.5 sm:h-3 bg-glass-200 rounded w-2/3 mb-1" />
                     <div className="h-2 bg-glass-200 rounded w-1/3" />
                   </div>
                 </div>
               ))}
             </div>
           ) : playlist.tracks.length === 0 ? (
-            <div className="p-8 text-center">
-              <div className="w-16 h-16 bg-glass-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Music className="h-8 w-8 text-text-muted" />
+            <div className="p-6 sm:p-8 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-glass-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Music className="h-6 w-6 sm:h-8 sm:w-8 text-text-muted" />
               </div>
-              <p className="text-text-muted text-sm mb-4">
+              <p className="text-text-muted text-xs sm:text-sm mb-3 sm:mb-4">
                 Esta playlist está vazia
               </p>
               <Button
                 onClick={handleAddTracks}
-                className="inline-flex items-center gap-2 py-3 px-6 bg-glass-100 hover:bg-glass-200 backdrop-blur-sm border border-glass-200 rounded-xl text-text-primary font-semibold transition-all duration-200 hover:shadow-lg"
+                className="inline-flex items-center gap-2 py-2 px-4 sm:py-3 sm:px-6 bg-glass-100 hover:bg-glass-200 backdrop-blur-sm border border-glass-200 rounded-xl text-text-primary text-xs sm:text-sm font-semibold transition-all duration-200 hover:shadow-lg"
               >
-                <Plus className="h-5 w-5" />
-                Adicionar a primeira música
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">
+                  Adicionar a primeira música
+                </span>
+                <span className="sm:hidden">Adicionar música</span>
               </Button>
             </div>
           ) : (
             <div className="space-y-2">
               {/* Botões de ação */}
-              <div className="p-4 border-b border-glass-200 space-y-2">
+              <div className="p-3 sm:p-4 border-b border-glass-200 space-y-2">
                 {/* Botão reproduzir playlist */}
                 <Button
                   onClick={handlePlayPlaylist}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 bg-primary-500 hover:bg-primary-600 text-white text-sm sm:text-base font-medium rounded-lg transition-all duration-200 hover:shadow-lg"
                 >
-                  <Play className="h-5 w-5" fill="currentColor" />
+                  <Play className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" />
                   Reproduzir Playlist
                 </Button>
 
                 {/* Botão adicionar mais músicas */}
                 <Button
                   onClick={handleAddTracks}
-                  className="w-full flex items-center justify-center gap-2 py-2 bg-glass-100 hover:bg-glass-200 backdrop-blur-sm border border-glass-200 rounded-lg text-text-primary text-sm font-medium transition-all duration-200"
+                  className="w-full flex items-center justify-center gap-2 py-2 bg-glass-100 hover:bg-glass-200 backdrop-blur-sm border border-glass-200 rounded-lg text-text-primary text-xs sm:text-sm font-medium transition-all duration-200"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                   Adicionar música
                 </Button>
-              </div>              {/* Lista de músicas */}
-              <div className="p-4 space-y-4">
+              </div>{" "}
+              {/* Lista de músicas */}
+              <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                 {/* Seção: Suas músicas */}
                 {userOwnTracks.length > 0 && (
                   <div className="space-y-2">
+                    {" "}
                     <div className="flex items-center gap-2 pb-2 border-b border-glass-100">
-                      <User className="h-4 w-4 text-primary-500" />
-                      <h6 className="text-sm font-medium text-text-primary">
+                      <User className="h-3 w-3 sm:h-4 sm:w-4 text-primary-500" />
+                      <h6 className="text-xs sm:text-sm font-medium text-text-primary">
                         Suas músicas ({userOwnTracks.length})
                       </h6>
                     </div>
@@ -441,7 +475,9 @@ export function PlaylistItem({
                           className="group/track flex items-center gap-3 p-3 hover:bg-glass-100 rounded-lg transition-colors"
                         >
                           <div className="w-8 h-8 bg-primary-500/10 rounded flex items-center justify-center text-xs text-primary-600 font-medium">
-                            {playlistTracks.findIndex(t => t.id === track.id) + 1}
+                            {playlistTracks.findIndex(
+                              (t) => t.id === track.id
+                            ) + 1}
                           </div>
 
                           <div className="flex-1 min-w-0">
@@ -472,7 +508,9 @@ export function PlaylistItem({
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleRemoveTrack(track.id, track.title)}
+                              onClick={() =>
+                                handleRemoveTrack(track.id, track.title)
+                              }
                               className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
                             >
                               <X className="h-3 w-3" />
@@ -500,13 +538,16 @@ export function PlaylistItem({
                           className="group/track flex items-center gap-3 p-3 hover:bg-glass-100 rounded-lg transition-colors"
                         >
                           <div className="w-8 h-8 bg-success-500/10 rounded flex items-center justify-center text-xs text-success-600 font-medium">
-                            {playlistTracks.findIndex(t => t.id === track.id) + 1}
+                            {playlistTracks.findIndex(
+                              (t) => t.id === track.id
+                            ) + 1}
                           </div>
 
                           <div className="flex-1 min-w-0">
                             <h5 className="text-sm font-medium text-text-primary truncate">
                               {track.title}
-                            </h5>                            <p className="text-xs text-text-muted truncate">
+                            </h5>{" "}
+                            <p className="text-xs text-text-muted truncate">
                               {track.artist || track.genre}
                             </p>
                           </div>
@@ -530,7 +571,9 @@ export function PlaylistItem({
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleRemoveTrack(track.id, track.title)}
+                              onClick={() =>
+                                handleRemoveTrack(track.id, track.title)
+                              }
                               className="text-text-muted hover:text-error-500 hover:bg-error-500/10"
                             >
                               <X className="h-3 w-3" />
@@ -543,15 +586,17 @@ export function PlaylistItem({
                 )}
 
                 {/* Mensagem quando nenhuma música foi carregada */}
-                {userOwnTracks.length === 0 && publicTracks.length === 0 && playlist.tracks.length > 0 && (
-                  <div className="text-center py-4">
-                    <p className="text-sm text-text-muted">
-                      {loadingMissingTracks 
-                        ? "Carregando músicas da playlist..." 
-                        : "Não foi possível carregar as músicas desta playlist"}
-                    </p>
-                  </div>
-                )}
+                {userOwnTracks.length === 0 &&
+                  publicTracks.length === 0 &&
+                  playlist.tracks.length > 0 && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-text-muted">
+                        {loadingMissingTracks
+                          ? "Carregando músicas da playlist..."
+                          : "Não foi possível carregar as músicas desta playlist"}
+                      </p>
+                    </div>
+                  )}
 
                 {/* Indicador de músicas não carregadas */}
                 {playlist.tracks.length > playlistTracks.length && (

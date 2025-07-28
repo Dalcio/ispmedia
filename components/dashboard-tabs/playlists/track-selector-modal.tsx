@@ -99,7 +99,8 @@ export function TrackSelectorModal({
 
   // Calculate how many authors will be notified (memoized for performance)
   const notificationCount = useMemo(() => {
-    if (activeTab !== "publicas" || selectedTracks.length === 0 || !user) return 0;
+    if (activeTab !== "publicas" || selectedTracks.length === 0 || !user)
+      return 0;
 
     return selectedTracks.filter((trackId) => {
       const track = currentTracks.find((t) => t.id === trackId);
@@ -126,16 +127,17 @@ export function TrackSelectorModal({
       return;
     }
 
-    setAdding(true);    try {
+    setAdding(true);
+    try {
       // Add tracks to playlist
       const playlistRef = doc(db, "playlists", playlistId);
-      
+
       console.log("🎵 Adding tracks to playlist:", {
         playlistId,
         tracksToAdd: selectedTracks,
-        trackCount: selectedTracks.length
+        trackCount: selectedTracks.length,
       });
-      
+
       await updateDoc(playlistRef, {
         tracks: arrayUnion(...selectedTracks),
         updatedAt: new Date(),
@@ -153,7 +155,9 @@ export function TrackSelectorModal({
             currentTracks: data.tracks || [],
             trackCount: (data.tracks || []).length,
             addedTracks: selectedTracks,
-            containsAddedTracks: selectedTracks.every(id => (data.tracks || []).includes(id))
+            containsAddedTracks: selectedTracks.every((id) =>
+              (data.tracks || []).includes(id)
+            ),
           });
         }
       } catch (verifyError) {
@@ -184,7 +188,10 @@ export function TrackSelectorModal({
               console.log(`✅ Notification sent for track: ${track.title}`);
             }
           } catch (notificationError) {
-            console.error(`❌ Failed to send notification for track "${track.title}":`, notificationError);
+            console.error(
+              `❌ Failed to send notification for track "${track.title}":`,
+              notificationError
+            );
             // Don't break the flow for notification errors
           }
         }
@@ -196,7 +203,9 @@ export function TrackSelectorModal({
       // Enhanced success message with notification feedback
       let message = `${selectedTracks.length} música${
         selectedTracks.length > 1 ? "s" : ""
-      } adicionada${selectedTracks.length > 1 ? "s" : ""} à playlist "${playlistTitle}"`;
+      } adicionada${
+        selectedTracks.length > 1 ? "s" : ""
+      } à playlist "${playlistTitle}"`;
 
       if (notificationCount > 0) {
         message += ` • ${notificationCount} autor${
@@ -293,7 +302,8 @@ export function TrackSelectorModal({
                 ? "Carregando suas músicas..."
                 : "Carregando músicas públicas..."
             }
-            onClearSearch={() => setSearchTerm("")}          />
+            onClearSearch={() => setSearchTerm("")}
+          />
         </div>
 
         {/* Actions */}
@@ -303,17 +313,21 @@ export function TrackSelectorModal({
               {selectedTracks.length} música
               {selectedTracks.length !== 1 ? "s" : ""} selecionada
               {selectedTracks.length !== 1 ? "s" : ""}
-            </p>            {activeTab === "publicas" && notificationCount > 0 && (
+            </p>{" "}
+            {activeTab === "publicas" && notificationCount > 0 && (
               <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
                 <span>📬</span>
-                {notificationCount} autor{notificationCount !== 1 ? "es" : ""} ser{notificationCount !== 1 ? "ão" : "á"} notificado{notificationCount !== 1 ? "s" : ""}
+                {notificationCount} autor{notificationCount !== 1 ? "es" : ""}{" "}
+                ser{notificationCount !== 1 ? "ão" : "á"} notificado
+                {notificationCount !== 1 ? "s" : ""}
               </p>
             )}
           </div>
           <div className="flex gap-3">
             <Button variant="ghost" onClick={onClose}>
               Cancelar
-            </Button>            <Button
+            </Button>{" "}
+            <Button
               onClick={handleAddTracks}
               disabled={selectedTracks.length === 0 || adding}
               className="bg-primary-500 hover:bg-primary-600 text-white disabled:opacity-50"

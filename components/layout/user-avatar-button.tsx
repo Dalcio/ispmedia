@@ -92,16 +92,16 @@ export function UserAvatarButton({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Avatar Button */}
+      {/* Avatar Button */}{" "}
       <Button
         onClick={handleAvatarClick}
         variant="ghost"
-        className={`flex items-center gap-2 p-2 h-auto rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors ${
-          showDropdown ? "pr-3" : ""
+        className={`flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 h-auto rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors ${
+          showDropdown ? "sm:pr-3" : ""
         }`}
       >
         {/* Avatar Circle */}
-        <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-medium">
           {user.photoURL ? (
             <img
               src={user.photoURL}
@@ -116,11 +116,8 @@ export function UserAvatarButton({
         {/* Nome (apenas se showDropdown for true) */}
         {showDropdown && (
           <>
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 hidden sm:block">
-              {getUserDisplayName()}
-            </span>
             <ChevronDown
-              className={`w-4 h-4 text-neutral-500 transition-transform duration-200 ${
+              className={`w-3 h-3 sm:w-4 sm:h-4 text-neutral-500 transition-transform duration-200 hidden sm:block ${
                 isDropdownOpen ? "rotate-180" : ""
               }`}
             />
@@ -129,11 +126,11 @@ export function UserAvatarButton({
       </Button>
       {/* Dropdown Menu */}
       {showDropdown && isDropdownOpen && (
-        <div className="absolute top-full right-0 mt-2 w-64 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-xl rounded-lg shadow-lg border border-neutral-200/50 dark:border-neutral-700/50 py-2 z-50">
-          {/* User Info */}
-          <div className="px-4 py-3 border-b border-neutral-200/50 dark:border-neutral-700/50">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+        <div className="absolute top-full right-0 mt-2 w-56 sm:w-64 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-xl rounded-lg shadow-lg border border-neutral-200/50 dark:border-neutral-700/50 py-2 z-50">
+          {/* User Info */}{" "}
+          <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-neutral-200/50 dark:border-neutral-700/50">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-medium">
                 {user.photoURL ? (
                   <img
                     src={user.photoURL}
@@ -145,10 +142,10 @@ export function UserAvatarButton({
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate">
+                <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate">
                   {getUserDisplayName()}
                 </p>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                <p className="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400 truncate">
                   {user.email}
                 </p>
               </div>

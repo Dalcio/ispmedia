@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import {
-  collection,
-  query,
-  where,
-  limit,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, where, limit, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useTracks } from "@/contexts/tracks-context";
 import { useAuth } from "@/contexts/auth-context";
@@ -51,36 +45,41 @@ export function useTrackSearch({
   // State for public tracks
   const [publicTracks, setPublicTracks] = useState<TrackResult[]>([]);
   const [publicTracksLoading, setPublicTracksLoading] = useState(false);
-  const [publicTracksError, setPublicTracksError] = useState<string | null>(null);
+  const [publicTracksError, setPublicTracksError] = useState<string | null>(
+    null
+  );
   // Load public tracks (exact search-modal logic)
   useEffect(() => {
     console.log("🔍 useTrackSearch: Effect triggered", {
       includePublicTracks,
       autoLoadPublic,
       user: !!user,
-      userId: user?.uid
+      userId: user?.uid,
     });
 
     if (!includePublicTracks || !autoLoadPublic) {
-      console.log("⏭️ Skipping public tracks load", { includePublicTracks, autoLoadPublic });
+      console.log("⏭️ Skipping public tracks load", {
+        includePublicTracks,
+        autoLoadPublic,
+      });
       return;
     }
 
     const loadPublicTracks = async () => {
       setPublicTracksLoading(true);
       setPublicTracksError(null);
-      
+
       try {
         console.log("🎵 useTrackSearch: Loading public tracks...");
-        
+
         // EXACT search-modal logic: Query for public tracks only with limit
         const tracksRef = collection(db, "tracks");
         const publicTracksQuery = query(
           tracksRef,
           where("isPublic", "==", true),
-          limit(50)  // Same limit as search-modal
+          limit(50) // Same limit as search-modal
         );
-        
+
         const allSnapshot = await getDocs(publicTracksQuery);
         console.log("🎵 Total public tracks found:", allSnapshot.size);
 
@@ -103,25 +102,32 @@ export function useTrackSearch({
             duration: data.duration,
             createdAt: data.createdAt,
             mimeType: data.mimeType || "",
-            artistName: data.artistName,  // Use artistName like search-modal
-            artist: data.artist || data.artistName || "",  // Keep compatibility
-            userUid: data.createdBy,  // Use userUid like search-modal
-            createdBy: data.createdBy,  // Keep compatibility
+            artistName: data.artistName, // Use artistName like search-modal
+            artist: data.artist || data.artistName || "", // Keep compatibility
+            userUid: data.createdBy, // Use userUid like search-modal
+            createdBy: data.createdBy, // Keep compatibility
             isPublic: data.isPublic,
           };
-          console.log("📀 Track data:", { id: doc.id, title: track.title, createdBy: track.createdBy, userUid: track.userUid });
+          console.log("📀 Track data:", {
+            id: doc.id,
+            title: track.title,
+            createdBy: track.createdBy,
+            userUid: track.userUid,
+          });
           return track;
         });
 
         // Filter out user's own tracks if user is authenticated (same logic as search-modal)
-        const tracksFromOthers = user 
+        const tracksFromOthers = user
           ? allPublicTracks.filter((track) => {
               const isOwnTrack = track.userUid === user.uid;
-              console.log(`🔍 Track "${track.title}": createdBy=${track.userUid}, currentUser=${user.uid}, isOwn=${isOwnTrack}`);
+              console.log(
+                `🔍 Track "${track.title}": createdBy=${track.userUid}, currentUser=${user.uid}, isOwn=${isOwnTrack}`
+              );
               return !isOwnTrack;
             })
           : allPublicTracks;
-        
+
         console.log("✅ Public tracks from others:", tracksFromOthers.length);
         console.log("🎵 Sample public tracks:", tracksFromOthers.slice(0, 3));
 
@@ -143,22 +149,24 @@ export function useTrackSearch({
     if (!includeUserTracks) return [];
     return userTracks
       .filter((track) => !excludeTrackIds.includes(track.id))
-      .map((track): TrackResult => ({
-        id: track.id,
-        title: track.title,
-        genre: track.genre,
-        audioUrl: track.audioUrl,
-        fileName: track.fileName,
-        fileSize: track.fileSize,
-        duration: track.duration,
-        createdAt: track.createdAt,
-        mimeType: track.mimeType,
-        artist: track.artist,
-        artistName: track.artist,
-        userUid: track.createdBy,
-        createdBy: track.createdBy,
-        isPublic: track.isPublic,
-      }));
+      .map(
+        (track): TrackResult => ({
+          id: track.id,
+          title: track.title,
+          genre: track.genre,
+          audioUrl: track.audioUrl,
+          fileName: track.fileName,
+          fileSize: track.fileSize,
+          duration: track.duration,
+          createdAt: track.createdAt,
+          mimeType: track.mimeType,
+          artist: track.artist,
+          artistName: track.artist,
+          userUid: track.createdBy,
+          createdBy: track.createdBy,
+          isPublic: track.isPublic,
+        })
+      );
   }, [userTracks, excludeTrackIds, includeUserTracks]);
   // Filter public tracks (remove excluded IDs)
   const availablePublicTracks = useMemo(() => {
@@ -166,16 +174,18 @@ export function useTrackSearch({
       console.log("⏭️ Not including public tracks");
       return [];
     }
-    
-    const filtered = publicTracks.filter((track) => !excludeTrackIds.includes(track.id));
+
+    const filtered = publicTracks.filter(
+      (track) => !excludeTrackIds.includes(track.id)
+    );
     console.log("🔍 Available public tracks after filtering:", {
       total: publicTracks.length,
       excluded: excludeTrackIds.length,
       available: filtered.length,
       excludedIds: excludeTrackIds,
-      availableTracks: filtered.map(t => ({ id: t.id, title: t.title }))
+      availableTracks: filtered.map((t) => ({ id: t.id, title: t.title })),
     });
-    
+
     return filtered;
   }, [publicTracks, excludeTrackIds, includePublicTracks]);
 
@@ -187,7 +197,7 @@ export function useTrackSearch({
 
     console.log("🎵 useTrackSearch: Searching user tracks for:", searchTerm);
     const searchLower = searchTerm.toLowerCase();
-    
+
     const filtered = availableUserTracks.filter((track) => {
       const title = (track.title || "").toLowerCase();
       const genre = (track.genre || "").toLowerCase();
@@ -213,19 +223,24 @@ export function useTrackSearch({
 
     console.log("🎵 useTrackSearch: Searching public tracks for:", searchTerm);
     const searchLower = searchTerm.toLowerCase();
-    
+
     const filtered = availablePublicTracks.filter((track) => {
       const title = (track.title || "").toLowerCase();
       const genre = (track.genre || "").toLowerCase();
       const artist = (track.artist || track.artistName || "").toLowerCase();
 
       // EXACT search-modal logic: search in title, genre, and artist
-      const matches = title.includes(searchLower) ||
-                     genre.includes(searchLower) ||
-                     artist.includes(searchLower);
+      const matches =
+        title.includes(searchLower) ||
+        genre.includes(searchLower) ||
+        artist.includes(searchLower);
 
       if (matches) {
-        console.log("🔍 Found match:", { title: track.title, artist: track.artist, genre: track.genre });
+        console.log("🔍 Found match:", {
+          title: track.title,
+          artist: track.artist,
+          genre: track.genre,
+        });
       }
 
       return matches;
@@ -236,25 +251,25 @@ export function useTrackSearch({
   }, [availablePublicTracks, searchTerm]);
 
   // Combine all tracks for convenience
-  const allTracks = useMemo(() => [
-    ...filteredUserTracks,
-    ...filteredPublicTracks
-  ], [filteredUserTracks, filteredPublicTracks]);
+  const allTracks = useMemo(
+    () => [...filteredUserTracks, ...filteredPublicTracks],
+    [filteredUserTracks, filteredPublicTracks]
+  );
 
   return {
     // User tracks
     userTracks: filteredUserTracks,
     userTracksLoading,
-    
+
     // Public tracks
     publicTracks: filteredPublicTracks,
     publicTracksLoading,
     publicTracksError,
-    
+
     // Combined
     allTracks,
     isLoading: userTracksLoading || publicTracksLoading,
-    
+
     // Raw data for advanced usage
     availableUserTracks,
     availablePublicTracks,

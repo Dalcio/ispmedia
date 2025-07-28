@@ -25,26 +25,26 @@ export default function HomePage() {
       {/* Header */}
       <Header />
       {/* Hero Section */}
-      <main className="container px-6 py-16">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         {/* Hero Content */}
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-full text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4 mr-2" />
+        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+          <div className="inline-flex items-center px-3 sm:px-4 py-2 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-full text-primary-700 dark:text-primary-300 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
             Streaming de música inteligente
           </div>
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight px-4">
             Sua música, <span className="text-gradient">em qualquer lugar</span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 lg:mb-10 max-w-xl lg:max-w-2xl mx-auto leading-relaxed px-4">
             Descubra milhões de músicas, crie playlists incríveis e conecte-se
             com seus artistas favoritos em uma experiência única de streaming.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
             <Button
               onClick={() => setSearchModalOpen(true)}
-              className="btn-primary cursor-hover text-lg px-8 py-4 h-auto"
+              className="btn-primary cursor-hover text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 h-auto w-full sm:w-auto"
             >
-              <Search className="h-6 w-6 mr-3" />
+              <Search className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
               Explorar Música
             </Button>
 
@@ -60,7 +60,7 @@ export default function HomePage() {
           </div>
         </div>
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
           <FeatureCard
             icon={Music}
             title="Catálogo Infinito"
@@ -153,7 +153,7 @@ function FeatureCard({
   accent: string;
 }) {
   return (
-    <div className="glass-card p-8 rounded-2xl group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-hover">
+    <div className="glass-card p-8 rounded-2xl group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-hover last:sm:col-span-2 last:lg:col-span-1">
       {/* Background accent */}
       <div
         className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${accent} opacity-10 rounded-full -translate-y-8 translate-x-8`}
